@@ -676,3 +676,73 @@ body{
   .circle-spinner{ margin-top: 40px; width: 92vw; }
   .search-icon{ font-size: 36px; }
 }
+
+/* =========================================================
+   SUCCESS (DIGITOU O CÓDIGO) — igual ao print
+========================================================= */
+#successOverlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  background: transparent; /* no print é sem “fundo escuro” */
+}
+
+/* esconde */
+#successOverlay.hidden-screen{ display:none !important; }
+
+/* confete */
+#successOverlay::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:
+    radial-gradient(circle, rgba(59,130,246,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(34,197,94,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(251,146,60,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(234,179,8,.95) 2px, transparent 3px),
+    radial-gradient(circle, rgba(239,68,68,.95) 2px, transparent 3px);
+  background-size: 18px 18px, 22px 22px, 26px 26px, 20px 20px, 28px 28px;
+  background-position: 10% 10%, 25% 30%, 60% 20%, 80% 45%, 45% 60%;
+  opacity: 0;
+  transform: translateY(-10px) scale(.98);
+}
+
+#successOverlay.visible::before{
+  animation: confettiPop .95s ease-out forwards;
+}
+
+@keyframes confettiPop{
+  0%{ opacity:0; transform: translateY(10px) scale(.98); filter: blur(1px); }
+  20%{ opacity:1; filter: blur(0px); }
+  100%{ opacity:1; transform: translateY(0) scale(1); }
+}
+
+/* check verde */
+#successOverlay .success-animation-icon{
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  color:#fff;
+  font-size: 56px;
+  box-shadow: 0 22px 70px rgba(0,0,0,.12);
+  transform: scale(.75);
+  opacity: 0;
+}
+
+#successOverlay.visible .success-animation-icon{
+  animation: checkPop .55s cubic-bezier(.2,1.2,.2,1) forwards;
+}
+
+@keyframes checkPop{
+  0%{ transform: scale(.65); opacity:0; }
+  60%{ transform: scale(1.08); opacity:1; }
+  100%{ transform: scale(1); opacity:1; }
+}
+
+
