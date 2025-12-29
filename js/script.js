@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // ===== 2) Botão Começar -> /avaliar mantendo UTM =====
   if (startButton) {
     startButton.addEventListener("click", () => {
-      const next = new URL("/avaliar", window.location.origin);
+      const next = new URL("/avaliar/index.html", window.location.origin);
 
       // prioriza helper de UTM (se existir), senão usa query atual
       const qs = (window.getUTMQS ? window.getUTMQS() : window.location.search);
