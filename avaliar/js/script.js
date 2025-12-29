@@ -1,23 +1,13 @@
 /* =========================================================================
-   cashnopix /avaliar/js/script.js (AJUSTADO)
-   - Remove travamento no "PROCURANDO VALORES..."
-   - Mantém o loading inicial (PROCURANDO VALORES PARA SAQUE)
-   - Usa o processingModal (modal branco) como “loader entre etapas”
-   - Animação ao digitar o código: confete + check gigante (usa #successOverlay)
-     -> agora: confete minimalista (CSS) + fade, duração 3s
-   - Sucesso + som “money” ao votar (se existir #moneySound), senão usa successSound
-   - Remove DOMContentLoaded duplicado e prende histórico 1x (sem conflito)
+   cashnopix /avaliar/js/script.js (AJUSTADO - confete minimalista 3s)
 ======================================================================== */
 
-/* =========================================================================
-   VARIÁVEIS DE ESTADO E CONFIGURAÇÃO
-======================================================================== */
-let currentStage = 0;                 // 0..2
-let currentSaldo = 50.00;
+let currentStage = 0;
+let currentSaldo = 50.0;
 
-const qrConsultationDuration = 2500;  // tempo da “consulta QR” (processingModal)
-const loadingDuration = 3000;         // tempo do loading inicial (PROCURANDO...)
-const animationDuration = 3000;       // ✅ 3s: duração do confete/check + fade (CSS)
+const qrConsultationDuration = 2500;
+const loadingDuration = 3000;
+const animationDuration = 3000; // ✅ 3s
 
 let countdownInterval = null;
 let initialTimeInSeconds = 140;
@@ -27,18 +17,15 @@ let isAudioUnlocked = false;
 
 const funnelStages = [
   { name: "Avaliação 1", client: "Beatriz S.", cashback: 49.67, code: "LMNO", htmlId: "evaluation-0" },
-  { name: "Avaliação 2", client: "João A.",   cashback: 44.67, code: "BCFG", htmlId: "evaluation-1" },
+  { name: "Avaliação 2", client: "João A.", cashback: 44.67, code: "BCFG", htmlId: "evaluation-1" },
   { name: "Avaliação 3", client: "Camila B.", cashback: 57.75, code: "XYZA", htmlId: "evaluation-2" }
 ];
 
-/* =========================================================================
-   HELPERS (safe)
-======================================================================== */
-const $  = (sel, root=document) => root.querySelector(sel);
-const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-function safeAddHidden(el){ if (el) el.classList.add("hidden-screen"); }
-function safeRemoveHidden(el){ if (el) el.classList.remove("hidden-screen"); }
+function safeAddHidden(el) { if (el) el.classList.add("hidden-screen"); }
+function safeRemoveHidden(el) { if (el) el.classList.remove("hidden-screen"); }
 
 function switchScreen(hideId, showId) {
   const hideEl = document.getElementById(hideId);
@@ -48,16 +35,14 @@ function switchScreen(hideId, showId) {
 }
 
 function formatCurrency(value) {
-  return `R$ ${value.toFixed(2).replace('.', ',')}`;
+  return `R$ ${value.toFixed(2).replace(".", ",")}`;
 }
 
-/* =========================================================================
-   CRONÔMETRO
-======================================================================== */
+/* ============ CRONÔMETRO ============ */
 function formatTime(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
-  return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  return `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
 }
 
 function clearCountdown() {
@@ -87,9 +72,7 @@ function startCountdown(stageIndex) {
   }, 1000);
 }
 
-/* =========================================================================
-   PROGRESSO
-======================================================================== */
+/* ============ PROGRESSO ============ */
 function updateProgressIndicator(stageIndex, isComplete = false) {
   const fill = document.getElementById("progressBarFill");
   const label = document.getElementById("progressLabel");
@@ -110,9 +93,7 @@ function updateProgressIndicator(stageIndex, isComplete = false) {
   label.textContent = "Seu progresso";
 }
 
-/* =========================================================================
-   SALDO (contador animado)
-======================================================================== */
+/* ============ SALDO ============ */
 function animateSaldoCounter(startValue, endValue, duration) {
   const saldoEl = document.getElementById("currentSaldo");
   if (!saldoEl) return;
@@ -123,8 +104,8 @@ function animateSaldoCounter(startValue, endValue, duration) {
     if (!startTime) startTime = ts;
     const progress = ts - startTime;
     const pct = Math.min(progress / duration, 1);
-
     const cur = startValue + (endValue - startValue) * pct;
+
     saldoEl.textContent = formatCurrency(cur);
 
     if (pct < 1) requestAnimationFrame(step);
@@ -147,16 +128,13 @@ function updateState(stageIndex) {
 
 /* =========================================================================
    UI/UX
-   - QR loader branco: #processingModal
-   - Sucesso: #successOverlay
-   Obs: confete minimalista + fade deve estar no CSS do #successOverlay.visible
 ======================================================================== */
 const uiUX = (() => {
   const processingModal = document.getElementById("processingModal");
-
   const successOverlay = document.getElementById("successOverlay");
+
   const sfxSuccess = document.getElementById("successSound");
-  const sfxMoney   = document.getElementById("moneySound"); // opcional
+  const sfxMoney = document.getElementById("moneySound"); // opcional
 
   function play(audioEl) {
     if (!audioEl) return;
@@ -177,15 +155,80 @@ const uiUX = (() => {
     processingModal.classList.add("hidden-screen");
   }
 
-  function showSuccess({ sound="success" } = {}) {
+  // ✅ cria estrutura do overlay (sem mexer no HTML)
+  function ensureSuccessDOM() {
+    if (!successOverlay) return null;
+
+    let burst = successOverlay.querySelector(".success-burst");
+    if (!burst) {
+      burst = document.createElement("div");
+      burst.className = "success-burst";
+
+      const conf = document.createElement("div");
+      conf.className = "success-confetti";
+
+      // reaproveita o ícone que já existe no HTML
+      const icon = successOverlay.querySelector(".success-animation-icon");
+
+      burst.appendChild(conf);
+      if (icon) burst.appendChild(icon);
+
+      successOverlay.innerHTML = "";
+      successOverlay.appendChild(burst);
+    }
+    return burst;
+  }
+
+  // ✅ confete minimalista (pouco + curto + 3s)
+  function spawnConfetti() {
+    const burst = ensureSuccessDOM();
+    if (!burst) return;
+
+    const conf = burst.querySelector(".success-confetti");
+    if (!conf) return;
+
+    conf.innerHTML = "";
+
+    const colors = ["#58b947", "#49b7a7", "#e4b93c", "#e25555"];
+    const pieces = 14; // ✅ poucos
+
+    for (let i = 0; i < pieces; i++) {
+      const p = document.createElement("i");
+
+      // metade retângulo, metade bolinha
+      if (Math.random() < 0.45) p.classList.add("dot");
+
+      const c = colors[(Math.random() * colors.length) | 0];
+      const rot = Math.floor(Math.random() * 180) - 90;
+
+      // deslocamento curto (só em volta do check)
+      const x = Math.floor(Math.random() * 120) - 60;     // -60..60
+      const y = -Math.floor(Math.random() * 90 + 55);     // -55..-145 (subindo)
+
+      // delay pequeno para dar “estouro” natural
+      const d = Math.floor(Math.random() * 220);          // 0..220ms
+
+      p.style.setProperty("--c", c);
+      p.style.setProperty("--rot", `${rot}deg`);
+      p.style.setProperty("--x", `${x}px`);
+      p.style.setProperty("--y", `${y}px`);
+      p.style.setProperty("--d", `${d}ms`);
+
+      conf.appendChild(p);
+    }
+  }
+
+  function showSuccess({ sound = "success" } = {}) {
     if (!successOverlay) return;
 
-    // ✅ garante restart da animação CSS (reflow)
+    // ✅ reinicia animação sempre
     successOverlay.classList.remove("hidden-screen");
     successOverlay.classList.remove("visible");
-    // força reflow pra reiniciar keyframes sempre
+    // reflow
     // eslint-disable-next-line no-unused-expressions
     successOverlay.offsetHeight;
+
+    spawnConfetti();
     successOverlay.classList.add("visible");
 
     if (sound === "money") play(sfxMoney || sfxSuccess);
@@ -247,7 +290,7 @@ function showEvaluationScreen(stageIndex) {
 }
 
 /* =========================================================================
-   TRANSIÇÕES PRINCIPAIS
+   TRANSIÇÕES
 ======================================================================== */
 function unlockAudioOnce() {
   if (isAudioUnlocked) return;
@@ -280,10 +323,7 @@ function startSuccessTransition(codeInputs, correctCode) {
     return;
   }
 
-  // ✅ animação: confete minimalista atrás do sucesso + fade (3s)
   uiUX.showSuccess({ sound: "success" });
-
-  // trava inputs pra evitar disparo duplo
   codeInputs.forEach(i => (i.disabled = true));
 
   setTimeout(() => {
@@ -293,7 +333,6 @@ function startSuccessTransition(codeInputs, correctCode) {
     safeAddHidden(document.getElementById("codeScreen"));
     uiUX.showQrLoader();
 
-    // simula consulta e avança para avaliação
     setTimeout(() => {
       uiUX.hideQrLoader();
       showEvaluationScreen(currentStage);
@@ -306,10 +345,7 @@ function startSuccessTransition(codeInputs, correctCode) {
 function advanceFunnel(voteValue) {
   clearCountdown();
 
-  // ✅ sucesso ao votar (som dinheiro se existir)
   uiUX.showSuccess({ sound: "money" });
-
-  // atualiza saldo/progresso enquanto anima
   updateState(currentStage);
 
   setTimeout(() => {
@@ -338,17 +374,14 @@ function advanceFunnel(voteValue) {
 }
 
 /* =========================================================================
-   INIT ÚNICO (sem duplicar listeners)
+   INIT
 ======================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-  // saldo inicial
   const saldoEl = document.getElementById("currentSaldo");
   if (saldoEl) saldoEl.textContent = formatCurrency(currentSaldo);
 
-  // progresso inicial
   updateProgressIndicator(-1);
 
-  // watchdog anti-travamento no “PROCURANDO…”
   const watchdog = setTimeout(() => {
     const loading = document.getElementById("loadingScreen");
     const code = document.getElementById("codeScreen");
@@ -358,54 +391,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }, loadingDuration + 1400);
 
-  // mantém o loading inicial (PROCURANDO VALORES PARA SAQUE)
   setTimeout(() => {
     updateProgressIndicator(0);
     showCodeScreen(funnelStages[0]);
     clearTimeout(watchdog);
   }, loadingDuration);
 
-  // desbloqueio de áudio
   const firstInput = $('#codeInputArea input[data-index="0"]');
   if (firstInput) firstInput.addEventListener("input", unlockAudioOnce, { once: true });
   document.addEventListener("click", unlockAudioOnce, { once: true });
 
-  // inputs do código
   const codeInputs = $$("#codeScreen .input-square");
   codeInputs.forEach((input, idx) => {
     input.addEventListener("input", (e) => {
       e.target.value = (e.target.value || "").toUpperCase();
 
       if (e.target.value.length === 1) {
-        if (idx < codeInputs.length - 1) {
-          codeInputs[idx + 1].focus();
-        } else {
-          startSuccessTransition(codeInputs, funnelStages[currentStage].code);
-        }
+        if (idx < codeInputs.length - 1) codeInputs[idx + 1].focus();
+        else startSuccessTransition(codeInputs, funnelStages[currentStage].code);
       }
     });
 
     input.addEventListener("keydown", (e) => {
-      if (e.key === "Backspace" && !e.target.value && idx > 0) {
-        codeInputs[idx - 1].focus();
-      }
+      if (e.key === "Backspace" && !e.target.value && idx > 0) codeInputs[idx - 1].focus();
     });
   });
 
-  // botões de avaliação
   const opinionButtons = $$("#evaluationScreen .opinion-buttons .opinion-button");
   opinionButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       opinionButtons.forEach(b => (b.disabled = true));
-
       const vote = btn.getAttribute("data-vote");
       advanceFunnel(vote);
-
       setTimeout(() => opinionButtons.forEach(b => (b.disabled = false)), animationDuration + 200);
     });
   });
 
-  // botão final
   const watchVideoButton = document.getElementById("watchVideoButton");
   if (watchVideoButton) {
     watchVideoButton.addEventListener("click", () => {
@@ -416,14 +437,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // prender histórico (1x)
   const urlDestino = "../back1";
   try {
     history.replaceState({ locked: true }, "", location.href);
     history.pushState({ locked: true, ghost: true }, "", location.href);
-
-    window.addEventListener("popstate", () => {
-      window.location.replace(urlDestino);
-    });
+    window.addEventListener("popstate", () => window.location.replace(urlDestino));
   } catch (_) {}
 });
