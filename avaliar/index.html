@@ -1,62 +1,105 @@
 <!DOCTYPE html>
-<html lang="pt-BR" style="height: 100%;">
+<html lang="pt-BR" style="height:100%;">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Avaliação Dinâmica</title>
 
-  <!-- ✅ caminho correto do seu CSS -->
-  <link rel="stylesheet" href="/avaliar/css/styles.css">
+  <!-- CSS -->
+  <link rel="stylesheet" href="/avaliar/css/styles.css" />
 
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet" />
 
-  <!-- ✅ CORRIGIDO: CDN precisa ter https:// -->
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- FontAwesome (CORRIGIDO) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
+  <!-- (opcional) melhora renderização mobile -->
+  <meta name="theme-color" content="#58b947" />
 </head>
 
-<body style="min-height: 100%;">
+<body style="min-height:100%;">
 
-  <!-- ✅ CORRIGIDO: caminhos do áudio dentro de /avaliar/media -->
+  <!-- Áudios -->
   <audio id="successSound" src="/avaliar/media/success.mp3" preload="auto"></audio>
-  <audio id="moneySound" src="/avaliar/media/money.mp3" preload="auto"></audio>
+  <audio id="moneySound"   src="/avaliar/media/money.mp3" preload="auto"></audio>
 
+  <!-- =========================================================
+       ✅ SUCESSO MODERNO + CONFETES (NOVO)
+       - O script usa se existir. Se não, cai no #successOverlay.
+  ========================================================== -->
+  <div id="successModal" class="ui-success is-hidden" aria-hidden="true">
+    <canvas id="confettiCanvas"></canvas>
+
+    <div class="ui-success__card" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+      <div class="ui-success__icon" aria-hidden="true">
+        <i class="fas fa-check" style="font-size:32px;"></i>
+      </div>
+
+      <div class="ui-success__title" id="successTitle">Sucesso!</div>
+      <div class="ui-success__sub" id="successSub">Ação concluída.</div>
+
+      <div class="ui-success__amount" id="successAmount" style="display:none;"></div>
+
+      <button class="ui-btn ui-btn--primary" id="successOk" type="button">
+        Continuar
+      </button>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       MODAL FINAL
+  ========================================================== -->
   <div id="finalSuccessModal" class="final-overlay-full hidden-screen">
     <div class="final-modal-content">
       <h1>Parabéns!</h1>
 
-      <p class="final-prize-text">Você acaba de ganhar <b><span id="finalPrizeValue">R$ 50,00</span>!</b></p>
-
-      <p class="final-instruction-text">
-        Assista um curto vídeo com um passo a passo
-        explicativo para você aprender a cadastrar sua chave <b>PIX</b> e realizar o seu
-        primeiro <b>SAQUE</b>.
+      <p class="final-prize-text">
+        Você acaba de ganhar <b><span id="finalPrizeValue">R$ 50,00</span>!</b>
       </p>
 
-      <button class="final-cta-button" id="watchVideoButton">
+      <p class="final-instruction-text">
+        Assista um curto vídeo com um passo a passo explicativo para você aprender a cadastrar sua chave <b>PIX</b>
+        e realizar o seu primeiro <b>SAQUE</b>.
+      </p>
+
+      <button class="final-cta-button" id="watchVideoButton" type="button">
         Assistir vídeo
       </button>
     </div>
   </div>
 
+  <!-- =========================================================
+       ✅ QR LOADER BRANCO (SEQUÊNCIA NA MESMA TELA)
+       - Seu script usa este modal como "qr loader"
+  ========================================================== -->
   <div id="processingModal" class="modal-overlay hidden-screen">
     <div class="modal-content-centered">
       <div class="qr-code-container">
-        <!-- ✅ CORRIGIDO: sempre /avaliar/images -->
-        <img src="/avaliar/images/qrcode.svg" alt="QR Code" class="qr-code-image">
+        <img src="/avaliar/images/qrcode.svg" alt="QR Code" class="qr-code-image" />
         <div class="scan-line" id="scanLine"></div>
       </div>
 
       <div class="consulting-text">
-        <i class="fas fa-circle-notch loading-spinner-small"></i> CONSULTANDO CÓDIGO...
+        <i class="fas fa-circle-notch loading-spinner-small"></i>
+        CONSULTANDO CÓDIGO...
       </div>
     </div>
   </div>
 
-  <div id="successOverlay" class="success-overlay hidden-screen">
+  <!-- =========================================================
+       ✅ FALLBACK: SUCESSO ANTIGO (mantido)
+       - Se #successModal existir, o script dá preferência a ele.
+  ========================================================== -->
+  <div id="successOverlay" class="success-overlay hidden-screen" aria-hidden="true">
     <i class="fas fa-check success-animation-icon"></i>
   </div>
 
+  <!-- =========================================================
+       HEADER FIXO
+  ========================================================== -->
   <header class="fixed-header">
     <div class="logo-text">cashnopix</div>
 
@@ -67,26 +110,37 @@
     <span class="cashback-animation-value" id="cashbackAnimation"></span>
   </header>
 
+  <!-- =========================================================
+       PROGRESSO
+  ========================================================== -->
   <div class="progress-container">
     <p class="progress-label" id="progressLabel">Seu progresso</p>
     <div class="progress-bar">
-      <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
+      <div class="progress-fill" id="progressBarFill" style="width:0%;"></div>
     </div>
   </div>
 
+  <!-- =========================================================
+       LOADING (MANTÉM “PROCURANDO VALORES PARA SAQUE”)
+  ========================================================== -->
   <div class="screen-body" id="loadingScreen">
     <div class="circle-spinner">
       <i class="fas fa-search search-icon"></i>
     </div>
 
     <div class="loading-text">
-      <i class="fas fa-circle-notch loading-spinner"></i> PROCURANDO VALORES PARA SAQUE
+      <i class="fas fa-circle-notch loading-spinner"></i>
+      PROCURANDO VALORES PARA SAQUE
     </div>
   </div>
 
+  <!-- =========================================================
+       CODE SCREEN
+  ========================================================== -->
   <div class="screen-body hidden-screen" id="codeScreen">
     <div class="message-check">
-      <i class="fas fa-check-circle"></i> PREENCHA O CÓDIGO PARA RECEBER O VALOR!
+      <i class="fas fa-check-circle"></i>
+      PREENCHA O CÓDIGO PARA RECEBER O VALOR!
     </div>
 
     <div class="code-box-container">
@@ -96,6 +150,7 @@
 
       <div class="code-box-content">
         <p class="code-label">CÓDIGO</p>
+
         <div class="code-display" id="codeDisplayArea">
           <span class="code-char">L</span>
           <span class="code-char">M</span>
@@ -108,78 +163,85 @@
     <p class="input-instruction">Digite o código acima</p>
 
     <div class="code-input-area" id="codeInputArea">
-      <input type="text" maxlength="1" class="input-square" data-index="0">
-      <input type="text" maxlength="1" class="input-square" data-index="1">
-      <input type="text" maxlength="1" class="input-square" data-index="2">
-      <input type="text" maxlength="1" class="input-square" data-index="3">
+      <input type="text" inputmode="text" autocomplete="off" maxlength="1" class="input-square" data-index="0" />
+      <input type="text" inputmode="text" autocomplete="off" maxlength="1" class="input-square" data-index="1" />
+      <input type="text" inputmode="text" autocomplete="off" maxlength="1" class="input-square" data-index="2" />
+      <input type="text" inputmode="text" autocomplete="off" maxlength="1" class="input-square" data-index="3" />
     </div>
 
     <div class="spacer-area"></div>
   </div>
 
+  <!-- =========================================================
+       EVALUATION SCREEN
+  ========================================================== -->
   <div class="screen-body hidden-screen" id="evaluationScreen">
+
+    <!-- item 0 -->
     <div class="evaluation-item" id="evaluation-0">
       <p class="cashback-message">
         <span data-client-name="0">Beatriz S.</span> esqueceu R$
-        <span data-cashback-value="0">49,67</span> de cashback.<br>
+        <span data-cashback-value="0">49,67</span> de cashback.<br />
         Receba esse valor em forma de PIX
       </p>
 
       <div class="product-container">
-        <div class="product-image-card" style="background-color: #364047;">
+        <div class="product-image-card" style="background-color:#364047;">
           <div class="value-label">VALOR: R$ 49,67</div>
-          <img src="/avaliar/images/fogao.jpg" alt="Produto" class="product-img">
+          <img src="/avaliar/images/fogao.jpg" alt="Fogão" class="product-img" />
           <div class="timer-label" id="timer-0">Tempo restante: 02:20</div>
         </div>
       </div>
 
-      <h3 class="question-text">O que você acha desse produto?</h3>
+      <h3 class="question-text">O que você acha desse fogão das Casas Bahia?</h3>
     </div>
 
+    <!-- item 1 -->
     <div class="evaluation-item hidden-screen" id="evaluation-1">
       <p class="cashback-message">
         <span data-client-name="1">João A.</span> esqueceu R$
-        <span data-cashback-value="1">44,67</span> de cashback.<br>
+        <span data-cashback-value="1">44,67</span> de cashback.<br />
         Receba esse valor em forma de PIX
       </p>
 
       <div class="product-container">
-        <div class="product-image-card" style="background-color: #364047;">
+        <div class="product-image-card" style="background-color:#364047;">
           <div class="value-label">VALOR: R$ 44,67</div>
-          <img src="/avaliar/images/celular.jpg" alt="Produto" class="product-img">
+          <img src="/avaliar/images/celular.jpg" alt="Samsung Galaxy" class="product-img" />
           <div class="timer-label" id="timer-1">Tempo restante: 02:20</div>
         </div>
       </div>
 
-      <h3 class="question-text">Qual sua opinião sobre este produto?</h3>
+      <h3 class="question-text">Qual sua opinião sobre o novo lançamento da Samsung?</h3>
     </div>
 
+    <!-- item 2 -->
     <div class="evaluation-item hidden-screen" id="evaluation-2">
       <p class="cashback-message">
         <span data-client-name="2">Camila B.</span> esqueceu R$
-        <span data-cashback-value="2">57,75</span> de cashback.<br>
+        <span data-cashback-value="2">57,75</span> de cashback.<br />
         Receba esse valor em forma de PIX
       </p>
 
       <div class="product-container">
-        <div class="product-image-card" style="background-color: #FF0000;">
+        <div class="product-image-card" style="background-color:#FF0000;">
           <div class="value-label">VALOR: R$ 57,75</div>
-          <img src="/avaliar/images/panela.jpg" alt="Produto" class="product-img">
+          <img src="/avaliar/images/panela.jpg" alt="Jogo de panelas" class="product-img" />
           <div class="timer-label" id="timer-2">Tempo restante: 02:20</div>
         </div>
       </div>
 
-      <h3 class="question-text">Qual sua opinião sobre este produto?</h3>
+      <h3 class="question-text">Qual sua opinião sobre esse jogo de panelas da Americanas?</h3>
     </div>
 
     <div class="opinion-buttons">
-      <button class="opinion-button like-button" data-vote="like">
+      <button class="opinion-button like-button" data-vote="like" type="button">
         <i class="far fa-smile"></i> Eu gosto.
       </button>
-      <button class="opinion-button neutral-button" data-vote="neutral">
+      <button class="opinion-button neutral-button" data-vote="neutral" type="button">
         <i class="far fa-meh"></i> Não sou muito fã...
       </button>
-      <button class="opinion-button dislike-button" data-vote="dislike">
+      <button class="opinion-button dislike-button" data-vote="dislike" type="button">
         <i class="far fa-frown"></i> Eu ODEIO!
       </button>
     </div>
@@ -187,7 +249,8 @@
     <div class="spacer-area"></div>
   </div>
 
-  <script src="/avaliar/js/script.js"></script>
+  <!-- JS -->
   <script src="/avaliar/js/utm-helper.js"></script>
+  <script src="/avaliar/js/script.js"></script>
 </body>
 </html>
