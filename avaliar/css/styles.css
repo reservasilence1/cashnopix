@@ -655,3 +655,136 @@ body{
   transition: opacity .18s ease, transform .22s cubic-bezier(.2,1.2,.2,1);
 }
 
+/* =========================================================
+   SUCCESS: check anima (bounce) e confete sobe separado
+   - check NÃO sobe
+   - confete sobe e some em 3s
+========================================================= */
+
+/* overlay */
+#successOverlay{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 99999;
+  pointer-events: none;
+  background: rgba(17,24,39,.52);
+  backdrop-filter: blur(6px);
+}
+
+#successOverlay.hidden-screen{ display:none !important; }
+
+/* círculo */
+#successOverlay .success-animation-icon{
+  position: relative;
+  width: 128px;
+  height: 128px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: var(--green);
+  box-shadow: 0 22px 70px rgba(0,0,0,.12);
+  isolation: isolate; /* camadas locais */
+  transform: none;    /* evita herdar translate */
+  opacity: 0;
+}
+
+/* CHECK (sempre aparece via SVG) */
+#successOverlay .success-animation-icon::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 56px 56px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
+  opacity: 0;
+}
+
+/* animação do CHECK (bounce) — sem subir */
+@keyframes checkBounce{
+  0%   { transform: scale(.55); opacity: 0; }
+  55%  { transform: scale(1.12); opacity: 1; }
+  78%  { transform: scale(.96); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* dispara check */
+#successOverlay.visible .success-animation-icon{
+  opacity: 1;
+  animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
+}
+#successOverlay.visible .success-animation-icon::after{
+  opacity: 1;
+  animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
+}
+
+/* =========================================================
+   CONFETE MINIMALISTA (atrás do círculo) — sobe e some
+   OBS: só o confete sobe, o check NÃO.
+========================================================= */
+
+#successOverlay .success-animation-icon::before,
+#successOverlay .success-animation-icon span::before{
+  content:"";
+  position:absolute;
+  inset:-46px;        /* área pequena ao redor */
+  z-index:-1;         /* atrás */
+  opacity:0;
+  pointer-events:none;
+  background-repeat:no-repeat;
+  transform: translateY(0) scale(1);
+}
+
+/* camada 1 */
+#successOverlay .success-animation-icon::before{
+  background-image:
+    radial-gradient(circle, #58b947 0 2px, transparent 3px),
+    radial-gradient(circle, #49b7a7 0 2px, transparent 3px),
+    radial-gradient(circle, #e4b93c 0 2px, transparent 3px),
+    radial-gradient(circle, #e25555 0 2px, transparent 3px),
+    linear-gradient(#58b947,#58b947),
+    linear-gradient(#49b7a7,#49b7a7),
+    linear-gradient(#e4b93c,#e4b93c),
+    linear-gradient(#e25555,#e25555);
+  background-size:
+    6px 6px, 6px 6px, 6px 6px, 6px 6px,
+    10px 3px, 10px 3px, 10px 3px, 10px 3px;
+  background-position:
+    18% 70%, 34% 28%, 70% 24%, 78% 62%,
+    22% 44%, 42% 76%, 62% 66%, 74% 40%;
+}
+
+/* camada 2 (bem pouca) — usa span fantasma pra ter outro pseudo */
+#successOverlay .success-animation-icon span{
+  position:absolute;
+  inset:0;
+}
+#successOverlay .success-animation-icon span::before{
+  background-image:
+    radial-gradient(circle, #0ea5e9 0 2px, transparent 3px),
+    radial-gradient(circle, #f97316 0 2px, transparent 3px),
+    linear-gradient(#0ea5e9,#0ea5e9),
+    linear-gradient(#f97316,#f97316);
+  background-size: 6px 6px, 6px 6px, 10px 3px, 10px 3px;
+  background-position: 28% 58%, 68% 56%, 36% 34%, 64% 78%;
+}
+
+/* animação do confete (3s) — sobe e some */
+@keyframes miniConfettiUp{
+  0%   { opacity:0; transform: translateY(10px) scale(.98); filter: blur(.2px); }
+  12%  { opacity:1; }
+  55%  { opacity:.9; transform: translateY(-18px) scale(1); }
+  100% { opacity:0; transform: translateY(-42px) scale(1.02); filter: blur(1px); }
+}
+
+#successOverlay.visible .success-animation-icon::before{
+  animation: miniConfettiUp 3s ease-out forwards;
+}
+#successOverlay.visible .success-animation-icon span::before{
+  animation: miniConfettiUp 3s ease-out forwards;
+  animation-delay: .06s;
+}
+
+
