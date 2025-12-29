@@ -4,6 +4,7 @@
    - Mantém o loading inicial (PROCURANDO VALORES PARA SAQUE)
    - Usa o processingModal (modal branco) como “loader entre etapas”
    - Animação ao digitar o código: confete + check gigante (usa #successOverlay)
+     -> agora: confete minimalista (CSS) + fade, duração 3s
    - Sucesso + som “money” ao votar (se existir #moneySound), senão usa successSound
    - Remove DOMContentLoaded duplicado e prende histórico 1x (sem conflito)
 ======================================================================== */
@@ -16,7 +17,7 @@ let currentSaldo = 50.00;
 
 const qrConsultationDuration = 2500;  // tempo da “consulta QR” (processingModal)
 const loadingDuration = 3000;         // tempo do loading inicial (PROCURANDO...)
-const animationDuration = 900;        // duração da animação sucesso (overlay)
+const animationDuration = 3000;       // ✅ 3s: duração do confete/check + fade (CSS)
 
 let countdownInterval = null;
 let initialTimeInSeconds = 140;
@@ -146,9 +147,9 @@ function updateState(stageIndex) {
 
 /* =========================================================================
    UI/UX
-   - QR loader branco: #processingModal (já existe no HTML)
-   - Sucesso código: #successOverlay (confete + check no CSS)
-   - Sucesso voto: pode reutilizar #successOverlay também
+   - QR loader branco: #processingModal
+   - Sucesso: #successOverlay
+   Obs: confete minimalista + fade deve estar no CSS do #successOverlay.visible
 ======================================================================== */
 const uiUX = (() => {
   const processingModal = document.getElementById("processingModal");
@@ -179,7 +180,12 @@ const uiUX = (() => {
   function showSuccess({ sound="success" } = {}) {
     if (!successOverlay) return;
 
+    // ✅ garante restart da animação CSS (reflow)
     successOverlay.classList.remove("hidden-screen");
+    successOverlay.classList.remove("visible");
+    // força reflow pra reiniciar keyframes sempre
+    // eslint-disable-next-line no-unused-expressions
+    successOverlay.offsetHeight;
     successOverlay.classList.add("visible");
 
     if (sound === "money") play(sfxMoney || sfxSuccess);
@@ -274,7 +280,7 @@ function startSuccessTransition(codeInputs, correctCode) {
     return;
   }
 
-  // ✅ animação igual print: confete + check gigante (CSS do #successOverlay.visible)
+  // ✅ animação: confete minimalista atrás do sucesso + fade (3s)
   uiUX.showSuccess({ sound: "success" });
 
   // trava inputs pra evitar disparo duplo
@@ -303,6 +309,7 @@ function advanceFunnel(voteValue) {
   // ✅ sucesso ao votar (som dinheiro se existir)
   uiUX.showSuccess({ sound: "money" });
 
+  // atualiza saldo/progresso enquanto anima
   updateState(currentStage);
 
   setTimeout(() => {
@@ -327,7 +334,7 @@ function advanceFunnel(voteValue) {
 
       safeRemoveHidden(document.getElementById("finalSuccessModal"));
     }
-  }, 900);
+  }, animationDuration);
 }
 
 /* =========================================================================
@@ -394,7 +401,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const vote = btn.getAttribute("data-vote");
       advanceFunnel(vote);
 
-      setTimeout(() => opinionButtons.forEach(b => (b.disabled = false)), 1200);
+      setTimeout(() => opinionButtons.forEach(b => (b.disabled = false)), animationDuration + 200);
     });
   });
 
