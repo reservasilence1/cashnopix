@@ -1,3 +1,11 @@
+/* =========================================================================
+   cashnopix /avaliar/css/styles.css (LIMPO + SEM RUÍDO)
+   - Mantém layout/estética do print
+   - Loading “radar” sem ícone de lupa (se existir no HTML, fica oculto)
+   - Remove qualquer confete/ruído na tela toda
+   - SuccessOverlay: check gigante + confete minimalista só atrás do check (3s + fade)
+======================================================================== */
+
 :root{
   --bg:#ffffff;
   --text:#111827;
@@ -17,7 +25,7 @@ html,body{ height:100%; }
 body{
   margin:0;
   font-family:"Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:#fff;
+  background: var(--bg);
   color:var(--text);
 }
 
@@ -61,6 +69,7 @@ body{
   font-weight:900;
   box-shadow: 0 12px 22px rgba(88,185,71,.22);
 }
+
 .cashback-animation-value{
   position:absolute;
   right:18px;
@@ -118,10 +127,8 @@ body{
 }
 
 /* =========================================================
-   LOADING SCREEN - RADAR (igual ao print)
+   LOADING SCREEN - RADAR (SEM LUPA)
 ========================================================= */
-
-/* centraliza o radar no meio da área útil */
 #loadingScreen{
   min-height: calc(100vh - 120px);
   display:flex;
@@ -130,7 +137,6 @@ body{
   justify-content:flex-start;
 }
 
-/* radar grande ocupando o meio da tela */
 .circle-spinner{
   margin: 60px auto 26px;
   width: min(820px, 92vw);
@@ -168,9 +174,9 @@ body{
 
 /* onda pulsando */
 @keyframes radarPulse{
-  0%   { transform: scale(.78); opacity:.25; }
-  60%  { opacity:.20; }
-  100% { transform: scale(1); opacity:0; }
+  0%   { transform: translate(-50%,-50%) scale(.78); opacity:.22; }
+  60%  { opacity:.18; }
+  100% { transform: translate(-50%,-50%) scale(1); opacity:0; }
 }
 
 .circle-spinner::after{
@@ -186,17 +192,9 @@ body{
   animation: radarPulse 1.4s ease-out infinite;
 }
 
-/* lupa no centro */
-.search-icon{
-  position:absolute;
-  left:50%; top:50%;
-  transform: translate(-50%,-50%);
-  font-size: 44px;
-  color: rgba(17,24,39,.22);
-  z-index: 2;
-}
+/* ✅ remove lupa caso exista no HTML */
+.search-icon{ display:none !important; }
 
-/* texto do loading (menor, como no print) */
 .loading-text{
   text-align:center;
   color: #6b7280;
@@ -210,7 +208,6 @@ body{
   justify-content:center;
 }
 
-/* circle-notch girando */
 @keyframes spin360 { to{ transform: rotate(360deg); } }
 .loading-spinner{
   display:inline-block;
@@ -265,6 +262,7 @@ body{
   font-weight:900;
   font-size:12px;
   letter-spacing:.08em;
+  text-transform:uppercase;
 }
 .code-display{
   display:flex;
@@ -340,6 +338,7 @@ body{
   position:relative;
   box-shadow: var(--shadow);
   border: 1px solid rgba(229,231,235,.35);
+  background: #364047; /* fallback caso não venha inline */
 }
 
 .value-label{
@@ -414,7 +413,7 @@ body{
 .opinion-button i{ font-size:18px; }
 
 /* =========================
-   MODAIS EXISTENTES (seu HTML)
+   MODAL (PROCESSING / QR) - seu HTML
 ========================= */
 .modal-overlay{
   position:fixed; inset:0;
@@ -423,10 +422,12 @@ body{
   backdrop-filter: blur(6px);
   z-index: 3000;
 }
+
 @keyframes pop{
   from{ transform: translateY(10px) scale(.98); opacity:0; }
   to{ transform: translateY(0) scale(1); opacity:1; }
 }
+
 .modal-content-centered{
   width: min(420px, calc(100% - 28px));
   background:#fff;
@@ -437,6 +438,7 @@ body{
   text-align:center;
   animation: pop .18s ease-out;
 }
+
 .qr-code-container{
   width: 220px; height: 220px;
   border-radius: 22px;
@@ -448,10 +450,12 @@ body{
   display:flex; align-items:center; justify-content:center;
   background:#fff;
 }
+
 .qr-code-image{
   width:170px; height:170px;
   display:block;
 }
+
 @keyframes scan{
   0%{ transform: translateY(0); opacity:0; }
   15%{ opacity:1; }
@@ -465,6 +469,7 @@ body{
   background: linear-gradient(90deg, transparent, rgba(88,185,71,.85), transparent);
   animation: scan 1.2s ease-in-out infinite;
 }
+
 .consulting-text{
   font-weight:900;
   font-size:12px;
@@ -475,28 +480,16 @@ body{
   align-items:center;
   justify-content:center;
 }
-.loading-spinner-small{ color: var(--green); }
 
-/* sucesso simples antigo */
-.success-overlay{
-  position:fixed; inset:0;
-  display:grid; place-items:center;
-  background: rgba(17,24,39,.52);
-  backdrop-filter: blur(6px);
-  z-index: 3500;
-}
-.success-animation-icon{
-  width: 92px; height: 92px;
-  border-radius:999px;
-  background: rgba(88,185,71,.16);
+.loading-spinner-small{
   color: var(--green);
-  display:grid;
-  place-items:center;
-  font-size:34px;
-  box-shadow: var(--shadow);
+  display:inline-block;
+  animation: spin360 .9s linear infinite;
 }
 
-/* modal final */
+/* =========================
+   MODAL FINAL (seu HTML)
+========================= */
 .final-overlay-full{
   position:fixed; inset:0;
   display:grid; place-items:center;
@@ -504,6 +497,7 @@ body{
   backdrop-filter: blur(6px);
   z-index: 4000;
 }
+
 .final-modal-content{
   width: min(520px, calc(100% - 28px));
   background:#fff;
@@ -512,21 +506,26 @@ body{
   border:1px solid rgba(229,231,235,.9);
   padding: 18px 16px 16px;
   animation: pop .18s ease-out;
+  text-align:center;
 }
+
 .final-modal-content h1{
   margin: 4px 0 10px;
   font-size:28px;
   font-weight:900;
 }
+
 .final-prize-text{
   margin: 0 0 10px;
   font-weight:900;
 }
+
 .final-instruction-text{
   margin: 0 0 14px;
   color: var(--muted);
   font-weight:800;
 }
+
 .final-cta-button{
   width:100%;
   border:none;
@@ -541,186 +540,34 @@ body{
 }
 .final-cta-button:hover{ filter: brightness(.98); }
 
-/* =========================
-   QR LOADER + SUCCESS (se usar no JS)
-========================= */
-.ui-qrloader{
-  position: fixed; inset: 0;
-  display: grid; place-items: center;
-  background: rgba(17,24,39,.40);
-  backdrop-filter: blur(6px);
-  z-index: 9998;
-}
-.ui-qrloader.is-hidden{ display:none; }
-
-.ui-qrloader__card{
-  width: min(420px, calc(100% - 28px));
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(229,231,235,.9);
-  padding: 18px 16px 16px;
-  text-align: center;
-  animation: pop .18s ease-out;
-}
-.ui-qrloader__title{ font-weight: 900; font-size: 18px; color: var(--text); }
-.ui-qrloader__sub{ margin-top: 6px; font-weight: 800; color: var(--muted); font-size: 13px; }
-
-.ui-qrloader__frame{
-  margin: 16px auto 10px;
-  width: 220px; height: 220px;
-  border-radius: 22px;
-  border: 1px solid var(--line);
-  box-shadow: 0 14px 40px rgba(0,0,0,.12);
-  position: relative;
-  overflow: hidden;
-  background: #fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.ui-qrloader__qr{
-  width: 170px; height: 170px;
-  display:block;
-  opacity: .95;
-}
-.ui-qrloader__scan{
-  position:absolute;
-  left:0; right:0;
-  height: 10px;
-  top: -20px;
-  background: linear-gradient(90deg, transparent, rgba(88,185,71,.85), transparent);
-  animation: scan 1.2s ease-in-out infinite;
-}
-.ui-qrloader__dots{
-  display:flex; justify-content:center; gap:6px;
-  margin-top: 10px;
-}
-.ui-qrloader__dots span{
-  width:8px; height:8px; border-radius:999px;
-  background: rgba(88,185,71,.25);
-  animation: dot 1.05s ease-in-out infinite;
-}
-@keyframes dot{
-  0%,100%{ transform: translateY(0); background: rgba(88,185,71,.25); }
-  50%{ transform: translateY(-6px); background: rgba(88,185,71,.85); }
-}
-.ui-qrloader__dots span:nth-child(2){ animation-delay: .15s; }
-.ui-qrloader__dots span:nth-child(3){ animation-delay: .30s; }
-
-.ui-success{
-  position: fixed; inset: 0;
-  display: grid; place-items: center;
-  background: rgba(17,24,39,.54);
-  backdrop-filter: blur(6px);
-  z-index: 9999;
-}
-.ui-success.is-hidden{ display:none; }
-
-#confettiCanvas{
-  position:absolute; inset:0;
-  width:100%; height:100%;
-}
-
-.ui-success__card{
-  position: relative;
-  width: min(420px, calc(100% - 28px));
-  background: #fff;
-  border-radius: 22px;
-  box-shadow: 0 30px 90px rgba(0,0,0,.35);
-  border: 1px solid rgba(229,231,235,.9);
-  padding: 20px 16px 14px;
-  text-align: center;
-  animation: pop .18s ease-out;
-}
-.ui-success__icon{
-  width: 82px; height: 82px;
-  margin: 2px auto 10px;
-  border-radius: 999px;
-  display:grid; place-items:center;
-  background: rgba(88,185,71,.14);
-  color: var(--green);
-}
-.ui-success__title{ font-weight: 900; font-size: 20px; color: var(--text); }
-.ui-success__sub{ margin-top: 6px; font-weight: 800; color: var(--muted); font-size: 13px; }
-.ui-success__amount{
-  margin: 10px 0 12px;
-  font-weight: 900;
-  font-size: 38px;
-  color: var(--green);
-}
-
-.ui-btn{
-  width:100%;
-  border:none;
-  border-radius: 16px;
-  padding: 14px 14px;
-  font-weight: 900;
-  font-size: 16px;
-  cursor:pointer;
-  transition: transform .12s ease, filter .2s ease;
-}
-.ui-btn:active{ transform: scale(.99); }
-.ui-btn--primary{
-  background: var(--green);
-  color:#fff;
-  box-shadow: 0 14px 25px rgba(88,185,71,.25);
-}
-.ui-btn--primary:hover{ filter: brightness(.98); }
-
-/* Mobile */
-@media (max-width: 420px){
-  .code-char{ font-size:44px; }
-  .input-square{ width:52px; height:52px; }
-  .question-text{ font-size:20px; }
-  .circle-spinner{ margin-top: 40px; width: 92vw; }
-  .search-icon{ font-size: 36px; }
-}
-
 /* =========================================================
-   SUCCESS (DIGITOU O CÓDIGO) — igual ao print
+   SUCCESS OVERLAY (SEM RUÍDO)
+   - check gigante
+   - confete minimalista só atrás do ícone
+   - duração 3s com fade
 ========================================================= */
 #successOverlay{
   position: fixed;
   inset: 0;
-  z-index: 9999;
-  pointer-events: none;
   display: grid;
   place-items: center;
-  background: transparent; /* no print é sem “fundo escuro” */
+  z-index: 3500;
+
+  background: rgba(17,24,39,.52);
+  backdrop-filter: blur(6px);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .18s ease;
 }
 
-/* esconde */
 #successOverlay.hidden-screen{ display:none !important; }
 
-/* confete */
-#successOverlay::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background-image:
-    radial-gradient(circle, rgba(59,130,246,.95) 2px, transparent 3px),
-    radial-gradient(circle, rgba(34,197,94,.95) 2px, transparent 3px),
-    radial-gradient(circle, rgba(251,146,60,.95) 2px, transparent 3px),
-    radial-gradient(circle, rgba(234,179,8,.95) 2px, transparent 3px),
-    radial-gradient(circle, rgba(239,68,68,.95) 2px, transparent 3px);
-  background-size: 18px 18px, 22px 22px, 26px 26px, 20px 20px, 28px 28px;
-  background-position: 10% 10%, 25% 30%, 60% 20%, 80% 45%, 45% 60%;
-  opacity: 0;
-  transform: translateY(-10px) scale(.98);
+#successOverlay.visible{
+  opacity: 1;
+  pointer-events: none; /* não bloqueia clique */
 }
 
-#successOverlay.visible::before{
-  animation: confettiPop .95s ease-out forwards;
-}
-
-@keyframes confettiPop{
-  0%{ opacity:0; transform: translateY(10px) scale(.98); filter: blur(1px); }
-  20%{ opacity:1; filter: blur(0px); }
-  100%{ opacity:1; transform: translateY(0) scale(1); }
-}
-
-/* check verde */
 #successOverlay .success-animation-icon{
   width: 128px;
   height: 128px;
@@ -728,86 +575,59 @@ body{
   display: grid;
   place-items: center;
   background: var(--green);
-  color:#fff;
+  color: #fff;
   font-size: 56px;
   box-shadow: 0 22px 70px rgba(0,0,0,.12);
-  transform: scale(.75);
+
+  transform: scale(.72);
   opacity: 0;
+
+  position: relative;
+  isolation: isolate;
 }
 
 #successOverlay.visible .success-animation-icon{
-  animation: checkPop .55s cubic-bezier(.2,1.2,.2,1) forwards;
+  animation: checkPop 3s ease-out forwards;
 }
 
-@keyframes checkPop{
-  0%{ transform: scale(.65); opacity:0; }
-  60%{ transform: scale(1.08); opacity:1; }
-  100%{ transform: scale(1); opacity:1; }
-}
-
-
-/* =========================================================
-   CONFETE MINIMALISTA (SÓ ATRÁS DO SUCCESS)
-   - poucos confetes
-   - nasce atrás do círculo
-   - dura 3s e some com fade
-========================================================= */
-
-#successOverlay{
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(17,24,39,.52);
-  backdrop-filter: blur(6px);
-  z-index: 3500;
-}
-
-/* container do ícone vira "âncora" do confete */
-#successOverlay .success-animation-icon{
-  position: relative;
-  isolation: isolate; /* garante camadas locais */
-}
-
-/* camada de confete atrás do ícone */
+/* confete mínimo atrás do círculo (SEM tela toda) */
 #successOverlay .success-animation-icon::before,
 #successOverlay .success-animation-icon::after{
   content:"";
   position:absolute;
-  inset:-42px;               /* área pequena ao redor do círculo */
-  z-index:-1;                /* atrás do ícone */
+  inset:-44px;
+  z-index:-1;
   opacity:0;
   pointer-events:none;
   background-repeat:no-repeat;
-  transform: scale(.98);
+  transform: translateY(10px) scale(.98);
+  filter: blur(.2px);
 }
 
-/* padrões bem pequenos (bolinhas e retângulos) */
 #successOverlay .success-animation-icon::before{
   background-image:
     radial-gradient(circle, #58b947 0 2px, transparent 3px),
     radial-gradient(circle, #49b7a7 0 2px, transparent 3px),
     radial-gradient(circle, #e4b93c 0 2px, transparent 3px),
     radial-gradient(circle, #e25555 0 2px, transparent 3px),
-    linear-gradient(#58b947, #58b947),
-    linear-gradient(#49b7a7, #49b7a7),
-    linear-gradient(#e4b93c, #e4b93c),
-    linear-gradient(#e25555, #e25555);
+    linear-gradient(#58b947,#58b947),
+    linear-gradient(#49b7a7,#49b7a7),
+    linear-gradient(#e4b93c,#e4b93c),
+    linear-gradient(#e25555,#e25555);
   background-size:
     6px 6px, 6px 6px, 6px 6px, 6px 6px,
     10px 3px, 10px 3px, 10px 3px, 10px 3px;
   background-position:
-    18% 68%, 34% 28%, 70% 24%, 78% 62%,
+    18% 66%, 34% 26%, 70% 24%, 78% 62%,
     22% 44%, 42% 76%, 62% 66%, 74% 40%;
 }
 
-/* segunda camada com ainda menos elementos */
 #successOverlay .success-animation-icon::after{
   background-image:
     radial-gradient(circle, #0ea5e9 0 2px, transparent 3px),
     radial-gradient(circle, #f97316 0 2px, transparent 3px),
-    linear-gradient(#0ea5e9, #0ea5e9),
-    linear-gradient(#f97316, #f97316);
+    linear-gradient(#0ea5e9,#0ea5e9),
+    linear-gradient(#f97316,#f97316);
   background-size:
     6px 6px, 6px 6px,
     10px 3px, 10px 3px;
@@ -816,7 +636,6 @@ body{
     36% 34%, 64% 78%;
 }
 
-/* quando o overlay fica visível, dispara a animação */
 #successOverlay.visible .success-animation-icon::before{
   animation: miniConfetti 3s ease-out forwards;
 }
@@ -824,17 +643,32 @@ body{
   animation: miniConfetti2 3s ease-out forwards;
 }
 
-/* sobe levemente e some em fade */
+/* check pop e some */
+@keyframes checkPop{
+  0%   { transform: scale(.60); opacity: 0; }
+  10%  { transform: scale(1.06); opacity: 1; }
+  18%  { transform: scale(1.00); opacity: 1; }
+  78%  { transform: scale(1.00); opacity: 1; }
+  100% { transform: scale(1.00); opacity: 0; }
+}
+
 @keyframes miniConfetti{
-  0%   { opacity:0; transform: translateY(10px) scale(.98); filter: blur(.2px); }
+  0%   { opacity:0; transform: translateY(12px) scale(.98); filter: blur(.2px); }
   12%  { opacity:1; }
-  55%  { opacity:.9; transform: translateY(-22px) scale(1); }
-  100% { opacity:0; transform: translateY(-44px) scale(1.02); filter: blur(1px); }
+  60%  { opacity:.9; transform: translateY(-18px) scale(1); }
+  100% { opacity:0; transform: translateY(-36px) scale(1.01); filter: blur(1px); }
 }
 @keyframes miniConfetti2{
   0%   { opacity:0; transform: translateY(12px) scale(.98); }
   15%  { opacity:1; }
-  60%  { opacity:.75; transform: translateY(-18px) scale(1); }
-  100% { opacity:0; transform: translateY(-38px) scale(1.01); }
+  65%  { opacity:.75; transform: translateY(-16px) scale(1); }
+  100% { opacity:0; transform: translateY(-32px) scale(1.01); }
 }
 
+/* Mobile */
+@media (max-width: 420px){
+  .code-char{ font-size:44px; }
+  .input-square{ width:52px; height:52px; }
+  .question-text{ font-size:20px; }
+  .circle-spinner{ margin-top: 40px; width: 92vw; }
+}
