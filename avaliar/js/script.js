@@ -2,9 +2,9 @@
    cashnopix /avaliar/js/script.js (AJUSTADO)
    - Remove travamento no "PROCURANDO VALORES..."
    - Mantém o loading inicial (PROCURANDO VALORES PARA SAQUE)
-   - Troca o “carregamento verde entre etapas” por QR loader branco (processingModal)
-   - Sucesso moderno com confetes (se existir #successModal/#confettiCanvas) + fallback
-   - Sucesso + som “money” ao votar (se existir áudio money), senão usa successSound
+   - Usa o processingModal (modal branco) como “loader entre etapas”
+   - Animação ao digitar o código: confete + check gigante (usa #successOverlay)
+   - Sucesso + som “money” ao votar (se existir #moneySound), senão usa successSound
    - Remove DOMContentLoaded duplicado e prende histórico 1x (sem conflito)
 ======================================================================== */
 
@@ -14,9 +14,9 @@
 let currentStage = 0;                 // 0..2
 let currentSaldo = 50.00;
 
-const qrConsultationDuration = 2500;  // tempo da “consulta QR” (modal branco)
+const qrConsultationDuration = 2500;  // tempo da “consulta QR” (processingModal)
 const loadingDuration = 3000;         // tempo do loading inicial (PROCURANDO...)
-const animationDuration = 900;        // duração do sucesso (overlay/modal)
+const animationDuration = 900;        // duração da animação sucesso (overlay)
 
 let countdownInterval = null;
 let initialTimeInSeconds = 140;
@@ -145,30 +145,17 @@ function updateState(stageIndex) {
 }
 
 /* =========================================================================
-   UI/UX: QR Loader branco + Sucesso com confetes (com fallback)
-   - QR: usa #processingModal (já existe no seu HTML)
-   - Sucesso: se existir #successModal/#confettiCanvas -> usa confete
-             senão usa #successOverlay (seu overlay antigo)
+   UI/UX
+   - QR loader branco: #processingModal (já existe no HTML)
+   - Sucesso código: #successOverlay (confete + check no CSS)
+   - Sucesso voto: pode reutilizar #successOverlay também
 ======================================================================== */
 const uiUX = (() => {
-  // QR loader branco (seu modal existente)
   const processingModal = document.getElementById("processingModal");
 
-  // Sucesso “novo” (se você já adicionou os IDs do pacote)
-  const successModal   = document.getElementById("successModal");
-  const confettiCanvas = document.getElementById("confettiCanvas");
-  const successTitle   = document.getElementById("successTitle");
-  const successSub     = document.getElementById("successSub");
-  const successAmount  = document.getElementById("successAmount");
-  const successOk      = document.getElementById("successOk");
-
-  // Fallback (seu overlay antigo)
   const successOverlay = document.getElementById("successOverlay");
-  const successIcon    = document.querySelector("#successOverlay .success-animation-icon");
-
-  // Áudios (HTML atual tem successSound; moneySound é opcional)
-  const sfxSuccess = document.getElementById("successSound"); // seu áudio atual
-  const sfxMoney   = document.getElementById("moneySound");   // opcional: /avaliar/media/money.mp3
+  const sfxSuccess = document.getElementById("successSound");
+  const sfxMoney   = document.getElementById("moneySound"); // opcional
 
   function play(audioEl) {
     if (!audioEl) return;
@@ -179,105 +166,6 @@ const uiUX = (() => {
     } catch (_) {}
   }
 
-  // ===== Confetti (se existir canvas) =====
-  let ctx = null;
-  let confetti = [];
-  let raf = null;
-
-  const rand = (min, max) => Math.random() * (max - min) + min;
-
-  function ensureCanvas() {
-    if (!confettiCanvas) return false;
-    if (!ctx) ctx = confettiCanvas.getContext("2d");
-    return !!ctx;
-  }
-
-  function resizeCanvas() {
-    if (!ensureCanvas()) return;
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
-    confettiCanvas.width  = Math.floor(window.innerWidth * dpr);
-    confettiCanvas.height = Math.floor(window.innerHeight * dpr);
-    confettiCanvas.style.width = "100%";
-    confettiCanvas.style.height = "100%";
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function burst() {
-    if (!ensureCanvas()) return;
-    resizeCanvas();
-
-    confetti = [];
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-
-    const cannons = [
-      { x: w * 0.14, y: h * 0.55, dir:  1 },
-      { x: w * 0.86, y: h * 0.55, dir: -1 },
-    ];
-
-    const colors = ["#58b947","#49b7a7","#e4b93c","#e25555","#7c3aed","#0ea5e9","#f97316"];
-
-    cannons.forEach(c => {
-      for (let i=0;i<120;i++){
-        confetti.push({
-          x:c.x, y:c.y,
-          vx: rand(2.5, 8.5) * c.dir,
-          vy: rand(-10, -3),
-          g:  rand(0.18, 0.32),
-          size: rand(4, 8),
-          rot: rand(0, Math.PI*2),
-          vr:  rand(-0.2, 0.2),
-          life: rand(52, 90),
-          color: colors[(Math.random()*colors.length)|0],
-          shape: Math.random() > 0.3 ? "rect" : "dot"
-        });
-      }
-    });
-
-    if (raf) cancelAnimationFrame(raf);
-    loop();
-  }
-
-  function loop() {
-    if (!ensureCanvas()) return;
-    ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-
-    confetti.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.vy += p.g;
-      p.rot += p.vr;
-      p.life--;
-
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-
-      if (p.shape === "rect") {
-        ctx.fillRect(-p.size/2, -p.size/2, p.size*1.2, p.size*0.7);
-      } else {
-        ctx.beginPath();
-        ctx.arc(0,0,p.size*0.45,0,Math.PI*2);
-        ctx.fill();
-      }
-      ctx.restore();
-    });
-
-    confetti = confetti.filter(p => p.life > 0 && p.y < window.innerHeight + 80);
-    if (confetti.length) raf = requestAnimationFrame(loop);
-    else {
-      raf = null;
-      ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
-    }
-  }
-
-  if (confettiCanvas) {
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
-  }
-
-  // ===== API =====
   function showQrLoader() {
     if (!processingModal) return;
     processingModal.classList.remove("hidden-screen");
@@ -288,54 +176,23 @@ const uiUX = (() => {
     processingModal.classList.add("hidden-screen");
   }
 
-  function showSuccess({ title="Sucesso!", sub="Ação concluída.", amount=null, sound="success" } = {}) {
-    // Preferência: modal novo (se existir)
-    if (successModal) {
-      if (successTitle) successTitle.textContent = title;
-      if (successSub) successSub.textContent = sub;
+  function showSuccess({ sound="success" } = {}) {
+    if (!successOverlay) return;
 
-      if (successAmount) {
-        if (amount != null) {
-          successAmount.style.display = "";
-          successAmount.textContent = amount;
-        } else {
-          successAmount.style.display = "none";
-          successAmount.textContent = "";
-        }
-      }
+    successOverlay.classList.remove("hidden-screen");
+    successOverlay.classList.add("visible");
 
-      successModal.classList.remove("is-hidden");
-      burst();
-
-      if (sound === "money") play(sfxMoney || sfxSuccess);
-      else play(sfxSuccess);
-
-      return;
-    }
-
-    // Fallback: overlay antigo (sem confete)
-    if (successOverlay) {
-      successOverlay.classList.remove("hidden-screen");
-      if (sound === "money") play(sfxMoney || sfxSuccess);
-      else play(sfxSuccess);
-
-      // animação opcional (se você tiver CSS)
-      if (successIcon) {
-        successIcon.classList.add("animate");
-        setTimeout(() => successIcon.classList.remove("animate"), 500);
-      }
-      return;
-    }
+    if (sound === "money") play(sfxMoney || sfxSuccess);
+    else play(sfxSuccess);
   }
 
   function hideSuccess() {
-    if (successModal) successModal.classList.add("is-hidden");
-    if (successOverlay) successOverlay.classList.add("hidden-screen");
+    if (!successOverlay) return;
+    successOverlay.classList.remove("visible");
+    successOverlay.classList.add("hidden-screen");
   }
 
-  if (successOk) successOk.addEventListener("click", hideSuccess);
-
-  return { showQrLoader, hideQrLoader, showSuccess, hideSuccess, play };
+  return { showQrLoader, hideQrLoader, showSuccess, hideSuccess };
 })();
 
 /* =========================================================================
@@ -359,21 +216,17 @@ function showCodeScreen(stage) {
 
   updateProgressIndicator(currentStage);
 
-  // garante esconder QR loader se estiver aberto
   uiUX.hideQrLoader();
-
   switchScreen("loadingScreen", "codeScreen");
 }
 
 function showEvaluationScreen(stageIndex) {
   const stage = funnelStages[stageIndex];
 
-  // mostra só o bloco da avaliação atual
   $$("#evaluationScreen .evaluation-item").forEach(el => el.classList.add("hidden-screen"));
   const currentItem = document.getElementById(`evaluation-${stageIndex}`);
   if (currentItem) currentItem.classList.remove("hidden-screen");
 
-  // atualiza texto (nome/valor)
   const clientNameEl = document.querySelector(`[data-client-name="${stageIndex}"]`);
   const cashbackValEl = document.querySelector(`[data-cashback-value="${stageIndex}"]`);
 
@@ -383,7 +236,6 @@ function showEvaluationScreen(stageIndex) {
   }
   if (cashbackValEl) cashbackValEl.textContent = formatCurrency(stage.cashback).replace("R$ ", "");
 
-  // troca tela
   safeAddHidden(document.getElementById("codeScreen"));
   safeRemoveHidden(document.getElementById("evaluationScreen"));
 }
@@ -403,9 +255,7 @@ function unlockAudioOnce() {
         a.pause();
         a.currentTime = 0;
         isAudioUnlocked = true;
-      }).catch(() => {
-        // se não desbloquear aqui, desbloqueia no primeiro clique (ok)
-      });
+      }).catch(() => {});
     } else {
       a.pause();
       a.currentTime = 0;
@@ -424,17 +274,16 @@ function startSuccessTransition(codeInputs, correctCode) {
     return;
   }
 
-  // ✅ Sucesso moderno + confete (e som success)
-  uiUX.showSuccess({
-    title: "Código confirmado!",
-    sub: "Estamos liberando seu cashback…",
-    amount: null,
-    sound: "success"
-  });
+  // ✅ animação igual print: confete + check gigante (CSS do #successOverlay.visible)
+  uiUX.showSuccess({ sound: "success" });
 
-  // fecha sucesso rápido e abre QR loader branco na mesma sequência
+  // trava inputs pra evitar disparo duplo
+  codeInputs.forEach(i => (i.disabled = true));
+
   setTimeout(() => {
     uiUX.hideSuccess();
+    codeInputs.forEach(i => (i.disabled = false));
+
     safeAddHidden(document.getElementById("codeScreen"));
     uiUX.showQrLoader();
 
@@ -451,36 +300,26 @@ function startSuccessTransition(codeInputs, correctCode) {
 function advanceFunnel(voteValue) {
   clearCountdown();
 
-  // ✅ Sucesso moderno + som dinheiro (se existir moneySound)
-  uiUX.showSuccess({
-    title: "Avaliação registrada!",
-    sub: "Você ganhou cashback.",
-    amount: null,
-    sound: "money"
-  });
+  // ✅ sucesso ao votar (som dinheiro se existir)
+  uiUX.showSuccess({ sound: "money" });
 
-  // atualiza saldo/progresso imediatamente (por trás)
   updateState(currentStage);
 
   setTimeout(() => {
     uiUX.hideSuccess();
 
-    // se ainda há próxima etapa
     if (currentStage < funnelStages.length - 1) {
       currentStage++;
 
-      // ✅ entre etapas: QR loader branco (não usa “tela verde”)
       safeAddHidden(document.getElementById("evaluationScreen"));
       uiUX.showQrLoader();
 
       setTimeout(() => {
         uiUX.hideQrLoader();
-        // mostra o próximo código direto (sequência na mesma tela)
         showCodeScreen(funnelStages[currentStage]);
       }, qrConsultationDuration);
 
     } else {
-      // fim do funil
       safeAddHidden(document.getElementById("evaluationScreen"));
 
       const finalPrize = document.getElementById("finalPrizeValue");
@@ -495,35 +334,33 @@ function advanceFunnel(voteValue) {
    INIT ÚNICO (sem duplicar listeners)
 ======================================================================== */
 document.addEventListener("DOMContentLoaded", () => {
-  // estado inicial
+  // saldo inicial
   const saldoEl = document.getElementById("currentSaldo");
   if (saldoEl) saldoEl.textContent = formatCurrency(currentSaldo);
 
+  // progresso inicial
   updateProgressIndicator(-1);
 
-  // garante que a página não fique travada no loading se algo falhar
+  // watchdog anti-travamento no “PROCURANDO…”
   const watchdog = setTimeout(() => {
-    // se ainda estiver no loading, força ir pro primeiro código
     const loading = document.getElementById("loadingScreen");
     const code = document.getElementById("codeScreen");
     if (loading && !loading.classList.contains("hidden-screen") && code && code.classList.contains("hidden-screen")) {
       updateProgressIndicator(0);
       showCodeScreen(funnelStages[0]);
     }
-  }, loadingDuration + 1200);
+  }, loadingDuration + 1400);
 
-  // começa no loading (PROCURANDO VALORES...) e avança para o primeiro código
+  // mantém o loading inicial (PROCURANDO VALORES PARA SAQUE)
   setTimeout(() => {
     updateProgressIndicator(0);
     showCodeScreen(funnelStages[0]);
     clearTimeout(watchdog);
   }, loadingDuration);
 
-  // desbloqueio de áudio: primeira digitação ou clique
+  // desbloqueio de áudio
   const firstInput = $('#codeInputArea input[data-index="0"]');
-  if (firstInput) {
-    firstInput.addEventListener("input", unlockAudioOnce, { once: true });
-  }
+  if (firstInput) firstInput.addEventListener("input", unlockAudioOnce, { once: true });
   document.addEventListener("click", unlockAudioOnce, { once: true });
 
   // inputs do código
@@ -572,7 +409,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // prender histórico (1x, sem duplicar)
+  // prender histórico (1x)
   const urlDestino = "../back1";
   try {
     history.replaceState({ locked: true }, "", location.href);
