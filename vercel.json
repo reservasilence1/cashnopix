@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/f2-d/_next/:path*", "destination": "/_next/:path*" },
+    { "source": "/f2-d/:path*", "destination": "/:path*" }
+  ]
+}
