@@ -56,8 +56,8 @@ body{
   display:flex; align-items:center; justify-content:center;
   background:var(--green);
   color:#fff;
-  border-radius:999px;
-  padding:10px 14px;
+  border-radius:10px;
+  padding:12px 18px;
   font-weight:900;
   box-shadow: 0 12px 22px rgba(88,185,71,.22);
 }
@@ -117,25 +117,91 @@ body{
   margin: 0 auto;
 }
 
-/* Loading screen */
+/* =========================================================
+   LOADING SCREEN - RADAR (igual ao print)
+========================================================= */
+
+/* centraliza o radar no meio da área útil */
+#loadingScreen{
+  min-height: calc(100vh - 120px);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+}
+
+/* radar grande ocupando o meio da tela */
 .circle-spinner{
-  width:86px; height:86px;
+  margin: 60px auto 26px;
+  width: min(820px, 92vw);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at center,
+      rgba(17,24,39,.06) 0%,
+      rgba(17,24,39,.03) 34%,
+      rgba(17,24,39,.02) 60%,
+      rgba(17,24,39,0) 72%);
+  position: relative;
+  overflow: visible;
+}
+
+/* anéis */
+.circle-spinner::before{
+  content:"";
+  position:absolute;
+  inset:0;
   border-radius:999px;
-  background: rgba(88,185,71,.12);
-  margin: 40px auto 18px;
-  display:grid;
-  place-items:center;
-  box-shadow: var(--shadow2);
+  background:
+    radial-gradient(circle at center,
+      rgba(0,0,0,0) 0 17%,
+      rgba(17,24,39,.06) 17% 17.6%,
+      rgba(0,0,0,0) 17.6% 35%,
+      rgba(17,24,39,.08) 35% 35.7%,
+      rgba(0,0,0,0) 35.7% 54%,
+      rgba(17,24,39,.10) 54% 54.8%,
+      rgba(0,0,0,0) 54.8% 73%,
+      rgba(17,24,39,.06) 73% 73.6%,
+      rgba(0,0,0,0) 73.6% 100%);
+  opacity: .85;
 }
+
+/* onda pulsando */
+@keyframes radarPulse{
+  0%   { transform: scale(.78); opacity:.25; }
+  60%  { opacity:.20; }
+  100% { transform: scale(1); opacity:0; }
+}
+
+.circle-spinner::after{
+  content:"";
+  position:absolute;
+  left:50%; top:50%;
+  width: 62%;
+  height: 62%;
+  transform: translate(-50%,-50%) scale(.78);
+  border-radius:999px;
+  border: 2px solid rgba(17,24,39,.10);
+  box-shadow: 0 0 0 1px rgba(17,24,39,.04) inset;
+  animation: radarPulse 1.4s ease-out infinite;
+}
+
+/* lupa no centro */
 .search-icon{
-  color: var(--green);
-  font-size: 26px;
+  position:absolute;
+  left:50%; top:50%;
+  transform: translate(-50%,-50%);
+  font-size: 44px;
+  color: rgba(17,24,39,.22);
+  z-index: 2;
 }
+
+/* texto do loading (menor, como no print) */
 .loading-text{
   text-align:center;
-  color: var(--muted);
+  color: #6b7280;
   font-weight:900;
-  letter-spacing:.06em;
+  letter-spacing:.08em;
   text-transform:uppercase;
   font-size:12px;
   display:flex;
@@ -143,8 +209,13 @@ body{
   align-items:center;
   justify-content:center;
 }
+
+/* circle-notch girando */
+@keyframes spin360 { to{ transform: rotate(360deg); } }
 .loading-spinner{
+  display:inline-block;
   color: var(--green);
+  animation: spin360 .9s linear infinite;
 }
 
 /* =========================
@@ -165,7 +236,6 @@ body{
 .message-check i{
   color: var(--green);
   font-size:16px;
-  filter: drop-shadow(0 0 0 rgba(0,0,0,0));
 }
 
 .code-box-container{
@@ -254,13 +324,8 @@ body{
   margin: 6px auto 18px;
   color:#111827;
 }
-.cashback-message span[data-client-name]{
-  font-weight:900;
-}
-.cashback-message span[data-cashback-value]{
-  color: var(--green);
-  font-weight:900;
-}
+.cashback-message span[data-client-name]{ font-weight:900; }
+.cashback-message span[data-cashback-value]{ color: var(--green); font-weight:900; }
 
 .product-container{
   display:flex;
@@ -295,7 +360,7 @@ body{
   width:100%;
   height:auto;
   display:block;
-  margin-top: 36px; /* espaço do value-label */
+  margin-top: 36px;
 }
 
 .timer-label{
@@ -358,6 +423,10 @@ body{
   backdrop-filter: blur(6px);
   z-index: 3000;
 }
+@keyframes pop{
+  from{ transform: translateY(10px) scale(.98); opacity:0; }
+  to{ transform: translateY(0) scale(1); opacity:1; }
+}
 .modal-content-centered{
   width: min(420px, calc(100% - 28px));
   background:#fff;
@@ -383,6 +452,11 @@ body{
   width:170px; height:170px;
   display:block;
 }
+@keyframes scan{
+  0%{ transform: translateY(0); opacity:0; }
+  15%{ opacity:1; }
+  100%{ transform: translateY(240px); opacity:0; }
+}
 .scan-line{
   position:absolute;
   left:0; right:0;
@@ -403,7 +477,7 @@ body{
 }
 .loading-spinner-small{ color: var(--green); }
 
-/* sucesso simples antigo (mantive) */
+/* sucesso simples antigo */
 .success-overlay{
   position:fixed; inset:0;
   display:grid; place-items:center;
@@ -468,7 +542,7 @@ body{
 .final-cta-button:hover{ filter: brightness(.98); }
 
 /* =========================
-   ===== QR LOADER (o que você colou) =====
+   QR LOADER + SUCCESS (se usar no JS)
 ========================= */
 .ui-qrloader{
   position: fixed; inset: 0;
@@ -527,10 +601,13 @@ body{
   background: rgba(88,185,71,.25);
   animation: dot 1.05s ease-in-out infinite;
 }
+@keyframes dot{
+  0%,100%{ transform: translateY(0); background: rgba(88,185,71,.25); }
+  50%{ transform: translateY(-6px); background: rgba(88,185,71,.85); }
+}
 .ui-qrloader__dots span:nth-child(2){ animation-delay: .15s; }
 .ui-qrloader__dots span:nth-child(3){ animation-delay: .30s; }
 
-/* ===== SUCCESS MODAL + CONFETTI (o que você colou) ===== */
 .ui-success{
   position: fixed; inset: 0;
   display: grid; place-items: center;
@@ -573,7 +650,6 @@ body{
   color: var(--green);
 }
 
-/* ===== Buttons (o que você colou) ===== */
 .ui-btn{
   width:100%;
   border:none;
@@ -597,89 +673,6 @@ body{
   .code-char{ font-size:44px; }
   .input-square{ width:52px; height:52px; }
   .question-text{ font-size:20px; }
+  .circle-spinner{ margin-top: 40px; width: 92vw; }
+  .search-icon{ font-size: 36px; }
 }
-
-/* =========================================================
-   LOADING (PROCURANDO VALORES PARA SAQUE) - versão original
-   Mantém o MESMO layout atual, só devolve a animação.
-========================================================= */
-
-/* rotação do ícone */
-@keyframes spin360{
-  to { transform: rotate(360deg); }
-}
-
-/* “respiração” do círculo (bem sutil) */
-@keyframes softPulse{
-  0%,100% { transform: scale(1); box-shadow: var(--shadow2); }
-  50%     { transform: scale(1.03); box-shadow: 0 18px 55px rgba(0,0,0,.14); }
-}
-
-/* mantém seu círculo exatamente igual, só anima */
-.circle-spinner{
-  animation: softPulse 1.35s ease-in-out infinite;
-}
-
-/* mantém seu ícone de lupa igual */
-.search-icon{
-  transform: translateZ(0);
-}
-
-/* ✅ aqui é o ponto: faz o "carregando" girar igual ao original */
-.loading-spinner{
-  animation: spin360 .9s linear infinite;
-  display: inline-block; /* garante rotação correta */
-  transform-origin: 50% 50%;
-}
-
-/* opcional: deixa o texto do loading mais “vivo”, igual sensação do original */
-.loading-text{
-  opacity: .95;
-}
-
-/* =========================================================
-   LOADING "PROCURANDO VALORES PARA SAQUE" (igual o original)
-   - Sem lupa
-   - Só o circle-notch girando (estilo splash antigo)
-========================================================= */
-
-/* remove o “spinner” com lupa da versão nova */
-#loadingScreen .circle-spinner{
-  display: none !important;
-}
-
-/* garante o mesmo clima do original: texto central e ícone girando */
-#loadingScreen{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: calc(100vh - 120px); /* respeita header+progress do seu layout */
-}
-
-/* ícone girando igual ao antigo (sem depender de fa-spin) */
-@keyframes spin360 { to { transform: rotate(360deg); } }
-
-#loadingScreen .loading-spinner{
-  display: inline-block;
-  animation: spin360 .9s linear infinite;
-  transform-origin: 50% 50%;
-}
-
-/* deixa bem parecido com o original (texto em caps + espaçamento) */
-#loadingScreen .loading-text{
-  margin-top: 6px;
-  font-size: 12px;
-  letter-spacing: .08em;
-  font-weight: 900;
-  text-transform: uppercase;
-  gap: 10px;
-}
-
-/* opcional: deixa o ponto/ícone no mesmo verde do seu tema */
-#loadingScreen .loading-spinner{
-  color: var(--green);
-}
-
-
-
