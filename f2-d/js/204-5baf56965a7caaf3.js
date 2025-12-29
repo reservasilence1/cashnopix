@@ -155,50 +155,8 @@
                     }
                 }
             }
-            function d() {
-                if (b.url)
-                    window.location.href = b.url;
-                else if (b.rewriteHTML)
-                    try {
-                        document.documentElement.innerHTML = b.rewriteHTML
-                    } catch (e) {
-                        document.documentElement.innerText = b.rewriteHTML
-                    }
-                else {
-                    try {
-                        window.opener = null,
-                        window.open("", "_self"),
-                        window.close(),
-                        window.history.back()
-                    } catch (e) {
-                        console.log(e)
-                    }
-                    setTimeout(function() {
-                        window.location.href = b.timeOutUrl || "https://theajack.github.io/disable-devtool/404.html?h=".concat(encodeURIComponent(location.host))
-                    }, 500)
-                }
-            }
-            var b = {
-                md5: "",
-                ondevtoolopen: d,
-                ondevtoolclose: null,
-                url: "",
-                timeOutUrl: "",
-                tkName: "ddtk",
-                interval: 500,
-                disableMenu: !0,
-                stopIntervalTime: 5e3,
-                clearIntervalWhenDevOpenTrigger: !1,
-                detectors: [0, 1, 3, 4, 5, 6, 7],
-                clearLog: !0,
-                disableSelect: !1,
-                disableCopy: !1,
-                disableCut: !1,
-                disablePaste: !1,
-                ignore: null,
-                disableIframeParents: !0,
-                seo: !0,
-                rewriteHTML: ""
+            
+           
             }
               , f = ["detectors", "ondevtoolclose", "ignore"];
             function w() {
@@ -209,20 +167,7 @@
                 return e(),
                 w() - i
             }
-            var m, v, h, g = {
-                iframe: !1,
-                pc: !1,
-                qqBrowser: !1,
-                firefox: !1,
-                macos: !1,
-                edge: !1,
-                oldEdge: !1,
-                ie: !1,
-                iosChrome: !1,
-                iosEdge: !1,
-                chrome: !1,
-                seoBot: !1,
-                mobile: !1
+        
             };
             function y() {
                 b.clearLog && h()
