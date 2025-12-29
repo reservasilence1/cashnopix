@@ -787,4 +787,114 @@ body{
   animation-delay: .06s;
 }
 
+/* =========================================================
+   SUCESSO AO AVALIAR (POPUP DO PRINT)
+========================================================= */
+.vote-success{
+  position: fixed;
+  inset: 0;
+  z-index: 99990;
+  display: grid;
+  place-items: center;
+  background: rgba(17,24,39,.52);
+  backdrop-filter: blur(6px);
+  padding: 18px;
+}
+
+.vote-success.hidden-screen{ display:none !important; }
+
+.vote-success__card{
+  width: min(520px, calc(100% - 28px));
+  background:#fff;
+  border-radius: 22px;
+  box-shadow: 0 30px 90px rgba(0,0,0,.35);
+  border: 1px solid rgba(229,231,235,.9);
+  padding: 24px 18px 18px;
+  text-align:center;
+  animation: votePop .22s ease-out;
+}
+
+@keyframes votePop{
+  from{ transform: translateY(10px) scale(.98); opacity:0; }
+  to{ transform: translateY(0) scale(1); opacity:1; }
+}
+
+/* ícone (círculo verde com check) */
+.vote-success__icon{
+  width: 120px;
+  height: 120px;
+  border-radius: 999px;
+  margin: 2px auto 12px;
+  background: rgba(88,185,71,.18);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+/* círculo interno verde */
+.vote-success__icon::before{
+  content:"";
+  width: 96px;
+  height: 96px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 18px 45px rgba(0,0,0,.12);
+  display:block;
+  transform: scale(.85);
+  opacity: 0;
+  animation: iconBounce .55s cubic-bezier(.2,1.2,.2,1) forwards;
+}
+
+/* check branco em SVG */
+.vote-success__icon::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 56px 56px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
+  transform: scale(.85);
+  opacity: 0;
+  animation: iconBounce .55s cubic-bezier(.2,1.2,.2,1) forwards;
+}
+
+@keyframes iconBounce{
+  0%   { transform: scale(.55); opacity:0; }
+  60%  { transform: scale(1.08); opacity:1; }
+  100% { transform: scale(1); opacity:1; }
+}
+
+.vote-success__title{
+  margin: 6px 0 6px;
+  font-size: 34px;
+  line-height: 1.05;
+  font-weight: 900;
+  color: #111827;
+}
+
+.vote-success__sub{
+  margin: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.vote-success__amount{
+  margin: 10px 0 0;
+  font-size: 56px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--green);
+}
+
+/* mobile */
+@media (max-width: 420px){
+  .vote-success__title{ font-size: 30px; }
+  .vote-success__sub{ font-size: 18px; }
+  .vote-success__amount{ font-size: 48px; }
+}
+
+
+
 
