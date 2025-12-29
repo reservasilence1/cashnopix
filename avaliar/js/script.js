@@ -1,5 +1,5 @@
 /* =========================================================================
-   cashnopix /avaliar/js/script.js (AJUSTADO - confete minimalista 3s)
+   cashnopix /avaliar/js/script.js (2 POPUPS: código + avaliar)
 ======================================================================== */
 
 let currentStage = 0;
@@ -7,7 +7,9 @@ let currentSaldo = 50.0;
 
 const qrConsultationDuration = 2500;
 const loadingDuration = 3000;
-const animationDuration = 3000; // ✅ 3s
+
+const codeSuccessDuration = 900;   // popup 1 (código digitado)
+const voteSuccessDuration = 1800;  // popup 2 (avaliar) parecido com print
 
 let countdownInterval = null;
 let initialTimeInSeconds = 140;
@@ -17,7 +19,7 @@ let isAudioUnlocked = false;
 
 const funnelStages = [
   { name: "Avaliação 1", client: "Beatriz S.", cashback: 49.67, code: "LMNO", htmlId: "evaluation-0" },
-  { name: "Avaliação 2", client: "João A.", cashback: 44.67, code: "BCFG", htmlId: "evaluation-1" },
+  { name: "Avaliação 2", client: "João A.",   cashback: 44.67, code: "BCFG", htmlId: "evaluation-1" },
   { name: "Avaliação 3", client: "Camila B.", cashback: 57.75, code: "XYZA", htmlId: "evaluation-2" }
 ];
 
@@ -127,7 +129,7 @@ function updateState(stageIndex) {
 }
 
 /* =========================================================================
-   UI/UX (confete minimalista + check fixo)
+   UI/UX
 ======================================================================== */
 const uiUX = (() => {
   const processingModal = document.getElementById("processingModal");
@@ -155,53 +157,37 @@ const uiUX = (() => {
     processingModal.classList.add("hidden-screen");
   }
 
-  // ✅ cria estrutura do overlay sem estourar o HTML (e sem sumir com o ícone)
-  function ensureSuccessDOM() {
+  /* ---------- POPUP 1: sucesso do código (confete minimalista) ---------- */
+  function ensureCodeSuccessDOM() {
     if (!successOverlay) return null;
 
+    // já existe?
     let burst = successOverlay.querySelector(".success-burst");
+    if (burst) return burst;
+
+    // reaproveita qualquer ícone existente, senão cria
     let icon = successOverlay.querySelector(".success-animation-icon");
-
-    if (!burst) {
-      burst = document.createElement("div");
-      burst.className = "success-burst";
-
-      const conf = document.createElement("div");
-      conf.className = "success-confetti";
-
-      // garante que o ícone existe
-      if (!icon) {
-        icon = document.createElement("i");
-        icon.className = "fas fa-check success-animation-icon";
-      }
-
-      burst.appendChild(conf);
-      burst.appendChild(icon);
-
-      // limpa e monta a estrutura final
-      successOverlay.innerHTML = "";
-      successOverlay.appendChild(burst);
-    } else {
-      // se já existe, garante que conf+icon existam
-      let conf = burst.querySelector(".success-confetti");
-      if (!conf) {
-        conf = document.createElement("div");
-        conf.className = "success-confetti";
-        burst.prepend(conf);
-      }
-      if (!icon) {
-        icon = document.createElement("i");
-        icon.className = "fas fa-check success-animation-icon";
-        burst.appendChild(icon);
-      }
+    if (!icon) {
+      icon = document.createElement("div");
+      icon.className = "success-animation-icon";
     }
+
+    const conf = document.createElement("div");
+    conf.className = "success-confetti";
+
+    burst = document.createElement("div");
+    burst.className = "success-burst";
+    burst.appendChild(conf);
+    burst.appendChild(icon);
+
+    successOverlay.innerHTML = "";
+    successOverlay.appendChild(burst);
 
     return burst;
   }
 
-  // ✅ confete minimalista (pouco, atrás do check, 3s)
-  function spawnConfetti() {
-    const burst = ensureSuccessDOM();
+  function spawnMinimalConfetti() {
+    const burst = ensureCodeSuccessDOM();
     if (!burst) return;
 
     const conf = burst.querySelector(".success-confetti");
@@ -209,24 +195,19 @@ const uiUX = (() => {
 
     conf.innerHTML = "";
 
-    const colors = ["#58b947", "#49b7a7", "#e4b93c", "#e25555", "#0ea5e9", "#f97316"];
-    const pieces = 14; // ✅ poucos (minimal)
+    const colors = ["#58b947", "#49b7a7", "#e4b93c", "#e25555"];
+    const pieces = 14;
 
     for (let i = 0; i < pieces; i++) {
       const p = document.createElement("i");
-
-      // metade bolinha, metade retângulo
       if (Math.random() < 0.45) p.classList.add("dot");
 
       const c = colors[(Math.random() * colors.length) | 0];
       const rot = Math.floor(Math.random() * 180) - 90;
 
-      // deslocamento curto (só em volta do check)
-      const x = Math.floor(Math.random() * 120) - 60; // -60..60
-      const y = -Math.floor(Math.random() * 90 + 55); // -55..-145 (subindo)
-
-      // delay curto
-      const d = Math.floor(Math.random() * 220); // 0..220ms
+      const x = Math.floor(Math.random() * 120) - 60;
+      const y = -Math.floor(Math.random() * 90 + 55);
+      const d = Math.floor(Math.random() * 220);
 
       p.style.setProperty("--c", c);
       p.style.setProperty("--rot", `${rot}deg`);
@@ -238,33 +219,71 @@ const uiUX = (() => {
     }
   }
 
-  function showSuccess({ sound = "success" } = {}) {
+  function showCodeSuccess() {
     if (!successOverlay) return;
 
-    ensureSuccessDOM();
-
-    // ✅ reinicia animações sem duplicar nem bug de “subir”
+    // reinicia
     successOverlay.classList.remove("hidden-screen");
     successOverlay.classList.remove("visible");
-    // força reflow
-    // eslint-disable-next-line no-unused-expressions
-    successOverlay.offsetHeight;
+    // reflow
+    void successOverlay.offsetHeight;
 
-    spawnConfetti();
-
+    spawnMinimalConfetti();
     successOverlay.classList.add("visible");
 
-    if (sound === "money") play(sfxMoney || sfxSuccess);
-    else play(sfxSuccess);
+    play(sfxSuccess);
   }
 
-  function hideSuccess() {
+  function hideCodeSuccess() {
     if (!successOverlay) return;
     successOverlay.classList.remove("visible");
     successOverlay.classList.add("hidden-screen");
   }
 
-  return { showQrLoader, hideQrLoader, showSuccess, hideSuccess };
+  /* ---------- POPUP 2: sucesso ao avaliar (print) ---------- */
+  function ensureVoteSuccessDOM() {
+    let wrap = document.querySelector(".vote-success");
+    if (wrap) return wrap;
+
+    wrap = document.createElement("div");
+    wrap.className = "vote-success hidden-screen";
+
+    wrap.innerHTML = `
+      <div class="vote-success__card" role="dialog" aria-modal="true">
+        <div class="vote-success__icon" aria-hidden="true"></div>
+        <div class="vote-success__title">Saldo atualizado!</div>
+        <div class="vote-success__sub">Você recebeu:</div>
+        <div class="vote-success__amount" id="voteSuccessAmount">R$ 0,00</div>
+      </div>
+    `;
+
+    document.body.appendChild(wrap);
+    return wrap;
+  }
+
+  function showVoteSuccess(amountStr) {
+    const wrap = ensureVoteSuccessDOM();
+    const amountEl = wrap.querySelector("#voteSuccessAmount");
+    if (amountEl) amountEl.textContent = amountStr;
+
+    wrap.classList.remove("hidden-screen");
+    play(sfxMoney || sfxSuccess);
+  }
+
+  function hideVoteSuccess() {
+    const wrap = document.querySelector(".vote-success");
+    if (!wrap) return;
+    wrap.classList.add("hidden-screen");
+  }
+
+  return {
+    showQrLoader,
+    hideQrLoader,
+    showCodeSuccess,
+    hideCodeSuccess,
+    showVoteSuccess,
+    hideVoteSuccess
+  };
 })();
 
 /* =========================================================================
@@ -346,11 +365,11 @@ function startSuccessTransition(codeInputs, correctCode) {
     return;
   }
 
-  uiUX.showSuccess({ sound: "success" });
+  uiUX.showCodeSuccess();
   codeInputs.forEach(i => (i.disabled = true));
 
   setTimeout(() => {
-    uiUX.hideSuccess();
+    uiUX.hideCodeSuccess();
     codeInputs.forEach(i => (i.disabled = false));
 
     safeAddHidden(document.getElementById("codeScreen"));
@@ -362,17 +381,20 @@ function startSuccessTransition(codeInputs, correctCode) {
       startCountdown(currentStage);
     }, qrConsultationDuration);
 
-  }, animationDuration);
+  }, codeSuccessDuration);
 }
 
 function advanceFunnel(voteValue) {
   clearCountdown();
 
-  uiUX.showSuccess({ sound: "money" });
+  // POPUP 2 (print)
+  const received = formatCurrency(funnelStages[currentStage].cashback);
+  uiUX.showVoteSuccess(received);
+
   updateState(currentStage);
 
   setTimeout(() => {
-    uiUX.hideSuccess();
+    uiUX.hideVoteSuccess();
 
     if (currentStage < funnelStages.length - 1) {
       currentStage++;
@@ -393,7 +415,7 @@ function advanceFunnel(voteValue) {
 
       safeRemoveHidden(document.getElementById("finalSuccessModal"));
     }
-  }, animationDuration);
+  }, voteSuccessDuration);
 }
 
 /* =========================================================================
@@ -446,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
       opinionButtons.forEach(b => (b.disabled = true));
       const vote = btn.getAttribute("data-vote");
       advanceFunnel(vote);
-      setTimeout(() => opinionButtons.forEach(b => (b.disabled = false)), animationDuration + 200);
+      setTimeout(() => opinionButtons.forEach(b => (b.disabled = false)), voteSuccessDuration + 150);
     });
   });
 
