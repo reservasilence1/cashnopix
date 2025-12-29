@@ -746,3 +746,95 @@ body{
 }
 
 
+/* =========================================================
+   CONFETE MINIMALISTA (SÓ ATRÁS DO SUCCESS)
+   - poucos confetes
+   - nasce atrás do círculo
+   - dura 3s e some com fade
+========================================================= */
+
+#successOverlay{
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(17,24,39,.52);
+  backdrop-filter: blur(6px);
+  z-index: 3500;
+}
+
+/* container do ícone vira "âncora" do confete */
+#successOverlay .success-animation-icon{
+  position: relative;
+  isolation: isolate; /* garante camadas locais */
+}
+
+/* camada de confete atrás do ícone */
+#successOverlay .success-animation-icon::before,
+#successOverlay .success-animation-icon::after{
+  content:"";
+  position:absolute;
+  inset:-42px;               /* área pequena ao redor do círculo */
+  z-index:-1;                /* atrás do ícone */
+  opacity:0;
+  pointer-events:none;
+  background-repeat:no-repeat;
+  transform: scale(.98);
+}
+
+/* padrões bem pequenos (bolinhas e retângulos) */
+#successOverlay .success-animation-icon::before{
+  background-image:
+    radial-gradient(circle, #58b947 0 2px, transparent 3px),
+    radial-gradient(circle, #49b7a7 0 2px, transparent 3px),
+    radial-gradient(circle, #e4b93c 0 2px, transparent 3px),
+    radial-gradient(circle, #e25555 0 2px, transparent 3px),
+    linear-gradient(#58b947, #58b947),
+    linear-gradient(#49b7a7, #49b7a7),
+    linear-gradient(#e4b93c, #e4b93c),
+    linear-gradient(#e25555, #e25555);
+  background-size:
+    6px 6px, 6px 6px, 6px 6px, 6px 6px,
+    10px 3px, 10px 3px, 10px 3px, 10px 3px;
+  background-position:
+    18% 68%, 34% 28%, 70% 24%, 78% 62%,
+    22% 44%, 42% 76%, 62% 66%, 74% 40%;
+}
+
+/* segunda camada com ainda menos elementos */
+#successOverlay .success-animation-icon::after{
+  background-image:
+    radial-gradient(circle, #0ea5e9 0 2px, transparent 3px),
+    radial-gradient(circle, #f97316 0 2px, transparent 3px),
+    linear-gradient(#0ea5e9, #0ea5e9),
+    linear-gradient(#f97316, #f97316);
+  background-size:
+    6px 6px, 6px 6px,
+    10px 3px, 10px 3px;
+  background-position:
+    28% 58%, 68% 56%,
+    36% 34%, 64% 78%;
+}
+
+/* quando o overlay fica visível, dispara a animação */
+#successOverlay.visible .success-animation-icon::before{
+  animation: miniConfetti 3s ease-out forwards;
+}
+#successOverlay.visible .success-animation-icon::after{
+  animation: miniConfetti2 3s ease-out forwards;
+}
+
+/* sobe levemente e some em fade */
+@keyframes miniConfetti{
+  0%   { opacity:0; transform: translateY(10px) scale(.98); filter: blur(.2px); }
+  12%  { opacity:1; }
+  55%  { opacity:.9; transform: translateY(-22px) scale(1); }
+  100% { opacity:0; transform: translateY(-44px) scale(1.02); filter: blur(1px); }
+}
+@keyframes miniConfetti2{
+  0%   { opacity:0; transform: translateY(12px) scale(.98); }
+  15%  { opacity:1; }
+  60%  { opacity:.75; transform: translateY(-18px) scale(1); }
+  100% { opacity:0; transform: translateY(-38px) scale(1.01); }
+}
+
