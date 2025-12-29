@@ -637,3 +637,49 @@ body{
   opacity: .95;
 }
 
+/* =========================================================
+   LOADING "PROCURANDO VALORES PARA SAQUE" (igual o original)
+   - Sem lupa
+   - Só o circle-notch girando (estilo splash antigo)
+========================================================= */
+
+/* remove o “spinner” com lupa da versão nova */
+#loadingScreen .circle-spinner{
+  display: none !important;
+}
+
+/* garante o mesmo clima do original: texto central e ícone girando */
+#loadingScreen{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px); /* respeita header+progress do seu layout */
+}
+
+/* ícone girando igual ao antigo (sem depender de fa-spin) */
+@keyframes spin360 { to { transform: rotate(360deg); } }
+
+#loadingScreen .loading-spinner{
+  display: inline-block;
+  animation: spin360 .9s linear infinite;
+  transform-origin: 50% 50%;
+}
+
+/* deixa bem parecido com o original (texto em caps + espaçamento) */
+#loadingScreen .loading-text{
+  margin-top: 6px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  font-weight: 900;
+  text-transform: uppercase;
+  gap: 10px;
+}
+
+/* opcional: deixa o ponto/ícone no mesmo verde do seu tema */
+#loadingScreen .loading-spinner{
+  color: var(--green);
+}
+
+
+
