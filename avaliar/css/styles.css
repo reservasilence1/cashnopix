@@ -1,347 +1,148 @@
-/*=====================================
-  CORES E FONTES
-=======================================*/
-:root {
-    --color-green-primary: #44AB4E;
-    --color-green-secondary: #5CBC59;
-    --color-text-dark: #333;
-    --color-text-medium: #555;
-    --color-background-light: white;
-    --color-input-bg: #f0f0f0;
-    --header-height: 55px;
-    --progress-height: 40px;
+:root{
+  --bg:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+
+  --green:#58b947;
+  --green2:#4aa83b;
+
+  --shadow: 0 18px 50px rgba(16, 24, 40, .15);
+  --radius: 18px;
 }
 
-/*=====================================
-  CONFIGURAÇÕES GLOBAIS
-=======================================*/
-/* CRÍTICO: Garante que o HTML e o BODY ocupem toda a viewport para centralização */
-html, body {
-    height: 100%;
+/* ===== QR LOADER ===== */
+.ui-qrloader{
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(17,24,39,.40);
+  backdrop-filter: blur(6px);
+  z-index: 9998;
+}
+.ui-qrloader.is-hidden{ display:none; }
+
+.ui-qrloader__card{
+  width: min(420px, calc(100% - 28px));
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(229,231,235,.9);
+  padding: 18px 16px 16px;
+  text-align: center;
+  animation: pop .18s ease-out;
+}
+.ui-qrloader__title{ font-weight: 900; font-size: 18px; color: var(--text); }
+.ui-qrloader__sub{ margin-top: 6px; font-weight: 800; color: var(--muted); font-size: 13px; }
+
+.ui-qrloader__frame{
+  margin: 16px auto 10px;
+  width: 220px; height: 220px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 40px rgba(0,0,0,.12);
+  position: relative;
+  overflow: hidden;
+  background: #fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.ui-qrloader__qr{
+  width: 170px; height: 170px;
+  display:block;
+  opacity: .95;
+}
+.ui-qrloader__scan{
+  position:absolute;
+  left:0; right:0;
+  height: 10px;
+  top: -20px;
+  background: linear-gradient(90deg, transparent, rgba(88,185,71,.85), transparent);
+  animation: scan 1.2s ease-in-out infinite;
+}
+@keyframes scan{
+  0%{ transform: translateY(0); opacity:0; }
+  15%{ opacity:1; }
+  100%{ transform: translateY(240px); opacity:0; }
+}
+.ui-qrloader__dots{
+  display:flex; justify-content:center; gap:6px;
+  margin-top: 10px;
+}
+.ui-qrloader__dots span{
+  width:8px; height:8px; border-radius:999px;
+  background: rgba(88,185,71,.25);
+  animation: dot 1.05s ease-in-out infinite;
+}
+.ui-qrloader__dots span:nth-child(2){ animation-delay: .15s; }
+.ui-qrloader__dots span:nth-child(3){ animation-delay: .30s; }
+@keyframes dot{
+  0%,100%{ transform: translateY(0); background: rgba(88,185,71,.25); }
+  50%{ transform: translateY(-6px); background: rgba(88,185,71,.85); }
 }
 
-body {
-    font-family: 'Nunito', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: var(--color-background-light);
-    color: var(--color-text-dark);
-    min-height: 100vh;
+/* ===== SUCCESS MODAL + CONFETTI ===== */
+.ui-success{
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(17,24,39,.54);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+}
+.ui-success.is-hidden{ display:none; }
+
+#confettiCanvas{
+  position:absolute; inset:0;
+  width:100%; height:100%;
 }
 
-.hidden-screen {
-    display: none !important; 
+.ui-success__card{
+  position: relative;
+  width: min(420px, calc(100% - 28px));
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 30px 90px rgba(0,0,0,.35);
+  border: 1px solid rgba(229,231,235,.9);
+  padding: 20px 16px 14px;
+  text-align: center;
+  animation: pop .18s ease-out;
+}
+@keyframes pop{
+  from{ transform: translateY(10px) scale(.98); opacity:0; }
+  to{ transform: translateY(0) scale(1); opacity:1; }
+}
+.ui-success__icon{
+  width: 82px; height: 82px;
+  margin: 2px auto 10px;
+  border-radius: 999px;
+  display:grid; place-items:center;
+  background: rgba(88,185,71,.14);
+  color: var(--green);
+}
+.ui-success__title{ font-weight: 900; font-size: 20px; color: var(--text); }
+.ui-success__sub{ margin-top: 6px; font-weight: 800; color: var(--muted); font-size: 13px; }
+.ui-success__amount{
+  margin: 10px 0 12px;
+  font-weight: 900;
+  font-size: 38px;
+  color: var(--green);
 }
 
-/*=====================================
-  CABEÇALHO E PROGRESSO
-=======================================*/
-.fixed-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #eee;
-    background-color: var(--color-background-light);
-    position: sticky; 
-    top: 0;
-    z-index: 10;
+/* ===== Buttons ===== */
+.ui-btn{
+  width:100%;
+  border:none;
+  border-radius: 16px;
+  padding: 14px 14px;
+  font-weight: 900;
+  font-size: 16px;
+  cursor:pointer;
+  transition: transform .12s ease, filter .2s ease;
 }
-
-/* Contêiner para o botão de saldo (simples) */
-.saldo-button-container {
-    position: relative;
-    height: 40px; 
-    display: flex;
-    align-items: center;
+.ui-btn:active{ transform: scale(.99); }
+.ui-btn--primary{
+  background: var(--green);
+  color:#fff;
+  box-shadow: 0 14px 25px rgba(88,185,71,.25);
 }
-
-.logo-text {
-    font-size: 1.2em;
-    font-weight: 700;
-    color: var(--color-green-primary); 
-}
-
-.saldo-button {
-    background-color: var(--color-green-secondary); 
-    color: var(--color-background-light);
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-size: 1em;
-    font-weight: 700;
-}
-
-/* Animação de Saldo (Mantido) */
-.cashback-animation-value {
-    position: absolute;
-    color: var(--color-green-primary);
-    font-size: 1em;
-    font-weight: 700;
-    white-space: nowrap;
-    opacity: 0; 
-    transform: translateY(0) translateX(10px);
-    z-index: 1;
-}
-
-.cashback-animation-value.animate {
-    animation: slideUpCashback 1s ease-out forwards;
-}
-
-@keyframes slideUpCashback {
-    0% { opacity: 0; transform: translateY(10px) translateX(10px); }
-    20% { opacity: 1; transform: translateY(-5px) translateX(10px); }
-    80% { opacity: 1; transform: translateY(-20px) translateX(10px); }
-    100% { opacity: 0; transform: translateY(-30px) translateX(10px); }
-}
-
-
-/* BARRA DE PROGRESSO (Mantido) */
-.progress-container {
-    padding: 0 20px 10px 20px;
-    margin-top: 5px;
-    background-color: var(--color-background-light);
-    position: sticky;
-    top: var(--header-height); 
-    z-index: 9;
-}
-
-.progress-label {
-    font-size: 0.8em;
-    color: var(--color-text-medium);
-    margin-top: 5px;
-    margin-bottom: 0;
-}
-
-.progress-bar {
-    height: 5px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    width: 0%; 
-    background-color: var(--color-green-primary); 
-    transition: width 3s ease-in-out; 
-}
-
-/*=====================================
-  OVERLAYS E MODAIS
-=======================================*/
-
-/* OVERLAY DE SUCESSO (Animação Visto) */
-.success-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-green-primary); 
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0; 
-    transition: opacity 0.3s ease-in-out;
-}
-
-.success-overlay.visible { opacity: 1; }
-.success-animation-icon { font-size: 8em; color: white; transform: scale(0); opacity: 0; }
-.success-animation-icon.animate { animation: growOut 1.2s ease-out forwards; }
-@keyframes growOut {
-    0% { transform: scale(0); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0; }
-}
-
-/* MODAL DE PROCESSAMENTO (QR Code) */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.95);
-    z-index: 500; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content-centered {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-}
-
-/* FINAL MODAL - POP-UP FLUTUANTE CENTRALIZADO E DESLOCADO */
-.final-overlay-full {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%; 
-    background-color: rgba(68, 171, 78, 0.95); /* Fundo semi-transparente verde */
-    z-index: 1500; 
-    /* Centralização robusta com Flexbox */
-    display: flex; 
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    padding: 20px;
-}
-
-.final-modal-content {
-    width: 100%;
-    max-width: 400px;
-    background-color: var(--color-background-light);
-    border-radius: 10px;
-    padding: 40px 30px;
-    text-align: center; 
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    
-    /* DESLOCAMENTO CRÍTICO:
-       1. Posiciona o elemento de forma absoluta (necessário para transform)
-       2. left: 50% move a borda esquerda para o centro.
-       3. transform: translateX move o elemento de volta pela metade (centralizando-o) 
-          e adiciona o deslocamento de -19px para a esquerda. */
-    position: absolute;
-    left: 50%;
-    transform: translateX(calc(-50% - 19px)); 
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-.final-modal-content h1 {
-    font-size: 2.2em;
-    font-weight: 800;
-    margin-bottom: 20px; 
-}
-
-/* Frase de ganho */
-.final-prize-text {
-    font-size: 1.1em; 
-    margin-bottom: 25px;
-    text-align: center; 
-}
-
-.final-prize-text b {
-    color: var(--color-green-primary); 
-    font-weight: 700; 
-}
-
-/* Instruções */
-.final-instruction-text {
-    font-size: 1em;
-    color: var(--color-text-dark); 
-    margin-bottom: 30px;
-    line-height: 1.4;
-    text-align: center; 
-    max-width: 300px; 
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.final-instruction-text b {
-    font-weight: 900;
-}
-
-.final-cta-button {
-    background-color: var(--color-green-secondary); 
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.1em;
-    font-weight: 700;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 90%; 
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s;
-}
-
-.final-cta-button:hover {
-    background-color: #4a9e48;
-}
-
-/*=====================================
-  CONTEÚDO PRINCIPAL (TELAS)
-=======================================*/
-.screen-body {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-bottom: 50px;
-    
-    display: flex; 
-    flex-direction: column;
-    align-items: center; 
-    
-    min-height: calc(100vh - (var(--header-height) + var(--progress-height))); 
-}
-
-/* TELA 1: CARREGAMENTO */
-#loadingScreen { justify-content: center; }
-
-/* TELA 2 e 4 - Layout padrão de formulário/conteúdo */
-#codeScreen, #evaluationScreen {
-    justify-content: flex-start; 
-    padding-top: 50px; 
-    min-height: auto; 
-}
-
-/* --- TELA 1: ANIMAÇÃO DE PESQUISA --- */
-.circle-spinner { position: relative; width: 150px; height: 150px; display: flex; justify-content: center; align-items: center; }
-.search-icon { position: absolute; font-size: 1.5em; color: var(--color-green-primary); z-index: 2; }
-.circle-spinner::before, .circle-spinner::after { content: ''; position: absolute; border: 2px solid rgba(68, 171, 78, 0.2); border-radius: 50%; animation: expand 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-.circle-spinner::before { width: 60px; height: 60px; animation-delay: 0s; }
-.circle-spinner::after { width: 120px; height: 120px; animation-delay: 0.5s; }
-@keyframes expand { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
-.loading-text, .consulting-text { font-size: 1em; font-weight: 700; color: var(--color-text-medium); margin-top: 50px; display: flex; align-items: center; gap: 10px; }
-.consulting-text { margin-top: 0; }
-.loading-spinner, .loading-spinner-small { color: var(--color-text-medium); animation: spin 1.5s linear infinite; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-
-/* --- TELA 2: CÓDIGO --- */
-.message-check { color: var(--color-green-primary); font-size: 0.9em; font-weight: 700; margin-bottom: 25px; }
-.code-box-container { width: 90%; max-width: 300px; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
-.code-box-header { background-color: var(--color-green-secondary); color: var(--color-background-light); padding: 10px; font-size: 1em; font-weight: 700; text-align: center; }
-.code-box-content { background-color: var(--color-background-light); padding: 20px 10px; border: 2px solid #ccc; border-top: none; text-align: center; }
-.code-label { font-weight: 700; font-size: 0.8em; color: var(--color-text-medium); margin-bottom: 10px; }
-.code-display { display: flex; justify-content: space-around; margin-top: 10px; }
-.code-char { font-size: 3em; font-weight: 900; color: var(--color-text-dark); }
-.input-instruction { font-size: 1em; color: var(--color-text-medium); margin-top: 30px; margin-bottom: 15px; }
-.code-input-area { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-.input-square { width: 50px; height: 50px; background-color: var(--color-input-bg); border-radius: 8px; border: 1px solid #ccc; text-align: center; font-size: 1.5em; font-weight: 700; text-transform: uppercase; }
-.spacer-area { height: 48px; margin-bottom: 20px; }
-
-/* --- TELA 3 (Modal): QR CODE SCANNER ANIMAÇÃO --- */
-.qr-code-container { position: relative; width: 250px; height: 250px; margin-bottom: 40px; display: flex; justify-content: center; align-items: center; }
-.qr-code-image { width: 100%; height: 100%; }
-.scan-line { position: absolute; width: 90%; height: 3px; background: red; box-shadow: 0 0 5px red; top: 10%; animation: scan 2s infinite ease-in-out; }
-@keyframes scan { 0% { top: 10%; } 50% { top: 90%; } 100% { top: 10%; } }
-
-/* --- TELA 4: AVALIAÇÃO DE PRODUTO (Estática) --- */
-#evaluationScreen { min-height: auto; }
-.evaluation-item { display: flex; flex-direction: column; align-items: center; width: 100%; }
-.cashback-message { font-size: 1.1em; font-weight: 700; color: var(--color-text-dark); margin-top: 20px; margin-bottom: 25px; text-align: center; }
-.product-container { width: 100%; max-width: 350px; margin-bottom: 30px; }
-.product-image-card { background-color: #364047; border-radius: 10px; position: relative; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);}
-.value-label { background-color: var(--color-green-primary); color: white; font-size: 0.8em; font-weight: 700; padding: 5px 10px; border-radius: 5px; position: absolute; top: 10px; left: 10px; z-index: 5; }
-.product-img { width: 100%; max-height: 230px; object-fit: contain; }
-.timer-label { background-color: #388E3C; color: white; font-size: 0.8em; padding: 3px 8px; border-radius: 5px; position: absolute; bottom: 10px; right: 10px; }
-.question-text { font-size: 1.2em; color: var(--color-text-dark); margin-bottom: 25px; text-align: center; }
-.opinion-buttons { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: 15px; }
-.opinion-button { width: 100%; padding: 15px 20px; border: none; border-radius: 8px; font-size: 1.1em; font-weight: 700; color: white; cursor: pointer; box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15); transition: background-color 0.2s; }
-.like-button { background-color: #00BCD4; }
-.neutral-button { background-color: #FFC107; }
-.dislike-button { background-color: #F44336; }
-
-/* RESPONSIVIDADE BÁSICA */
-@media (max-width: 400px) {
-    .input-square { width: 40px; height: 40px; }
-}
-
+.ui-btn--primary:hover{ filter: brightness(.98); }
