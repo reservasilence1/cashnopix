@@ -24,6 +24,173 @@ const funnelStages = [
     { name: "Avaliação 3", client: "Camila B.", cashback: 57.75, code: "XYZA", htmlId: "evaluation-2" }
 ];
 
+(() => {
+  const successModal = document.getElementById("successModal");
+  const confettiCanvas = document.getElementById("confettiCanvas");
+  const successTitle = document.getElementById("successTitle");
+  const successSub = document.getElementById("successSub");
+  const successAmount = document.getElementById("successAmount");
+  const successOk = document.getElementById("successOk");
+
+  const qrLoader = document.getElementById("qrLoader");
+
+  const sfxSuccess = document.getElementById("sfxSuccess");
+  const sfxMoney = document.getElementById("sfxMoney");
+
+  // ===== Confetti (canvas) =====
+  const ctx = confettiCanvas.getContext("2d");
+  let confetti = [];
+  let raf = null;
+
+  function resize() {
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    confettiCanvas.width = Math.floor(window.innerWidth * dpr);
+    confettiCanvas.height = Math.floor(window.innerHeight * dpr);
+    confettiCanvas.style.width = "100%";
+    confettiCanvas.style.height = "100%";
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  const rand = (min, max) => Math.random() * (max - min) + min;
+
+  function burst() {
+    confetti = [];
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+
+    const cannons = [
+      { x: w * 0.14, y: h * 0.55, dir: 1 },
+      { x: w * 0.86, y: h * 0.55, dir: -1 },
+    ];
+
+    const colors = [
+      "#58b947", "#49b7a7", "#e4b93c", "#e25555",
+      "#7c3aed", "#0ea5e9", "#f97316"
+    ];
+
+    cannons.forEach(c => {
+      for (let i = 0; i < 120; i++) {
+        confetti.push({
+          x: c.x, y: c.y,
+          vx: rand(2.5, 8.5) * c.dir,
+          vy: rand(-10, -3),
+          g: rand(0.18, 0.32),
+          size: rand(4, 8),
+          rot: rand(0, Math.PI * 2),
+          vr: rand(-0.2, 0.2),
+          life: rand(52, 90),
+          color: colors[(Math.random() * colors.length) | 0],
+          shape: Math.random() > 0.3 ? "rect" : "dot"
+        });
+      }
+    });
+
+    if (raf) cancelAnimationFrame(raf);
+    loop();
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    confetti.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.g;
+      p.rot += p.vr;
+      p.life--;
+
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+
+      if (p.shape === "rect") {
+        ctx.fillRect(-p.size / 2, -p.size / 2, p.size * 1.2, p.size * 0.7);
+      } else {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+
+    confetti = confetti.filter(p => p.life > 0 && p.y < window.innerHeight + 80);
+    if (confetti.length) raf = requestAnimationFrame(loop);
+    else { raf = null; ctx.clearRect(0, 0, window.innerWidth, window.innerHeight); }
+  }
+
+  // ===== Helpers =====
+  function play(audioEl) {
+    if (!audioEl) return;
+    try {
+      audioEl.currentTime = 0;
+      audioEl.play();
+    } catch (e) {}
+  }
+
+  // ===== Public API =====
+  window.uiUX = {
+    showQrLoader() {
+      qrLoader?.classList.remove("is-hidden");
+      qrLoader?.setAttribute("aria-hidden", "false");
+    },
+    hideQrLoader() {
+      qrLoader?.classList.add("is-hidden");
+      qrLoader?.setAttribute("aria-hidden", "true");
+    },
+
+    showSuccess({ title="Sucesso!", sub="Ação concluída.", amount=null, sound="success" } = {}) {
+      successTitle.textContent = title;
+      successSub.textContent = sub;
+
+      if (amount != null) {
+        successAmount.style.display = "";
+        successAmount.textContent = amount;
+      } else {
+        successAmount.style.display = "none";
+        successAmount.textContent = "";
+      }
+
+      successModal.classList.remove("is-hidden");
+      successModal.setAttribute("aria-hidden", "false");
+
+      burst();
+
+      if (sound === "money") play(sfxMoney);
+      else if (sound === "success") play(sfxSuccess);
+    },
+
+    hideSuccess() {
+      successModal.classList.add("is-hidden");
+      successModal.setAttribute("aria-hidden", "true");
+    },
+
+    /**
+     * Conecta botões de avaliação (ex.: data-vote) a uma animação de sucesso + som.
+     * Use: uiUX.wireVoteButtons(".opinion-button");
+     */
+    wireVoteButtons(selector) {
+      document.querySelectorAll(selector).forEach(btn => {
+        btn.addEventListener("click", () => {
+          window.uiUX.showSuccess({
+            title: "Avaliação registrada!",
+            sub: "Seu saldo foi atualizado.",
+            amount: null,
+            sound: "money"
+          });
+          setTimeout(() => window.uiUX.hideSuccess(), 900);
+        });
+      });
+    }
+  };
+
+  // Close
+  successOk?.addEventListener("click", () => window.uiUX.hideSuccess());
+})();
+
+
+
 // =========================================================================
 // FUNÇÕES DO CRONÔMETRO (MANTIDAS)
 // =========================================================================
