@@ -1,696 +1,96 @@
-:root{
-  --bg:#ffffff;
-  --text:#111827;
-  --muted:#6b7280;
-  --line:#e5e7eb;
-
-  --green:#58b947;
-  --green2:#4aa83b;
-
-  --shadow: 0 18px 50px rgba(16, 24, 40, .15);
-  --shadow2: 0 14px 40px rgba(0,0,0,.12);
-  --radius: 18px;
-}
-
-*{ box-sizing:border-box; }
-html,body{ height:100%; }
-body{
-  margin:0;
-  font-family:"Nunito", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  background:#fff;
-  color:var(--text);
-  overflow-x:hidden;
-}
-
-.hidden-screen{ display:none !important; }
-
 /* =========================================================
-   SAFETY: se existir “successModal/ confettiCanvas” antigo no HTML,
-   força ficar oculto (evita aparecer texto solto no topo)
+   SUCCESS OVERLAY (código digitado) — LIMPO
+   - check animado (não sobe)
+   - confete minimalista atrás do círculo
+   - duração 3s (controlada pelo JS)
 ========================================================= */
-#successModal,
-#confettiCanvas{
-  display:none !important;
-}
 
-/* =========================================================
-   HEADER (fixo) + SAFE AREA (iPhone)
-========================================================= */
-.fixed-header{
-  position:fixed;
-  top:0; left:0; right:0;
-  height: calc(64px + env(safe-area-inset-top));
-  padding: env(safe-area-inset-top) 18px 0;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  z-index:1000;
-}
-
-.logo-text{
-  font-weight:900;
-  font-size:22px;
-  letter-spacing:-.02em;
-}
-.logo-text::after{
-  content:"pix";
-  color:var(--green);
-  margin-left:2px;
-  font-weight:900;
-}
-
-.saldo-button{
-  display:flex; align-items:center; justify-content:center;
-  background:var(--green);
-  color:#fff;
-  border-radius:12px;
-  padding:12px 18px;
-  font-weight:900;
-  box-shadow: 0 12px 22px rgba(88,185,71,.22);
-}
-
-/* =========================================================
-   PROGRESS (fixo) + SAFE AREA
-========================================================= */
-.progress-container{
-  position:fixed;
-  top: calc(64px + env(safe-area-inset-top));
-  left:0; right:0;
-  padding:12px 18px 10px;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  z-index:999;
-}
-.progress-label{
-  margin:0 0 8px;
-  font-size:12px;
-  color:var(--muted);
-  font-weight:900;
-}
-.progress-bar{
-  height:10px;
-  background:#eef2f7;
-  border-radius:999px;
-  overflow:hidden;
-}
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:var(--green);
-  border-radius:999px;
-  transition: width .45s ease;
-}
-
-/* =========================================================
-   BODY PADDING (respeita header+progress+safe-area)
-========================================================= */
-.screen-body{
-  padding:
-    calc(120px + env(safe-area-inset-top))
-    18px
-    60px;
-  max-width: 860px;
-  margin: 0 auto;
-}
-
-/* =========================================================
-   LOADING SCREEN - RADAR (SEM LUPA)
-========================================================= */
-#loadingScreen{
-  min-height: calc(100vh - (120px + env(safe-area-inset-top)));
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:flex-start;
-}
-
-/* radar grande */
-.circle-spinner{
-  margin: 60px auto 26px;
-  width: min(820px, 92vw);
-  aspect-ratio: 1 / 1;
-  border-radius: 999px;
-  background:
-    radial-gradient(circle at center,
-      rgba(17,24,39,.06) 0%,
-      rgba(17,24,39,.03) 34%,
-      rgba(17,24,39,.02) 60%,
-      rgba(17,24,39,0) 72%);
-  position: relative;
-}
-
-/* anéis */
-.circle-spinner::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  border-radius:999px;
-  background:
-    radial-gradient(circle at center,
-      rgba(0,0,0,0) 0 17%,
-      rgba(17,24,39,.06) 17% 17.6%,
-      rgba(0,0,0,0) 17.6% 35%,
-      rgba(17,24,39,.08) 35% 35.7%,
-      rgba(0,0,0,0) 35.7% 54%,
-      rgba(17,24,39,.10) 54% 54.8%,
-      rgba(0,0,0,0) 54.8% 73%,
-      rgba(17,24,39,.06) 73% 73.6%,
-      rgba(0,0,0,0) 73.6% 100%);
-  opacity: .85;
-}
-
-/* onda pulsando */
-@keyframes radarPulse{
-  0%   { transform: scale(.78); opacity:.25; }
-  60%  { opacity:.18; }
-  100% { transform: scale(1); opacity:0; }
-}
-.circle-spinner::after{
-  content:"";
-  position:absolute;
-  left:50%; top:50%;
-  width: 62%;
-  height: 62%;
-  transform: translate(-50%,-50%) scale(.78);
-  border-radius:999px;
-  border: 2px solid rgba(17,24,39,.10);
-  box-shadow: 0 0 0 1px rgba(17,24,39,.04) inset;
-  animation: radarPulse 1.4s ease-out infinite;
-}
-
-/* remove lupa */
-.search-icon{ display:none !important; }
-
-.loading-text{
-  text-align:center;
-  color: #6b7280;
-  font-weight:900;
-  letter-spacing:.08em;
-  text-transform:uppercase;
-  font-size:12px;
-  display:flex;
-  gap:10px;
-  align-items:center;
-  justify-content:center;
-}
-@keyframes spin360 { to{ transform: rotate(360deg); } }
-.loading-spinner{
-  display:inline-block;
-  color: var(--green);
-  animation: spin360 .9s linear infinite;
-}
-
-/* =========================================================
-   CODE SCREEN
-========================================================= */
-.message-check{
-  display:flex;
-  gap:10px;
-  align-items:center;
-  justify-content:center;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  font-weight:900;
-  font-size:13px;
-  color:#3f3f46;
-  margin: 10px 0 14px;
-}
-.message-check i{
-  color: var(--green);
-  font-size:16px;
-}
-
-.code-box-container{
-  border:1px solid rgba(229,231,235,.9);
-  border-radius: 18px;
-  background:#fff;
-  box-shadow: var(--shadow);
-  overflow:hidden;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.code-box-header{
-  background: var(--green);
-  color:#fff;
-  padding: 12px 14px;
-  font-weight:900;
-  text-align:center;
-}
-
-.code-box-content{
-  padding: 18px 14px 16px;
-  text-align:center;
-}
-.code-label{
-  margin:0 0 10px;
-  font-weight:900;
-  font-size:12px;
-  letter-spacing:.08em;
-}
-.code-display{
-  display:flex;
-  gap:16px;
-  align-items:center;
-  justify-content:center;
-  margin: 8px 0 2px;
-}
-.code-char{
-  font-size:52px;
-  font-weight:900;
-  letter-spacing:.08em;
-}
-
-.input-instruction{
-  text-align:center;
-  font-weight:900;
-  margin: 16px 0 12px;
-  color: #111827;
-}
-
-.code-input-area{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  max-width:520px;
-  margin:0 auto;
-}
-.input-square{
-  width:56px;
-  height:56px;
-  border-radius:14px;
-  border:1px solid var(--line);
-  background:#f9fafb;
-  text-align:center;
-  font-weight:900;
-  font-size:22px;
-  outline:none;
-  text-transform:uppercase;
-  transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
-}
-.input-square:focus{
-  border-color: rgba(88,185,71,.55);
-  box-shadow: 0 0 0 6px rgba(88,185,71,.15);
-  transform: translateY(-1px);
-}
-.spacer-area{ height: 40px; }
-
-/* =========================================================
-   EVALUATION SCREEN
-========================================================= */
-.cashback-message{
-  text-align:center;
-  font-weight:900;
-  line-height:1.35;
-  margin: 6px auto 18px;
-  color:#111827;
-}
-.cashback-message span[data-cashback-value]{ color: var(--green); font-weight:900; }
-
-.product-container{
-  display:flex;
-  justify-content:center;
-  margin: 0 auto 18px;
-}
-
-.product-image-card{
-  width: min(640px, 100%);
-  border-radius: 18px;
-  overflow:hidden;
-  position:relative;
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(229,231,235,.35);
-}
-.value-label{
-  position:absolute;
-  top:0; left:0; right:0;
-  padding: 10px 14px;
-  background: var(--green);
-  color:#fff;
-  font-weight:900;
-  text-align:center;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  font-size:12px;
-  z-index:2;
-}
-.product-img{
-  width:100%;
-  height:auto;
-  display:block;
-  margin-top: 36px;
-}
-.timer-label{
-  position:absolute;
-  right:12px;
-  bottom:12px;
-  background: rgba(17,24,39,.65);
-  color:#fff;
-  font-weight:900;
-  font-size:12px;
-  padding: 8px 10px;
-  border-radius: 999px;
-}
-.question-text{
-  text-align:center;
-  margin: 10px 0 18px;
-  font-size:22px;
-  font-weight:900;
-  letter-spacing:-.01em;
-}
-
-.opinion-buttons{
-  display:flex;
-  flex-direction:column;
-  gap:14px;
-  max-width: 520px;
-  margin: 0 auto;
-}
-.opinion-button{
-  width:100%;
-  border:none;
-  border-radius: 16px;
-  padding: 15px 16px;
-  font-weight:900;
-  font-size:18px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:10px;
-  transition: transform .12s ease, filter .2s ease, box-shadow .2s ease;
-}
-.opinion-button:active{ transform: scale(.99); }
-.like-button{ background:#49b7a7; color:#fff; }
-.neutral-button{ background:#e4b93c; color:#fff; }
-.dislike-button{ background:#e25555; color:#fff; }
-.opinion-button i{ font-size:18px; }
-
-/* =========================================================
-   MODAL QR (processingModal)
-========================================================= */
-.modal-overlay{
-  position:fixed; inset:0;
-  display:grid; place-items:center;
-  background: rgba(17,24,39,.52);
-  backdrop-filter: blur(6px);
-  z-index: 3000;
-}
-@keyframes pop{
-  from{ transform: translateY(10px) scale(.98); opacity:0; }
-  to{ transform: translateY(0) scale(1); opacity:1; }
-}
-.modal-content-centered{
-  width: min(420px, calc(100% - 28px));
-  background:#fff;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  border:1px solid rgba(229,231,235,.9);
-  padding: 18px 16px 16px;
-  text-align:center;
-  animation: pop .18s ease-out;
-}
-.qr-code-container{
-  width: 220px; height: 220px;
-  border-radius: 22px;
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow2);
-  margin: 10px auto 12px;
-  position: relative;
-  overflow:hidden;
-  display:flex; align-items:center; justify-content:center;
-  background:#fff;
-}
-.qr-code-image{
-  width:170px; height:170px;
-  display:block;
-}
-@keyframes scan{
-  0%{ transform: translateY(0); opacity:0; }
-  15%{ opacity:1; }
-  100%{ transform: translateY(240px); opacity:0; }
-}
-.scan-line{
-  position:absolute;
-  left:0; right:0;
-  height:10px;
-  top:-20px;
-  background: linear-gradient(90deg, transparent, rgba(88,185,71,.85), transparent);
-  animation: scan 1.2s ease-in-out infinite;
-}
-.consulting-text{
-  font-weight:900;
-  font-size:12px;
-  letter-spacing:.06em;
-  text-transform:uppercase;
-  color: var(--muted);
-  display:flex; gap:10px;
-  align-items:center;
-  justify-content:center;
-}
-.loading-spinner-small{ color: var(--green); }
-
-/* =========================================================
-   SUCCESS OVERLAY (código digitado)
-   - check gigante
-   - confete minimalista APENAS atrás do círculo
-   - duração 3s com fade-out
-========================================================= */
 #successOverlay{
   position: fixed;
   inset: 0;
-  z-index: 3500;
+  z-index: 99999;
   display: grid;
   place-items: center;
   background: rgba(17,24,39,.52);
   backdrop-filter: blur(6px);
   pointer-events: none;
 }
+
 #successOverlay.hidden-screen{ display:none !important; }
 
+/* JS cria: .success-burst > .success-confetti + .success-animation-icon */
+#successOverlay .success-burst{
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+/* confete container (fica atrás do círculo) */
+#successOverlay .success-confetti{
+  position: absolute;
+  inset: -56px;      /* área pequena ao redor do círculo */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* cada peça (retângulo) */
+#successOverlay .success-confetti i{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--c, #58b947);
+  transform: translate(-50%, -50%) rotate(var(--rot, 0deg));
+  opacity: 0;
+  animation: confettiFly 3s ease-out forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+/* bolinha */
+#successOverlay .success-confetti i.dot{
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+}
+
+/* anima (SÓ o confete sobe) */
+@keyframes confettiFly{
+  0%{
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(0, 10px) rotate(var(--rot,0deg)) scale(.98);
+    filter: blur(.2px);
+  }
+  12%{ opacity: 1; filter: blur(0); }
+  55%{
+    opacity: .9;
+    transform: translate(-50%, -50%) translate(var(--x,0px), var(--y,-90px)) rotate(var(--rot,0deg)) scale(1);
+  }
+  100%{
+    opacity: 0;
+    transform: translate(-50%, -50%) translate(calc(var(--x,0px) * 1.05), calc(var(--y,-90px) * 1.15)) rotate(var(--rot,0deg)) scale(1.02);
+    filter: blur(1px);
+  }
+}
+
+/* círculo do check (fixo, não sobe) */
 #successOverlay .success-animation-icon{
+  position: relative;
+  z-index: 1;
   width: 128px;
   height: 128px;
   border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 22px 70px rgba(0,0,0,.12);
   display: grid;
   place-items: center;
-  background: var(--green);
-  color:#fff;
-  font-size: 56px;
-  box-shadow: 0 22px 70px rgba(0,0,0,.12);
-  transform: scale(.65);
   opacity: 0;
-  position: relative;
+  transform: scale(.65);
   isolation: isolate;
 }
 
-/* POP do check */
-#successOverlay.visible .success-animation-icon{
-  animation: checkPop .55s cubic-bezier(.2,1.2,.2,1) forwards;
-}
-@keyframes checkPop{
-  0%{ transform: scale(.65); opacity:0; }
-  60%{ transform: scale(1.08); opacity:1; }
-  100%{ transform: scale(1); opacity:1; }
-}
-
-/* confete minimalista (poucos pontos/retângulos) atrás do círculo */
-#successOverlay .success-animation-icon::before,
-#successOverlay .success-animation-icon::after{
-  content:"";
-  position:absolute;
-  inset:-44px;
-  z-index:-1;
-  opacity:0;
-  background-repeat:no-repeat;
-  pointer-events:none;
-}
-
-#successOverlay .success-animation-icon::before{
-  background-image:
-    radial-gradient(circle, #58b947 0 2px, transparent 3px),
-    radial-gradient(circle, #49b7a7 0 2px, transparent 3px),
-    radial-gradient(circle, #e4b93c 0 2px, transparent 3px),
-    radial-gradient(circle, #e25555 0 2px, transparent 3px),
-    linear-gradient(#58b947, #58b947),
-    linear-gradient(#49b7a7, #49b7a7),
-    linear-gradient(#e4b93c, #e4b93c),
-    linear-gradient(#e25555, #e25555);
-  background-size:
-    6px 6px, 6px 6px, 6px 6px, 6px 6px,
-    10px 3px, 10px 3px, 10px 3px, 10px 3px;
-  background-position:
-    18% 68%, 34% 28%, 70% 24%, 78% 62%,
-    22% 44%, 42% 76%, 62% 66%, 74% 40%;
-}
-
-#successOverlay .success-animation-icon::after{
-  background-image:
-    radial-gradient(circle, #0ea5e9 0 2px, transparent 3px),
-    radial-gradient(circle, #f97316 0 2px, transparent 3px),
-    linear-gradient(#0ea5e9, #0ea5e9),
-    linear-gradient(#f97316, #f97316);
-  background-size:
-    6px 6px, 6px 6px,
-    10px 3px, 10px 3px;
-  background-position:
-    28% 58%, 68% 56%,
-    36% 34%, 64% 78%;
-}
-
-/* animação: sobe leve e some em 3s */
-#successOverlay.visible .success-animation-icon::before{
-  animation: miniConfetti 3s ease-out forwards;
-}
-#successOverlay.visible .success-animation-icon::after{
-  animation: miniConfetti2 3s ease-out forwards;
-}
-
-@keyframes miniConfetti{
-  0%   { opacity:0; transform: translateY(10px) scale(.98); filter: blur(.2px); }
-  12%  { opacity:1; }
-  55%  { opacity:.9; transform: translateY(-22px) scale(1); }
-  100% { opacity:0; transform: translateY(-44px) scale(1.02); filter: blur(1px); }
-}
-@keyframes miniConfetti2{
-  0%   { opacity:0; transform: translateY(12px) scale(.98); }
-  15%  { opacity:1; }
-  60%  { opacity:.75; transform: translateY(-18px) scale(1); }
-  100% { opacity:0; transform: translateY(-38px) scale(1.01); }
-}
-
-/* =========================================================
-   MODAL FINAL
-========================================================= */
-.final-overlay-full{
-  position:fixed; inset:0;
-  display:grid; place-items:center;
-  background: rgba(17,24,39,.52);
-  backdrop-filter: blur(6px);
-  z-index: 4000;
-}
-.final-modal-content{
-  width: min(520px, calc(100% - 28px));
-  background:#fff;
-  border-radius: 22px;
-  box-shadow: var(--shadow);
-  border:1px solid rgba(229,231,235,.9);
-  padding: 18px 16px 16px;
-  animation: pop .18s ease-out;
-  text-align:center;
-}
-.final-modal-content h1{
-  margin: 4px 0 10px;
-  font-size:28px;
-  font-weight:900;
-}
-.final-prize-text{
-  margin: 0 0 10px;
-  font-weight:900;
-}
-.final-instruction-text{
-  margin: 0 0 14px;
-  color: var(--muted);
-  font-weight:800;
-}
-.final-cta-button{
-  width:100%;
-  border:none;
-  border-radius:16px;
-  padding:14px 14px;
-  background: var(--green);
-  color:#fff;
-  font-weight:900;
-  font-size:16px;
-  cursor:pointer;
-  box-shadow: 0 14px 25px rgba(88,185,71,.25);
-}
-.final-cta-button:hover{ filter: brightness(.98); }
-
-/* Mobile */
-@media (max-width: 420px){
-  .code-char{ font-size:44px; }
-  .input-square{ width:52px; height:52px; }
-  .question-text{ font-size:20px; }
-  .circle-spinner{ margin-top: 40px; width: 92vw; }
-}
-
-/* =========================================================
-   FIX: ícone de sucesso SEM depender do Font Awesome
-========================================================= */
-
-/* garante que o overlay esteja acima e centralizado */
-#successOverlay{
-  z-index: 99999 !important;
-}
-
-/* o círculo */
-#successOverlay .success-animation-icon{
-  position: relative;
-  color: transparent !important; /* evita FA falhar e ficar estranho */
-}
-
-/* desenha um CHECK em SVG via CSS (sempre aparece) */
-#successOverlay .success-animation-icon::marker{ content: ""; } /* noop */
-#successOverlay .success-animation-icon::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  display:block;
-  background-repeat:no-repeat;
-  background-position:center;
-  background-size: 56px 56px;
-  opacity: 0;
-  transform: scale(.92);
-  /* check branco */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
-}
-
-/* quando visible, aparece junto do pop do círculo */
-#successOverlay.visible .success-animation-icon::after{
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity .18s ease, transform .22s cubic-bezier(.2,1.2,.2,1);
-}
-
-/* =========================================================
-   SUCCESS: check anima (bounce) e confete sobe separado
-   - check NÃO sobe
-   - confete sobe e some em 3s
-========================================================= */
-
-/* overlay */
-#successOverlay{
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  z-index: 99999;
-  pointer-events: none;
-  background: rgba(17,24,39,.52);
-  backdrop-filter: blur(6px);
-}
-
-#successOverlay.hidden-screen{ display:none !important; }
-
-/* círculo */
-#successOverlay .success-animation-icon{
-  position: relative;
-  width: 128px;
-  height: 128px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--green);
-  box-shadow: 0 22px 70px rgba(0,0,0,.12);
-  isolation: isolate; /* camadas locais */
-  transform: none;    /* evita herdar translate */
-  opacity: 0;
-}
-
-/* CHECK (sempre aparece via SVG) */
+/* desenha o check SEM depender de FontAwesome */
 #successOverlay .success-animation-icon::after{
   content:"";
   position:absolute;
@@ -700,9 +100,10 @@ body{
   background-size: 56px 56px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
   opacity: 0;
+  transform: scale(.85);
 }
 
-/* animação do CHECK (bounce) — sem subir */
+/* animação do check (bounce) — NÃO sobe */
 @keyframes checkBounce{
   0%   { transform: scale(.55); opacity: 0; }
   55%  { transform: scale(1.12); opacity: 1; }
@@ -710,7 +111,6 @@ body{
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* dispara check */
 #successOverlay.visible .success-animation-icon{
   opacity: 1;
   animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
@@ -720,75 +120,9 @@ body{
   animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
 }
 
-/* =========================================================
-   CONFETE MINIMALISTA (atrás do círculo) — sobe e some
-   OBS: só o confete sobe, o check NÃO.
-========================================================= */
-
-#successOverlay .success-animation-icon::before,
-#successOverlay .success-animation-icon span::before{
-  content:"";
-  position:absolute;
-  inset:-46px;        /* área pequena ao redor */
-  z-index:-1;         /* atrás */
-  opacity:0;
-  pointer-events:none;
-  background-repeat:no-repeat;
-  transform: translateY(0) scale(1);
-}
-
-/* camada 1 */
-#successOverlay .success-animation-icon::before{
-  background-image:
-    radial-gradient(circle, #58b947 0 2px, transparent 3px),
-    radial-gradient(circle, #49b7a7 0 2px, transparent 3px),
-    radial-gradient(circle, #e4b93c 0 2px, transparent 3px),
-    radial-gradient(circle, #e25555 0 2px, transparent 3px),
-    linear-gradient(#58b947,#58b947),
-    linear-gradient(#49b7a7,#49b7a7),
-    linear-gradient(#e4b93c,#e4b93c),
-    linear-gradient(#e25555,#e25555);
-  background-size:
-    6px 6px, 6px 6px, 6px 6px, 6px 6px,
-    10px 3px, 10px 3px, 10px 3px, 10px 3px;
-  background-position:
-    18% 70%, 34% 28%, 70% 24%, 78% 62%,
-    22% 44%, 42% 76%, 62% 66%, 74% 40%;
-}
-
-/* camada 2 (bem pouca) — usa span fantasma pra ter outro pseudo */
-#successOverlay .success-animation-icon span{
-  position:absolute;
-  inset:0;
-}
-#successOverlay .success-animation-icon span::before{
-  background-image:
-    radial-gradient(circle, #0ea5e9 0 2px, transparent 3px),
-    radial-gradient(circle, #f97316 0 2px, transparent 3px),
-    linear-gradient(#0ea5e9,#0ea5e9),
-    linear-gradient(#f97316,#f97316);
-  background-size: 6px 6px, 6px 6px, 10px 3px, 10px 3px;
-  background-position: 28% 58%, 68% 56%, 36% 34%, 64% 78%;
-}
-
-/* animação do confete (3s) — sobe e some */
-@keyframes miniConfettiUp{
-  0%   { opacity:0; transform: translateY(10px) scale(.98); filter: blur(.2px); }
-  12%  { opacity:1; }
-  55%  { opacity:.9; transform: translateY(-18px) scale(1); }
-  100% { opacity:0; transform: translateY(-42px) scale(1.02); filter: blur(1px); }
-}
-
-#successOverlay.visible .success-animation-icon::before{
-  animation: miniConfettiUp 3s ease-out forwards;
-}
-#successOverlay.visible .success-animation-icon span::before{
-  animation: miniConfettiUp 3s ease-out forwards;
-  animation-delay: .06s;
-}
 
 /* =========================================================
-   SUCESSO AO AVALIAR (POPUP DO PRINT)
+   SUCESSO AO AVALIAR (POPUP DO PRINT) — OK
 ========================================================= */
 .vote-success{
   position: fixed;
@@ -800,52 +134,47 @@ body{
   backdrop-filter: blur(6px);
   padding: 18px;
 }
-
 .vote-success.hidden-screen{ display:none !important; }
 
 .vote-success__card{
-  width: min(520px, calc(100% - 28px));
+  width: min(560px, calc(100% - 28px));
   background:#fff;
   border-radius: 22px;
   box-shadow: 0 30px 90px rgba(0,0,0,.35);
   border: 1px solid rgba(229,231,235,.9);
-  padding: 24px 18px 18px;
+  padding: 28px 18px 20px;
   text-align:center;
   animation: votePop .22s ease-out;
 }
-
 @keyframes votePop{
   from{ transform: translateY(10px) scale(.98); opacity:0; }
   to{ transform: translateY(0) scale(1); opacity:1; }
 }
 
-/* ícone (círculo verde com check) */
 .vote-success__icon{
-  width: 120px;
-  height: 120px;
+  width: 128px;
+  height: 128px;
   border-radius: 999px;
-  margin: 2px auto 12px;
+  margin: 2px auto 14px;
   background: rgba(88,185,71,.18);
   display: grid;
   place-items: center;
   position: relative;
 }
 
-/* círculo interno verde */
 .vote-success__icon::before{
   content:"";
-  width: 96px;
-  height: 96px;
+  width: 104px;
+  height: 104px;
   border-radius: 999px;
   background: var(--green);
   box-shadow: 0 18px 45px rgba(0,0,0,.12);
   display:block;
-  transform: scale(.85);
+  transform: scale(.55);
   opacity: 0;
-  animation: iconBounce .55s cubic-bezier(.2,1.2,.2,1) forwards;
+  animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
 }
 
-/* check branco em SVG */
 .vote-success__icon::after{
   content:"";
   position:absolute;
@@ -854,47 +183,34 @@ body{
   background-position:center;
   background-size: 56px 56px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
-  transform: scale(.85);
+  transform: scale(.55);
   opacity: 0;
-  animation: iconBounce .55s cubic-bezier(.2,1.2,.2,1) forwards;
-}
-
-@keyframes iconBounce{
-  0%   { transform: scale(.55); opacity:0; }
-  60%  { transform: scale(1.08); opacity:1; }
-  100% { transform: scale(1); opacity:1; }
+  animation: checkBounce .65s cubic-bezier(.2,1.2,.2,1) forwards;
 }
 
 .vote-success__title{
-  margin: 6px 0 6px;
+  margin: 8px 0 8px;
   font-size: 34px;
   line-height: 1.05;
   font-weight: 900;
   color: #111827;
 }
-
 .vote-success__sub{
   margin: 0;
   font-size: 20px;
   font-weight: 900;
   color: #111827;
 }
-
 .vote-success__amount{
-  margin: 10px 0 0;
+  margin: 12px 0 0;
   font-size: 56px;
   font-weight: 900;
   letter-spacing: -0.02em;
   color: var(--green);
 }
 
-/* mobile */
 @media (max-width: 420px){
   .vote-success__title{ font-size: 30px; }
   .vote-success__sub{ font-size: 18px; }
   .vote-success__amount{ font-size: 48px; }
 }
-
-
-
-
