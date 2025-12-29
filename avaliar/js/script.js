@@ -127,7 +127,7 @@ function updateState(stageIndex) {
 }
 
 /* =========================================================================
-   UI/UX
+   UI/UX (confete minimalista + check fixo)
 ======================================================================== */
 const uiUX = (() => {
   const processingModal = document.getElementById("processingModal");
@@ -155,11 +155,13 @@ const uiUX = (() => {
     processingModal.classList.add("hidden-screen");
   }
 
-  // ✅ cria estrutura do overlay (sem mexer no HTML)
+  // ✅ cria estrutura do overlay sem estourar o HTML (e sem sumir com o ícone)
   function ensureSuccessDOM() {
     if (!successOverlay) return null;
 
     let burst = successOverlay.querySelector(".success-burst");
+    let icon = successOverlay.querySelector(".success-animation-icon");
+
     if (!burst) {
       burst = document.createElement("div");
       burst.className = "success-burst";
@@ -167,19 +169,37 @@ const uiUX = (() => {
       const conf = document.createElement("div");
       conf.className = "success-confetti";
 
-      // reaproveita o ícone que já existe no HTML
-      const icon = successOverlay.querySelector(".success-animation-icon");
+      // garante que o ícone existe
+      if (!icon) {
+        icon = document.createElement("i");
+        icon.className = "fas fa-check success-animation-icon";
+      }
 
       burst.appendChild(conf);
-      if (icon) burst.appendChild(icon);
+      burst.appendChild(icon);
 
+      // limpa e monta a estrutura final
       successOverlay.innerHTML = "";
       successOverlay.appendChild(burst);
+    } else {
+      // se já existe, garante que conf+icon existam
+      let conf = burst.querySelector(".success-confetti");
+      if (!conf) {
+        conf = document.createElement("div");
+        conf.className = "success-confetti";
+        burst.prepend(conf);
+      }
+      if (!icon) {
+        icon = document.createElement("i");
+        icon.className = "fas fa-check success-animation-icon";
+        burst.appendChild(icon);
+      }
     }
+
     return burst;
   }
 
-  // ✅ confete minimalista (pouco + curto + 3s)
+  // ✅ confete minimalista (pouco, atrás do check, 3s)
   function spawnConfetti() {
     const burst = ensureSuccessDOM();
     if (!burst) return;
@@ -189,24 +209,24 @@ const uiUX = (() => {
 
     conf.innerHTML = "";
 
-    const colors = ["#58b947", "#49b7a7", "#e4b93c", "#e25555"];
-    const pieces = 14; // ✅ poucos
+    const colors = ["#58b947", "#49b7a7", "#e4b93c", "#e25555", "#0ea5e9", "#f97316"];
+    const pieces = 14; // ✅ poucos (minimal)
 
     for (let i = 0; i < pieces; i++) {
       const p = document.createElement("i");
 
-      // metade retângulo, metade bolinha
+      // metade bolinha, metade retângulo
       if (Math.random() < 0.45) p.classList.add("dot");
 
       const c = colors[(Math.random() * colors.length) | 0];
       const rot = Math.floor(Math.random() * 180) - 90;
 
       // deslocamento curto (só em volta do check)
-      const x = Math.floor(Math.random() * 120) - 60;     // -60..60
-      const y = -Math.floor(Math.random() * 90 + 55);     // -55..-145 (subindo)
+      const x = Math.floor(Math.random() * 120) - 60; // -60..60
+      const y = -Math.floor(Math.random() * 90 + 55); // -55..-145 (subindo)
 
-      // delay pequeno para dar “estouro” natural
-      const d = Math.floor(Math.random() * 220);          // 0..220ms
+      // delay curto
+      const d = Math.floor(Math.random() * 220); // 0..220ms
 
       p.style.setProperty("--c", c);
       p.style.setProperty("--rot", `${rot}deg`);
@@ -221,14 +241,17 @@ const uiUX = (() => {
   function showSuccess({ sound = "success" } = {}) {
     if (!successOverlay) return;
 
-    // ✅ reinicia animação sempre
+    ensureSuccessDOM();
+
+    // ✅ reinicia animações sem duplicar nem bug de “subir”
     successOverlay.classList.remove("hidden-screen");
     successOverlay.classList.remove("visible");
-    // reflow
+    // força reflow
     // eslint-disable-next-line no-unused-expressions
     successOverlay.offsetHeight;
 
     spawnConfetti();
+
     successOverlay.classList.add("visible");
 
     if (sound === "money") play(sfxMoney || sfxSuccess);
