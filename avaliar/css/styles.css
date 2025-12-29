@@ -616,3 +616,42 @@ body{
   .question-text{ font-size:20px; }
   .circle-spinner{ margin-top: 40px; width: 92vw; }
 }
+
+/* =========================================================
+   FIX: ícone de sucesso SEM depender do Font Awesome
+========================================================= */
+
+/* garante que o overlay esteja acima e centralizado */
+#successOverlay{
+  z-index: 99999 !important;
+}
+
+/* o círculo */
+#successOverlay .success-animation-icon{
+  position: relative;
+  color: transparent !important; /* evita FA falhar e ficar estranho */
+}
+
+/* desenha um CHECK em SVG via CSS (sempre aparece) */
+#successOverlay .success-animation-icon::marker{ content: ""; } /* noop */
+#successOverlay .success-animation-icon::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  display:block;
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size: 56px 56px;
+  opacity: 0;
+  transform: scale(.92);
+  /* check branco */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffffff' d='M9.000 16.200 4.800 12.000 3.400 13.400 9.000 19.000 21.000 7.000 19.600 5.600z'/%3E%3C/svg%3E");
+}
+
+/* quando visible, aparece junto do pop do círculo */
+#successOverlay.visible .success-animation-icon::after{
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity .18s ease, transform .22s cubic-bezier(.2,1.2,.2,1);
+}
+
