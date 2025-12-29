@@ -598,3 +598,42 @@ body{
   .input-square{ width:52px; height:52px; }
   .question-text{ font-size:20px; }
 }
+
+/* =========================================================
+   LOADING (PROCURANDO VALORES PARA SAQUE) - versão original
+   Mantém o MESMO layout atual, só devolve a animação.
+========================================================= */
+
+/* rotação do ícone */
+@keyframes spin360{
+  to { transform: rotate(360deg); }
+}
+
+/* “respiração” do círculo (bem sutil) */
+@keyframes softPulse{
+  0%,100% { transform: scale(1); box-shadow: var(--shadow2); }
+  50%     { transform: scale(1.03); box-shadow: 0 18px 55px rgba(0,0,0,.14); }
+}
+
+/* mantém seu círculo exatamente igual, só anima */
+.circle-spinner{
+  animation: softPulse 1.35s ease-in-out infinite;
+}
+
+/* mantém seu ícone de lupa igual */
+.search-icon{
+  transform: translateZ(0);
+}
+
+/* ✅ aqui é o ponto: faz o "carregando" girar igual ao original */
+.loading-spinner{
+  animation: spin360 .9s linear infinite;
+  display: inline-block; /* garante rotação correta */
+  transform-origin: 50% 50%;
+}
+
+/* opcional: deixa o texto do loading mais “vivo”, igual sensação do original */
+.loading-text{
+  opacity: .95;
+}
+
