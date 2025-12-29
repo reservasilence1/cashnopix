@@ -7,38 +7,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const splashDuration = 3000; // 3s
   const urlDestinoBack = "../back1";
 
+  // Detecta se está na página /avaliar (pra não causar “pisca e volta”)
+  const isAvaliar =
+    window.location.pathname.includes("/avaliar") ||
+    /\/avaliar\/index\.html$/i.test(window.location.pathname);
+
   // ===== 1) Splash -> Modal =====
   const showModal = () => {
     if (splashScreen) splashScreen.style.display = "none";
     if (pageBackground) pageBackground.classList.remove("modal-hidden");
   };
 
-  setTimeout(() => {
-    if (!splashScreen) return showModal();
+  // Se splash/modal não existirem (ex.: página /avaliar), não tenta rodar splash
+  if (splashScreen && pageBackground) {
+    setTimeout(() => {
+      splashScreen.classList.add("fade-out");
 
-    splashScreen.classList.add("fade-out");
+      // Se não houver transição no CSS, transitionend pode não acontecer.
+      // Então usamos fallback para garantir que o modal apareça.
+      let done = false;
 
-    // Se não houver transição no CSS, transitionend pode não acontecer.
-    // Então usamos um fallback para garantir que o modal apareça.
-    let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        showModal();
+      };
 
-    const finish = () => {
-      if (done) return;
-      done = true;
-      showModal();
-    };
+      splashScreen.addEventListener("transitionend", finish, { once: true });
+      setTimeout(finish, 700); // fallback
 
-    splashScreen.addEventListener("transitionend", finish, { once: true });
-    setTimeout(finish, 700); // fallback (ajuste se sua animação for maior/menor)
+    }, splashDuration);
+  } else {
+    // Não existe splash nesta página, garante que o conteúdo visível não fique travado
+    if (splashScreen) splashScreen.style.display = "none";
+    if (pageBackground) pageBackground.classList.remove("modal-hidden");
+  }
 
-  }, splashDuration);
-
-  // ===== 2) Botão Começar -> /avaliar mantendo UTM =====
+  // ===== 2) Botão Começar -> /avaliar/index.html mantendo UTM =====
   if (startButton) {
     startButton.addEventListener("click", () => {
+      // Aponta “certeiro” pro novo avaliar (evita rota cair no antigo)
       const next = new URL("/avaliar/index.html", window.location.origin);
 
-      // prioriza helper de UTM (se existir), senão usa query atual
+      // Prioriza helper de UTM (se existir), senão usa query atual
       const qs = (window.getUTMQS ? window.getUTMQS() : window.location.search);
       if (qs) next.search = qs;
 
@@ -46,16 +57,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // ===== 3) Prender histórico (1x, sem duplicar listeners) =====
-  // Estratégia simples: cria um state e, quando usuário tenta voltar, redireciona.
-  // (SEM duplicar replaceState + pushState + 2 listeners)
-  history.replaceState({ locked: true }, "", location.href);
+  // ===== 3) Prender histórico (SÓ FORA DO /avaliar) =====
+  // Evita que a página de avaliar “pisque” e seja redirecionada por anti-back
+  if (!isAvaliar) {
+    // Estratégia simples: cria um state e, quando usuário tenta voltar, redireciona.
+    history.replaceState({ locked: true }, "", location.href);
 
-  // cria “entrada fantasma”
-  history.pushState({ locked: true, ghost: true }, "", location.href);
+    // cria “entrada fantasma”
+    history.pushState({ locked: true, ghost: true }, "", location.href);
 
-  window.addEventListener("popstate", (event) => {
-    // qualquer tentativa de voltar -> manda pro destino
-    window.location.replace(urlDestinoBack);
-  });
+    window.addEventListener("popstate", () => {
+      window.location.replace(urlDestinoBack);
+    });
+  }
 });
