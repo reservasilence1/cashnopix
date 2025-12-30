@@ -1,355 +1,200 @@
-<!DOCTYPE html>
-<html lang="pt-BR" style="height: 100%;">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avaliação Dinâmica</title>
+Chat, quero apenas 1 uma coisa.
 
-  <link rel="stylesheet" href="/avaliar/css/styles.css">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+Quero que você apenas observe esse codigo: <!DOCTYPE html><html lang="pt-BR" style="height: 100%;"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Dinâmica</title>
+    <link rel="stylesheet" href="/avaliar/css/styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <script>
-    window.pixelId = "695370798f85d4219df79574";
-    var a = document.createElement("script");
-    a.setAttribute("async", "");
-    a.setAttribute("defer", "");
-    a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
-    document.head.appendChild(a);
-  </script>
-  <script
-    src="https://cdn.utmify.com.br/scripts/utms/latest.js"
-    data-utmify-prevent-xcod-sck
-    data-utmify-prevent-subids
-    async
-    defer
-  ></script>
+  window.pixelId = "695370798f85d4219df79574";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script>
+<script
+  src="https://cdn.utmify.com.br/scripts/utms/latest.js"
+  data-utmify-prevent-xcod-sck
+  data-utmify-prevent-subids
+  async
+  defer
+></script>
 
-  <!-- ✅ OVERRIDES: SUCESSO BÁSICO + CONFETE DISCRETO NO CENTRO -->
-  <style>
-    /* overlay transparente */
-    #successOverlay.success-overlay{
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: transparent !important;
-      display: grid;
-      place-items: center;
-      pointer-events: none;
-      opacity: 1; /* quem controla aparecer é hidden-screen */
-    }
-
-    /* círculo básico */
-    .success-simple{
-      width: 120px;
-      height: 120px;
-      border-radius: 999px;
-      background: #fff;
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: 0 14px 34px rgba(0,0,0,.14);
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: visible;
-    }
-
-    /* check básico (centralizado e menor) */
-    #successOverlay .success-animation-icon{
-      font-size: 46px;                /* ✅ básico */
-      line-height: 1;
-      color: #44AB4E !important;      /* ✅ verde do layout */
-      transform: translateY(-1px);
-      opacity: 0;
-    }
-
-    /* animação simples */
-    #successOverlay.visible .success-simple{
-      animation: popIn .28s ease-out forwards;
-    }
-    #successOverlay.visible .success-animation-icon{
-      animation: checkIn .28s ease-out .06s forwards;
-    }
-
-    @keyframes popIn{
-      from { transform: scale(.88); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
-    @keyframes checkIn{
-      from { transform: scale(.85) translateY(-1px); opacity: 0; }
-      to   { transform: scale(1) translateY(-1px); opacity: 1; }
-    }
-
-    /* confete: confinado numa área pequena atrás do círculo */
-    .confetti-center{
-      position:absolute;
-      inset:-18px;
-      border-radius: 999px;
-      overflow:hidden;  /* ✅ não vaza */
-      pointer-events:none;
-    }
-
-    .confetti-piece{
-      position:absolute;
-      width: 8px;
-      height: 12px;
-      border-radius: 3px;
-      opacity: 0;
-      animation: confettiMini .55s ease-out forwards;
-      will-change: transform, opacity;
-    }
-
-    @keyframes confettiMini{
-      0%   { opacity: 0; transform: translate(0,0) rotate(0deg); }
-      15%  { opacity: 1; }
-      100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)); }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      #successOverlay.visible .success-simple,
-      #successOverlay.visible .success-animation-icon,
-      .confetti-piece{
-        animation: none !important;
-        opacity: 1 !important;
-      }
-    }
-  </style>
 </head>
-
 <body style="min-height: 100%;">
+    
+    <audio id="successSound" src="/avaliar/media/success.mp3" preload="auto"></audio>
 
-  <audio id="successSound" src="/avaliar/media/success.mp3" preload="auto"></audio>
+    <div id="finalSuccessModal" class="final-overlay-full hidden-screen">
+        <div class="final-modal-content">
+            <h1>Parabéns!</h1>
+            
+            <p class="final-prize-text">Você acaba de ganhar <b><span id="finalPrizeValue">R$ 50,00</span>!</b></p>
+            
+            <p class="final-instruction-text">
+                Assista um curto vídeo com um passo a passo 
+                explicativo para você aprender a cadastrar sua chave <b>PIX</b> e realizar o seu 
+                primeiro <b>SAQUE</b>.
+            </p>
 
-  <div id="finalSuccessModal" class="final-overlay-full hidden-screen">
-    <div class="final-modal-content">
-      <h1>Parabéns!</h1>
-
-      <p class="final-prize-text">Você acaba de ganhar <b><span id="finalPrizeValue">R$ 50,00</span>!</b></p>
-
-      <p class="final-instruction-text">
-        Assista um curto vídeo com um passo a passo
-        explicativo para você aprender a cadastrar sua chave <b>PIX</b> e realizar o seu
-        primeiro <b>SAQUE</b>.
-      </p>
-
-      <button class="final-cta-button" id="watchVideoButton">
-        Assistir vídeo
-      </button>
-    </div>
-  </div>
-
-  <div id="processingModal" class="modal-overlay hidden-screen">
-    <div class="modal-content-centered">
-      <div class="qr-code-container">
-        <img src="/avaliar/images/qrcode.svg" alt="QR Code de Pagamento" class="qr-code-image">
-        <div class="scan-line" id="scanLine"></div>
-      </div>
-
-      <div class="consulting-text">
-        <i class="fas fa-circle-notch loading-spinner-small"></i> CONSULTANDO CÓDIGO...
-      </div>
-    </div>
-  </div>
-
-  <!-- ✅ SUCCESS OVERLAY (BÁSICO) -->
-  <div id="successOverlay" class="success-overlay hidden-screen" aria-hidden="true">
-    <div class="success-simple" role="status" aria-live="polite">
-      <div class="confetti-center" id="confettiCenter"></div>
-      <i class="fas fa-check success-animation-icon"></i>
-    </div>
-  </div>
-
-  <header class="fixed-header">
-    <div class="logo-text">cashnopix</div>
-
-    <div class="saldo-button" id="currentSaldoContainer">
-      <span id="currentSaldo">R$ 50,00</span>
-    </div>
-    <span class="cashback-animation-value" id="cashbackAnimation"></span>
-  </header>
-
-  <div class="progress-container">
-    <p class="progress-label" id="progressLabel">Seu progresso</p>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
-    </div>
-  </div>
-
-  <div class="screen-body" id="loadingScreen">
-    <div class="circle-spinner">
-      <i class="fas fa-search search-icon"></i>
-    </div>
-
-    <div class="loading-text">
-      <i class="fas fa-circle-notch loading-spinner"></i> PROCURANDO VALORES PARA SAQUE
-    </div>
-  </div>
-
-  <div class="screen-body hidden-screen" id="codeScreen">
-    <div class="message-check">
-      <i class="fas fa-check-circle"></i> PREENCHA O CÓDIGO PARA RECEBER O VALOR!
-    </div>
-
-    <div class="code-box-container">
-      <div class="code-box-header">
-        Valor: <span id="codeBoxHeaderValue">R$ 49,67</span>
-      </div>
-      <div class="code-box-content">
-        <p class="code-label">CÓDIGO</p>
-        <div class="code-display" id="codeDisplayArea">
-          <span class="code-char">L</span>
-          <span class="code-char">M</span>
-          <span class="code-char">N</span>
-          <span class="code-char">O</span>
+            <button class="final-cta-button" id="watchVideoButton">
+                Assistir vídeo
+            </button>
         </div>
-      </div>
     </div>
+    
+    <div id="processingModal" class="modal-overlay hidden-screen">
+        <div class="modal-content-centered">
+            <div class="qr-code-container">
+                <img src="/avaliar/images/qrcode.svg" alt="QR Code de Pagamento" class="qr-code-image">
+                <div class="scan-line" id="scanLine"></div>
+            </div>
 
-    <p class="input-instruction">Digite o código acima</p>
-
-    <div class="code-input-area" id="codeInputArea">
-      <input type="text" maxlength="1" class="input-square" data-index="0">
-      <input type="text" maxlength="1" class="input-square" data-index="1">
-      <input type="text" maxlength="1" class="input-square" data-index="2">
-      <input type="text" maxlength="1" class="input-square" data-index="3">
-    </div>
-
-    <div class="spacer-area"></div>
-  </div>
-
-  <div class="screen-body hidden-screen" id="evaluationScreen">
-
-    <div class="evaluation-item" id="evaluation-0">
-      <p class="cashback-message">
-        <span data-client-name="0">Beatriz S.</span> esqueceu R$
-        <span data-cashback-value="0">49,67</span> de cashback.<br>
-        Receba esse valor em forma de **PIX**
-      </p>
-
-      <div class="product-container">
-        <div class="product-image-card" style="background-color: #364047;">
-          <div class="value-label">VALOR: R$ 49,67</div>
-          <img src="/avaliar/images/fogao.jpg" alt="Fogão" class="product-img">
-          <div class="timer-label" id="timer-0">Tempo restante: 02:20</div>
+            <div class="consulting-text">
+                <i class="fas fa-circle-notch loading-spinner-small"></i> CONSULTANDO CÓDIGO...
+            </div>
         </div>
-      </div>
-
-      <h3 class="question-text">O que você acha desse fogão das Casas Bahia?</h3>
     </div>
 
-    <div class="evaluation-item hidden-screen" id="evaluation-1">
-      <p class="cashback-message">
-        <span data-client-name="1">João A.</span> esqueceu R$
-        <span data-cashback-value="1">44,67</span> de cashback.<br>
-        Receba esse valor em forma de **PIX**
-      </p>
+    <div id="successOverlay" class="success-overlay hidden-screen">
+        <i class="fas fa-check success-animation-icon"></i>
+    </div>
 
-      <div class="product-container">
-        <div class="product-image-card" style="background-color: #364047;">
-          <div class="value-label">VALOR: R$ 44,67</div>
-          <img src="/avaliar/images/celular.jpg" alt="Samsung Galaxy S24 Ultra" class="product-img">
-          <div class="timer-label" id="timer-1">Tempo restante: 02:20</div>
+    <header class="fixed-header">
+        <div class="logo-text">cashnopix</div>
+        
+        <div class="saldo-button" id="currentSaldoContainer">
+            <span id="currentSaldo">R$ 50,00</span>
         </div>
-      </div>
+        <span class="cashback-animation-value" id="cashbackAnimation"></span>
+    </header>
 
-      <h3 class="question-text">Qual sua opinião sobre o novo lançamento da Samsung?</h3>
-    </div>
-
-    <div class="evaluation-item hidden-screen" id="evaluation-2">
-      <p class="cashback-message">
-        <span data-client-name="2">Camila B.</span> esqueceu R$
-        <span data-cashback-value="2">57,75</span> de cashback.<br>
-        Receba esse valor em forma de **PIX**
-      </p>
-
-      <div class="product-container">
-        <div class="product-image-card" style="background-color: #FF0000;">
-          <div class="value-label">VALOR: R$ 57,75</div>
-          <img src="/avaliar/images/panela.jpg" alt="Jogo de Panelas" class="product-img">
-          <div class="timer-label" id="timer-2">Tempo restante: 02:20</div>
+    <div class="progress-container">
+        <p class="progress-label" id="progressLabel">Seu progresso</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
         </div>
-      </div>
-
-      <h3 class="question-text">Qual sua opinião sobre esse jogo de panelas da Americanas?</h3>
     </div>
 
-    <div class="opinion-buttons">
-      <button class="opinion-button like-button" data-vote="like">
-        <i class="far fa-smile"></i> Eu gosto.
-      </button>
-      <button class="opinion-button neutral-button" data-vote="neutral">
-        <i class="far fa-meh"></i> Não sou muito fã...
-      </button>
-      <button class="opinion-button dislike-button" data-vote="dislike">
-        <i class="far fa-frown"></i> Eu ODEIO!
-      </button>
+    <div class="screen-body" id="loadingScreen">
+        
+        <div class="circle-spinner">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="loading-text">
+            <i class="fas fa-circle-notch loading-spinner"></i> PROCURANDO VALORES PARA SAQUE
+        </div>
     </div>
 
-    <div class="spacer-area"></div>
-  </div>
+    <div class="screen-body hidden-screen" id="codeScreen">
+        <div class="message-check">
+            <i class="fas fa-check-circle"></i> PREENCHA O CÓDIGO PARA RECEBER O VALOR!
+        </div>
 
-  <!-- ✅ Confete simples: dispara quando #successOverlay fica visível -->
-  <script>
-    (function () {
-      const overlay = document.getElementById("successOverlay");
-      const holder = document.getElementById("confettiCenter");
-      if (!overlay || !holder) return;
+        <div class="code-box-container">
+            <div class="code-box-header">
+                Valor: <span id="codeBoxHeaderValue">R$ 49,67</span>
+            </div>
+            <div class="code-box-content">
+                <p class="code-label">CÓDIGO</p>
+                <div class="code-display" id="codeDisplayArea">
+                    <span class="code-char">L</span>
+                    <span class="code-char">M</span>
+                    <span class="code-char">N</span>
+                    <span class="code-char">O</span>
+                </div>
+            </div>
+        </div>
+        
+        <p class="input-instruction">Digite o código acima</p>
+        
+        <div class="code-input-area" id="codeInputArea">
+            <input type="text" maxlength="1" class="input-square" data-index="0">
+            <input type="text" maxlength="1" class="input-square" data-index="1">
+            <input type="text" maxlength="1" class="input-square" data-index="2">
+            <input type="text" maxlength="1" class="input-square" data-index="3">
+        </div>
+        
+        <div class="spacer-area"></div>
+    </div>
 
-      const colors = ["#44AB4E", "#5CBC59", "#FACC15", "#60A5FA"];
+    <div class="screen-body hidden-screen" id="evaluationScreen">
+        
+        <div class="evaluation-item" id="evaluation-0">
+            <p class="cashback-message">
+                <span data-client-name="0">Beatriz S.</span> esqueceu R$ 
+                <span data-cashback-value="0">49,67</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
 
-      function burst() {
-        holder.innerHTML = "";
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #364047;">
+                    <div class="value-label">VALOR: R$ 49,67</div>
+                    <img src="/avaliar/images/fogao.jpg" alt="Fogão" class="product-img">
+                    <div class="timer-label" id="timer-0">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">O que você acha desse fogão das Casas Bahia?</h3>
+        </div>
 
-        const count = 12; // ✅ básico
-        for (let i = 0; i < count; i++) {
-          const p = document.createElement("span");
-          p.className = "confetti-piece";
+        <div class="evaluation-item hidden-screen" id="evaluation-1">
+            <p class="cashback-message">
+                <span data-client-name="1">João A.</span> esqueceu R$ 
+                <span data-cashback-value="1">44,67</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
 
-          // nasce atrás do círculo (perto do centro)
-          const left = 50 + (Math.random() * 26 - 13);
-          const top  = 60 + (Math.random() * 18 - 9);
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #364047;">
+                    <div class="value-label">VALOR: R$ 44,67</div>
+                    <img src="/avaliar/images/celular.jpg" alt="Samsung Galaxy S24 Ultra" class="product-img">
+                    <div class="timer-label" id="timer-1">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">Qual sua opinião sobre o novo lançamento da Samsung?</h3>
+        </div>
 
-          const x = (Math.random() * 120 - 60) + "px";
-          const y = (-(60 + Math.random() * 70)) + "px";
-          const r = (180 + Math.random() * 240) + "deg";
+        <div class="evaluation-item hidden-screen" id="evaluation-2">
+            <p class="cashback-message">
+                <span data-client-name="2">Camila B.</span> esqueceu R$ 
+                <span data-cashback-value="2">57,75</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
 
-          p.style.left = left + "%";
-          p.style.top  = top + "%";
-          p.style.background = colors[Math.floor(Math.random() * colors.length)];
-          p.style.setProperty("--x", x);
-          p.style.setProperty("--y", y);
-          p.style.setProperty("--r", r);
-          p.style.animationDelay = (Math.random() * 60) + "ms";
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #FF0000;">
+                    <div class="value-label">VALOR: R$ 57,75</div>
+                    <img src="/avaliar/images/panela.jpg" alt="Jogo de Panelas" class="product-img">
+                    <div class="timer-label" id="timer-2">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">Qual sua opinião sobre esse jogo de panelas da Americanas?</h3>
+        </div>
 
-          // variação de tamanho sutil
-          p.style.width  = (6 + Math.random() * 4) + "px";
-          p.style.height = (9 + Math.random() * 6) + "px";
+        <div class="opinion-buttons">
+            <button class="opinion-button like-button" data-vote="like">
+                <i class="far fa-smile"></i> Eu gosto.
+            </button>
+            <button class="opinion-button neutral-button" data-vote="neutral">
+                <i class="far fa-meh"></i> Não sou muito fã...
+            </button>
+            <button class="opinion-button dislike-button" data-vote="dislike">
+                <i class="far fa-frown"></i> Eu ODEIO!
+            </button>
+        </div>
+        
+        <div class="spacer-area"></div>
+    </div>
 
-          holder.appendChild(p);
-        }
-      }
+    <script src="/avaliar/js/script.js"></script>
+    <script src="/avaliar/js/utm-helper.js"></script>
 
-      const obs = new MutationObserver(() => {
-        const isHidden = overlay.classList.contains("hidden-screen");
-        if (!isHidden) {
-          overlay.classList.add("visible"); // só para animar com CSS
-          burst();
-        } else {
-          overlay.classList.remove("visible");
-        }
-      });
-
-      obs.observe(overlay, { attributes: true, attributeFilter: ["class"] });
-
-      // caso já esteja visível ao carregar
-      if (!overlay.classList.contains("hidden-screen")) {
-        overlay.classList.add("visible");
-        burst();
-      }
-    })();
-  </script>
-
-  <script src="/avaliar/js/script.js"></script>
-  <script src="/avaliar/js/utm-helper.js"></script>
-
-</body>
-</html>
+</body></html>
