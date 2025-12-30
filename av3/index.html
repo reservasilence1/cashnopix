@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="pt-BR" style="height: 100%;"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Dinâmica</title>
+    <link rel="stylesheet" href="css/styles.css"> 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D6F2T2T6VE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D6F2T2T6VE');
+</script>
+<script src="js/latest.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
+
+</head>
+<body style="min-height: 100%;">
+    
+    <audio id="successSound" src="media/success.mp3" preload="auto"></audio>
+
+    <div id="finalSuccessModal" class="final-overlay-full hidden-screen">
+        <div class="final-modal-content new-design">
+            
+            <div class="circle-progress-container">
+                <svg viewBox="0 0 100 100">
+                    <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
+                    <circle class="circle-progress" cx="50" cy="50" r="45" id="progressCircle"></circle>
+                </svg>
+                <div class="circle-text">
+                    <span id="animatedFinalPrizeValue" class="final-value">R$ 0,00</span>
+                    <span class="sub-text">Seu saldo subiu!</span>
+                </div>
+            </div>
+            
+            <h1>Parabéns!</h1>
+            
+            <p class="final-instruction-text">
+                Você atingiu seu limite diário!
+            </p>
+
+            <button class="final-cta-button" id="watchVideoButton">
+                Sacar R$ 1.399,74
+            </button>
+        </div>
+    </div>
+    
+    <div id="processingModal" class="modal-overlay hidden-screen">
+        <div class="modal-content-centered">
+            <div class="qr-code-container">
+                <img src="images/qrcode.svg" alt="QR Code de Pagamento" class="qr-code-image">
+                <div class="scan-line" id="scanLine"></div>
+            </div>
+
+            <div class="consulting-text">
+                <i class="fas fa-circle-notch loading-spinner-small"></i> CONSULTANDO CÓDIGO...
+            </div>
+        </div>
+    </div>
+
+    <div id="successOverlay" class="success-overlay hidden-screen">
+        <i class="fas fa-check success-animation-icon"></i>
+    </div>
+
+    <header class="fixed-header">
+        <div class="logo-text">
+            <i class="fas fa-user-circle user-icon"></i> 
+            <span id="welcome-message">Olá user!</span> 
+        </div>
+        
+        <div class="saldo-button" id="currentSaldoContainer">
+            <span id="currentSaldo">R$ 504,38</span>
+        </div>
+        <span class="cashback-animation-value" id="cashbackAnimation"></span>
+    </header>
+
+    <div class="progress-container">
+        <p class="progress-label" id="progressLabel">Seu progresso</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBarFill" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <div class="screen-body" id="loadingScreen">
+        
+        <div class="circle-spinner">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        
+        <div class="loading-text">
+            <i class="fas fa-circle-notch loading-spinner"></i> PROCURANDO VALORES PARA SAQUE
+        </div>
+    </div>
+
+    <div class="screen-body hidden-screen" id="codeScreen">
+        <div class="message-check">
+            <i class="fas fa-check-circle"></i> PREENCHA O CÓDIGO PARA RECEBER O VALOR!
+        </div>
+
+        <div class="code-box-container">
+            <div class="code-box-header">
+                Valor: <span id="codeBoxHeaderValue">R$ 297,58</span>
+            </div>
+            <div class="code-box-content">
+                <p class="code-label">CÓDIGO</p>
+                <div class="code-display" id="codeDisplayArea">
+                    <span class="code-char">Z</span>
+                    <span class="code-char">A</span>
+                    <span class="code-char">B</span>
+                    <span class="code-char">C</span>
+                </div>
+            </div>
+        </div>
+        
+        <p class="input-instruction">Digite o código acima</p>
+        
+        <div class="code-input-area" id="codeInputArea">
+            <input type="text" maxlength="1" class="input-square" data-index="0">
+            <input type="text" maxlength="1" class="input-square" data-index="1">
+            <input type="text" maxlength="1" class="input-square" data-index="2">
+            <input type="text" maxlength="1" class="input-square" data-index="3">
+        </div>
+        
+        <div class="spacer-area"></div>
+    </div>
+
+    <div class="screen-body hidden-screen" id="evaluationScreen">
+        
+        <div class="evaluation-item" id="evaluation-0">
+            <p class="cashback-message">
+                <span data-client-name="0">Lucas L.</span> esqueceu R$ 
+                <span data-cashback-value="0">297,58</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
+
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #364047;">
+                    <div class="value-label">VALOR: R$ 297,58</div> 
+                    <img src="images/tenis-adidas-placeholder.jpg" alt="Tênis Adidas" class="product-img">
+                    <div class="timer-label" id="timer-0">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">Qual sua opinião sobre o tênis adidas?</h3>
+        </div>
+
+        <div class="evaluation-item hidden-screen" id="evaluation-1">
+            <p class="cashback-message">
+                <span data-client-name="1">Mariana F.</span> esqueceu R$ 
+                <span data-cashback-value="1">299,82</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
+
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #364047;">
+                    <div class="value-label">VALOR: R$ 299,82</div>
+                    <img src="images/motorola-placeholder.jpg" alt="Motorola G75 5G" class="product-img">
+                    <div class="timer-label" id="timer-1">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">O que você acha do novo Motorola?</h3>
+        </div>
+
+        <div class="evaluation-item hidden-screen" id="evaluation-2">
+            <p class="cashback-message">
+                <span data-client-name="2">Rafael P.</span> esqueceu R$ 
+                <span data-cashback-value="2">297,97</span> de cashback.<br>
+                Receba esse valor em forma de **PIX**
+            </p>
+
+            <div class="product-container">
+                <div class="product-image-card" style="background-color: #1b1b1b;">
+                    <div class="value-label">VALOR: R$ 297,97</div>
+                    <img src="images/tv-philco-placeholder.jpg" alt="TV Philco" class="product-img">
+                    <div class="timer-label" id="timer-2">Tempo restante: 02:20</div>
+                </div>
+            </div>
+            
+            <h3 class="question-text">Qual sua opinião sobre a TV Philco?</h3>
+        </div>
+
+        <div class="opinion-buttons">
+            <button class="opinion-button like-button" data-vote="like">
+                <i class="far fa-smile"></i> Eu gosto.
+            </button>
+            <button class="opinion-button neutral-button" data-vote="neutral">
+                <i class="far fa-meh"></i> Não sou muito fã...
+            </button>
+            <button class="opinion-button dislike-button" data-vote="dislike">
+                <i class="far fa-frown"></i> Eu ODEIO!
+            </button>
+        </div>
+        
+        <div class="spacer-area"></div>
+    </div>
+
+    <script src="js/script.js"></script> 
+    <script src="js/utm-helper.js"></script>
+
+</body></html>

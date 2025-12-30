@@ -1,0 +1,273 @@
+/*=====================================
+ CORES E FONTES
+ =======================================*/
+:root {
+    --color-green-primary: #44AB4E;
+    --color-green-secondary: #5CBC59;
+    --color-text-dark: #333;
+    --color-text-medium: #555;
+    --color-background-light: white;
+    --header-height: 55px;
+    --color-light-gray-bg: #F0F0F0; 
+    --color-lighter-gray-border: #E0E0E0; 
+    /* Pesos de fonte mais fortes (700 e 900) */
+    --font-weight-regular: 700; 
+    --font-weight-bold: 900; 
+}
+
+/*=====================================
+ CONFIGURAÇÕES GLOBAIS
+ =======================================*/
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+    font-weight: var(--font-weight-regular); 
+}
+
+/*=====================================
+ CABEÇALHO (CORRIGIDO)
+ =======================================*/
+.fixed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px; 
+    border-bottom: 1px solid #eee;
+    
+    /* Define um fundo branco sólido para não ficar transparente */
+    background-color: white; 
+    
+    position: sticky; 
+    top: 0;
+    z-index: 10; /* Garante que fique acima de outros elementos */
+}
+
+.logo-text {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--color-text-dark); 
+    display: flex; 
+    align-items: center; 
+}
+
+.logo-text .user-icon {
+    color: var(--color-green-primary);
+    margin-right: 8px; 
+    font-size: 1.3em;
+}
+
+.saldo-button {
+    background-color: var(--color-green-secondary); 
+    color: var(--color-background-light);
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: var(--font-weight-bold);
+}
+
+
+/*=====================================
+ ÁREA DE CONTEÚDO PRINCIPAL (VSL) - CORRIGIDO
+ =======================================*/
+.main-content-vsl {
+    padding: 20px 20px; 
+    text-align: center;
+    /* As regras 'position: relative' e 'z-index: 1' foram REMOVIDAS */
+    /* para evitar conflito com o iframe do vídeo. */
+}
+
+/* Esconde o botão e o aviso no início */
+.hidden {
+    /* Mantenha o display: none para esconder totalmente do fluxo */
+    display: none !important; 
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+/* --- ESTILO PARA O NOVO PLAYER (IFRAME) --- */
+/* Aplicando o estilo de sombra e borda ao novo ID */
+#ifr_68fbf5758b372a22cfc6c5fe_wrapper {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
+    border-radius: 8px; 
+    overflow: hidden; /* Garante que o iframe respeite a borda */
+    
+    /* A altura é controlada pelo padding no HTML (166.44%) */
+    /* A largura máxima (400px) está inline no HTML */
+}
+
+/* Estilo Base do Botão CTA */
+.cta-button {
+    background-color: var(--color-green-primary); /* Cor principal para destaque */
+    color: white; 
+    border: none;
+    padding: 18px 30px;
+    font-size: 1.2em;
+    font-weight: var(--font-weight-bold); 
+    border-radius: 8px;
+    cursor: pointer;
+    width: calc(100% - 40px);
+    max-width: 400px;
+    margin: 30px auto 10px auto; 
+    display: block;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, opacity 0.2s, transform 0.2s;
+    /* Configuração para o pulso */
+    position: relative; 
+    overflow: hidden; 
+}
+
+/* Seta Branca */
+.cta-button i {
+    margin-left: 10px;
+    font-size: 1em;
+}
+
+/* ANIMAÇÃO DE PULSO (PULSANTE) */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.5); /* Cor verde primária com opacidade */
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(68, 171, 78, 0); /* Aumenta o 'brilho' e o torna transparente */
+        transform: scale(1.02); /* Leve aumento de escala */
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.5);
+        transform: scale(1);
+    }
+}
+
+.cta-button.pulsante {
+    animation: pulse 1.5s infinite; /* Aplica a animação com duração de 1.5s e repetição infinita */
+}
+
+/* NOVO ESTILO: Aviso de CTA */
+.cta-aviso-text {
+    max-width: 400px; 
+    margin: 10px auto 40px auto; 
+    padding: 0 20px;
+    font-size: 0.9em;
+    line-height: 1.4;
+    color: var(--color-text-medium); 
+    font-weight: var(--font-weight-regular);
+    text-align: center;
+}
+
+
+/*=====================================
+ SEÇÃO DE EXTRATO (AJUSTADA)
+ =======================================*/
+.extrato-container {
+    max-width: 400px;
+    margin: 40px auto;
+    text-align: left;
+    /* A opacidade será controlada via JS para o fade-in */
+}
+
+.extrato-title {
+    font-size: 2.5em;
+    font-weight: 900; /* Extra bold */
+    text-align: center;
+    margin-bottom: 30px;
+    color: var(--color-text-dark);
+}
+
+.resumo-title {
+    font-size: 1.3em;
+    font-weight: 900; /* MUDANÇA: Mais forte */
+    margin-bottom: 15px;
+    color: var(--color-text-dark);
+}
+
+.resumo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.resumo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+    border-bottom: 2px dotted var(--color-lighter-gray-border);
+}
+
+/* MUDANÇA: Rótulos mais fortes */
+.resumo-item span:first-child {
+    color: var(--color-text-dark); /* Alterado de medium para dark */
+    font-weight: 900; /* Mais forte */
+}
+
+/* MUDANÇA: Valores normais (escuros) */
+.resumo-item span:last-child {
+    color: var(--color-text-dark);
+    font-weight: 700; /* Bold padrão */
+}
+
+/* MUDANÇA: Valores verdes mais fortes */
+.valor-verde {
+    color: var(--color-green-primary) !important;
+    font-weight: 900 !important; /* Mais forte */
+}
+
+.total-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1em;
+    padding-top: 15px;
+    border-top: 2px dotted var(--color-lighter-gray-border);
+}
+
+.total-item span {
+    font-weight: 900; /* Bold */
+    color: var(--color-text-dark);
+}
+
+.aviso-box {
+    background-color: var(--color-light-gray-bg);
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    margin: 30px 0;
+}
+
+.aviso-icon {
+    font-size: 1.5em;
+    color: var(--color-text-dark);
+    margin-right: 15px;
+}
+
+.aviso-box p {
+    font-size: 0.9em;
+    color: var(--color-text-dark); /* MUDANÇA: Mais escuro */
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 700;
+}
+
+.liberar-saque-button {
+    background-color: #44ab4e; /* Cor verde clara da imagem */
+    color: #ffffff; /* Texto escuro */
+    font-weight: 900;
+    font-size: 1.1em;
+    border: none;
+    border-radius: 8px;
+    padding: 18px;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s;
+}
+
+.liberar-saque-button:hover {
+    background-color: #a1c9a1; /* Um pouco mais escuro no hover */
+}
