@@ -1,4 +1,4 @@
-/*=====================================
+Não aceitei essa solução de svg, quero que você altere somente no meu style.css : /*=====================================
   CORES E FONTES
 =======================================*/
 :root {
@@ -15,7 +15,10 @@
 /*=====================================
   CONFIGURAÇÕES GLOBAIS
 =======================================*/
-html, body { height: 100%; }
+/* CRÍTICO: Garante que o HTML e o BODY ocupem toda a viewport para centralização */
+html, body {
+    height: 100%;
+}
 
 body {
     font-family: 'Nunito', sans-serif;
@@ -26,7 +29,9 @@ body {
     min-height: 100vh;
 }
 
-.hidden-screen { display: none !important; }
+.hidden-screen {
+    display: none !important; 
+}
 
 /*=====================================
   CABEÇALHO E PROGRESSO
@@ -38,14 +43,15 @@ body {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
     background-color: var(--color-background-light);
-    position: sticky;
+    position: sticky; 
     top: 0;
     z-index: 10;
 }
 
+/* Contêiner para o botão de saldo (simples) */
 .saldo-button-container {
     position: relative;
-    height: 40px;
+    height: 40px; 
     display: flex;
     align-items: center;
 }
@@ -53,11 +59,11 @@ body {
 .logo-text {
     font-size: 1.2em;
     font-weight: 700;
-    color: var(--color-green-primary);
+    color: var(--color-green-primary); 
 }
 
 .saldo-button {
-    background-color: var(--color-green-secondary);
+    background-color: var(--color-green-secondary); 
     color: var(--color-background-light);
     padding: 8px 15px;
     border-radius: 5px;
@@ -72,12 +78,14 @@ body {
     font-size: 1em;
     font-weight: 700;
     white-space: nowrap;
-    opacity: 0;
+    opacity: 0; 
     transform: translateY(0) translateX(10px);
     z-index: 1;
 }
 
-.cashback-animation-value.animate { animation: slideUpCashback 1s ease-out forwards; }
+.cashback-animation-value.animate {
+    animation: slideUpCashback 1s ease-out forwards;
+}
 
 @keyframes slideUpCashback {
     0% { opacity: 0; transform: translateY(10px) translateX(10px); }
@@ -86,13 +94,14 @@ body {
     100% { opacity: 0; transform: translateY(-30px) translateX(10px); }
 }
 
+
 /* BARRA DE PROGRESSO (Mantido) */
 .progress-container {
     padding: 0 20px 10px 20px;
     margin-top: 5px;
     background-color: var(--color-background-light);
     position: sticky;
-    top: var(--header-height);
+    top: var(--header-height); 
     z-index: 9;
 }
 
@@ -112,168 +121,38 @@ body {
 
 .progress-fill {
     height: 100%;
-    width: 0%;
-    background-color: var(--color-green-primary);
-    transition: width 3s ease-in-out;
+    width: 0%; 
+    background-color: var(--color-green-primary); 
+    transition: width 3s ease-in-out; 
 }
 
 /*=====================================
   OVERLAYS E MODAIS
 =======================================*/
 
-/* ============================================================
-   ✅ OVERLAY DE SUCESSO (CORRIGIDO E LIMPO)
-   - NÃO preenche a tela (sem fundo verde)
-   - Badge central sofisticado
-   - Ícone VERDE e perfeitamente centralizado
-   - Confetes discretos só no centro (saindo de trás)
-   - Compatível com JS: .visible no overlay e .animate no ícone
-   ============================================================ */
-
-.success-overlay{
+/* OVERLAY DE SUCESSO (Animação Visto) */
+.success-overlay {
     position: fixed;
-    inset: 0;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: transparent !important;
+    background-color: var(--color-green-primary); 
     z-index: 1000;
-
     display: flex;
     justify-content: center;
     align-items: center;
-
-    opacity: 0;
-    transition: opacity .22s ease-in-out;
-    pointer-events: none;
+    opacity: 0; 
+    transition: opacity 0.3s ease-in-out;
 }
 
 .success-overlay.visible { opacity: 1; }
-
-/* Badge */
-.success-animation-icon{
-    position: relative;
-    width: 132px;               /* ✅ menor */
-    height: 132px;              /* ✅ menor */
-    border-radius: 999px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.98), rgba(255,255,255,.86));
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 18px 40px rgba(0,0,0,.14);
-
-    transform: scale(.78);
-    opacity: 0;
-
-    /* evita qualquer “corte”/bug */
-    box-sizing: border-box;
-    overflow: visible;
-    line-height: 1;
-
-    filter: none !important;
-    visibility: visible !important;
-}
-
-/* ✅ FontAwesome desenha em ::before (glyph real) */
-.success-animation-icon::before{
-    display: block !important;
-
-    /* ✅ tamanho ideal */
-    font-size: 2.8em !important;
-
-    /* ✅ centralização consistente */
-    line-height: 1 !important;
-    margin: 0 !important;
-
-    /* ✅ cor verde forçada */
-    color: var(--color-green-primary) !important;
-    -webkit-text-fill-color: var(--color-green-primary) !important;
-
-    /* micro-ajuste óptico (deixa 100% no centro) */
-    transform: translateY(-1px) !important;
-}
-
-/* brilho passando (sofisticado) */
-.success-animation-icon::after{
-    content: "";
-    position: absolute;
-    inset: -28px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
-    transform: rotate(18deg) translateX(-55%);
-    opacity: 0;
-    pointer-events: none;
-}
-
-/* Confetes: no centro, atrás do sucesso */
-.success-overlay.visible::before{
-    content:"";
-    position:absolute;
-    width: 9px;
-    height: 12px;
-    border-radius: 3px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-
-    box-shadow:
-      -52px -18px 0 var(--color-green-primary),
-      -26px -56px 0 #FACC15,
-       10px -64px 0 var(--color-green-secondary),
-       44px -46px 0 #60A5FA,
-       58px  -6px 0 #FACC15,
-      -58px   6px 0 #60A5FA,
-      -38px  44px 0 var(--color-green-secondary),
-        0px  58px 0 #FACC15,
-       38px  44px 0 var(--color-green-primary),
-       58px   6px 0 var(--color-green-secondary);
-
-    animation: confettiBurst 760ms cubic-bezier(.18,.86,.22,1) forwards;
-    pointer-events:none;
-}
-
-/* animação do badge */
-.success-animation-icon.animate{
-    animation: successPop 520ms cubic-bezier(.2,.85,.2,1) forwards;
-}
-
-/* brilho junto do pop */
-.success-animation-icon.animate::after{
-    animation: successShine 1200ms ease-out forwards;
-}
-
-@keyframes successPop{
-    0%   { transform: scale(.70); opacity: 0; }
-    60%  { transform: scale(1.06); opacity: 1; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes successShine{
-    0%   { transform: rotate(18deg) translateX(-55%); opacity: 0; }
-    35%  { opacity: .85; }
-    100% { transform: rotate(18deg) translateX(70%); opacity: 0; }
-}
-
-@keyframes confettiBurst{
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(.85); }
-    15%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-28px) scale(1); }
-}
-
-@media (prefers-reduced-motion: reduce){
-    .success-animation-icon,
-    .success-animation-icon.animate,
-    .success-overlay.visible::before{
-        animation: none !important;
-    }
-    .success-animation-icon{
-        opacity: 1 !important;
-        transform: none !important;
-    }
-    .success-animation-icon::after{ display:none !important; }
+.success-animation-icon { font-size: 8em; color: white; transform: scale(0); opacity: 0; }
+.success-animation-icon.animate { animation: growOut 1.2s ease-out forwards; }
+@keyframes growOut {
+    0% { transform: scale(0); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 1; }
+    100% { transform: scale(1); opacity: 0; }
 }
 
 /* MODAL DE PROCESSAMENTO (QR Code) */
@@ -284,7 +163,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.95);
-    z-index: 500;
+    z-index: 500; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -297,18 +176,19 @@ body {
     padding: 20px;
 }
 
-/* FINAL MODAL */
+/* FINAL MODAL - POP-UP FLUTUANTE CENTRALIZADO E DESLOCADO */
 .final-overlay-full {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(68, 171, 78, 0.95);
-    z-index: 1500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 100%; 
+    background-color: rgba(68, 171, 78, 0.95); /* Fundo semi-transparente verde */
+    z-index: 1500; 
+    /* Centralização robusta com Flexbox */
+    display: flex; 
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
     padding: 20px;
 }
 
@@ -318,11 +198,17 @@ body {
     background-color: var(--color-background-light);
     border-radius: 10px;
     padding: 40px 30px;
-    text-align: center;
+    text-align: center; 
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    
+    /* DESLOCAMENTO CRÍTICO:
+       1. Posiciona o elemento de forma absoluta (necessário para transform)
+       2. left: 50% move a borda esquerda para o centro.
+       3. transform: translateX move o elemento de volta pela metade (centralizando-o) 
+          e adiciona o deslocamento de -19px para a esquerda. */
     position: absolute;
     left: 50%;
-    transform: translateX(calc(-50% - 19px));
+    transform: translateX(calc(-50% - 19px)); 
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -330,35 +216,39 @@ body {
 .final-modal-content h1 {
     font-size: 2.2em;
     font-weight: 800;
-    margin-bottom: 20px;
+    margin-bottom: 20px; 
 }
 
+/* Frase de ganho */
 .final-prize-text {
-    font-size: 1.1em;
+    font-size: 1.1em; 
     margin-bottom: 25px;
-    text-align: center;
+    text-align: center; 
 }
 
 .final-prize-text b {
-    color: var(--color-green-primary);
-    font-weight: 700;
+    color: var(--color-green-primary); 
+    font-weight: 700; 
 }
 
+/* Instruções */
 .final-instruction-text {
     font-size: 1em;
-    color: var(--color-text-dark);
+    color: var(--color-text-dark); 
     margin-bottom: 30px;
     line-height: 1.4;
-    text-align: center;
-    max-width: 300px;
+    text-align: center; 
+    max-width: 300px; 
     margin-left: auto;
     margin-right: auto;
 }
 
-.final-instruction-text b { font-weight: 900; }
+.final-instruction-text b {
+    font-weight: 900;
+}
 
 .final-cta-button {
-    background-color: var(--color-green-secondary);
+    background-color: var(--color-green-secondary); 
     color: white;
     border: none;
     padding: 15px 30px;
@@ -366,12 +256,14 @@ body {
     font-weight: 700;
     border-radius: 8px;
     cursor: pointer;
-    width: 90%;
+    width: 90%; 
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s;
 }
 
-.final-cta-button:hover { background-color: #4a9e48; }
+.final-cta-button:hover {
+    background-color: #4a9e48;
+}
 
 /*=====================================
   CONTEÚDO PRINCIPAL (TELAS)
@@ -382,20 +274,22 @@ body {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 50px;
-
-    display: flex;
+    
+    display: flex; 
     flex-direction: column;
-    align-items: center;
-
-    min-height: calc(100vh - (var(--header-height) + var(--progress-height)));
+    align-items: center; 
+    
+    min-height: calc(100vh - (var(--header-height) + var(--progress-height))); 
 }
 
+/* TELA 1: CARREGAMENTO */
 #loadingScreen { justify-content: center; }
 
+/* TELA 2 e 4 - Layout padrão de formulário/conteúdo */
 #codeScreen, #evaluationScreen {
-    justify-content: flex-start;
-    padding-top: 50px;
-    min-height: auto;
+    justify-content: flex-start; 
+    padding-top: 50px; 
+    min-height: auto; 
 }
 
 /* --- TELA 1: ANIMAÇÃO DE PESQUISA --- */
@@ -409,6 +303,7 @@ body {
 .consulting-text { margin-top: 0; }
 .loading-spinner, .loading-spinner-small { color: var(--color-text-medium); animation: spin 1.5s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
 
 /* --- TELA 2: CÓDIGO --- */
 .message-check { color: var(--color-green-primary); font-size: 0.9em; font-weight: 700; margin-bottom: 25px; }
@@ -449,3 +344,4 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
+
