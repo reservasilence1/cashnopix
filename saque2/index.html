@@ -1,0 +1,78 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saque V2 - cashnopix</title>
+    
+    <link rel="stylesheet" href="css/styles.css"> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-D6F2T2T6VE"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D6F2T2T6VE');
+</script>
+<script src="js/latest.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
+</head>
+
+<body>
+    
+    <header class="fixed-header">
+        <div class="logo-text">
+            <i class="fas fa-user-circle user-icon"></i> 
+            <span id="welcome-message">Olá, [USERNAME]!</span> 
+        </div>
+        
+        <div class="saldo-button">
+            <span id="currentSaldo">R$ 1.399,74</span> 
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        <div class="saldo-display">
+            <p class="saldo-label">Seu saldo</p>
+            <p class="saldo-valor">R$ 1.399,74</p>
+        </div>
+        
+        <div class="pix-key-selection">
+            <p class="selection-title">Selecione seu tipo de chave PIX</p>
+            
+            <div class="key-options">
+                <button class="key-button selected" data-key-type="cpf">
+                    <i class="fas fa-user-circle"></i>
+                    CPF
+                </button>
+                
+                <button class="key-button" data-key-type="telefone">
+                    <i class="fas fa-phone-alt"></i>
+                    Telefone
+                </button>
+            </div>
+        </div>
+
+        <div class="key-input-container">
+            <input type="text" class="key-input" placeholder="Digite sua chave PIX..." aria-label="Digite sua chave PIX">
+        </div>
+        
+        <button class="register-button" disabled="">
+            Realizar Saque
+        </button>
+        
+        <p class="saque-aviso-text">
+            Para sacar o seu dinheiro, você precisa de um saldo mínimo de R$ 1,50. Os limites de saque para transações individuais e mensais podem variar conforme o país ou região.
+        </p>
+        
+    </main>
+    
+    <script src="js/script.js"></script> 
+    <script src="js/utm-helper.js"></script>
+
+
+
+
+</body></html>
