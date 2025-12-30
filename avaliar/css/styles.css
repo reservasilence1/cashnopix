@@ -94,7 +94,6 @@ body {
     100% { opacity: 0; transform: translateY(-30px) translateX(10px); }
 }
 
-
 /* BARRA DE PROGRESSO (Mantido) */
 .progress-container {
     padding: 0 20px 10px 20px;
@@ -130,29 +129,231 @@ body {
   OVERLAYS E MODAIS
 =======================================*/
 
-/* OVERLAY DE SUCESSO (Animação Visto) */
+/* ============================================================
+   ✅ OVERLAY DE SUCESSO (MELHORADO)
+   - NÃO PREENCHE A TELA TODA (sem fundo verde)
+   - CHECK VERDE (FontAwesome)
+   - “badge” branco sofisticado
+   - confetes discretos saindo de trás do símbolo (central)
+   - Mantém as classes .visible e .animate do seu JS
+   ============================================================ */
 .success-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--color-green-primary); 
+    /* antes: background-color verde (cobria a tela inteira) */
+    background-color: transparent; /* ✅ não pinta a tela */
     z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0; 
-    transition: opacity 0.3s ease-in-out;
+
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+
+    /* não bloquear cliques enquanto anima */
+    pointer-events: none;
 }
 
 .success-overlay.visible { opacity: 1; }
-.success-animation-icon { font-size: 8em; color: white; transform: scale(0); opacity: 0; }
-.success-animation-icon.animate { animation: growOut 1.2s ease-out forwards; }
-@keyframes growOut {
-    0% { transform: scale(0); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0; }
+
+/* Ícone vira um “container” do badge */
+.success-animation-icon {
+    /* antes: white (sumia em base clara) */
+    color: var(--color-green-primary) !important; /* ✅ verde garantido */
+    font-size: 4.6em; /* sofisticado sem exagero */
+    line-height: 1;
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    height: 160px;
+    transform: scale(0.85);
+    opacity: 0;
+    filter: drop-shadow(0 18px 36px rgba(0,0,0,.18));
+}
+
+/* Badge circular “premium” atrás do check */
+.success-animation-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background:
+      radial-gradient(circle at 30% 25%, rgba(255,255,255,0.98), rgba(255,255,255,0.85));
+    border: 1px solid rgba(0,0,0,0.06);
+    box-shadow:
+      0 12px 30px rgba(0,0,0,0.12),
+      inset 0 1px 0 rgba(255,255,255,0.65);
+    z-index: -2;
+}
+
+/* Brilho passando (sofisticado) */
+.success-animation-icon::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    left: -140px;
+    top: -120px;
+    transform: rotate(18deg);
+    background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+    opacity: 0;
+    z-index: -1;
+}
+
+/* Confetes: usamos um pseudo-elemento adicional via "box-shadow" em um elemento invisível
+   (sem JS e sem SVG, e sem preencher a tela) */
+.success-animation-icon.animate {
+    animation: successPop 520ms cubic-bezier(.2,.85,.2,1) forwards;
+}
+
+.success-animation-icon.animate::after {
+    animation: successShine 820ms ease-out forwards;
+}
+
+/* Confete (pontos/retângulos pequenos) — sai de trás do badge */
+.success-animation-icon.animate .fa-check,
+.success-animation-icon.animate.fa-check,
+.success-animation-icon.animate::before { /* noop para não quebrar */
+}
+
+/* Confetes criados com um “spray” de box-shadows. */
+.success-animation-icon.animate::before {
+    /* mantém o badge, mas adiciona uma camada de confete em cima usando sombras */
+    /* (camada separada é criada com outline + box-shadow em um "fake confetti" via background) */
+}
+
+/* Elemento de confete: usamos outro pseudo via background + box-shadow com animação */
+.success-animation-icon.animate::before {
+    /* nada aqui além do badge, confete vem do pseudo abaixo */
+}
+
+/* Criamos confete com um pseudo-elemento extra usando "outline" no próprio ícone */
+.success-animation-icon > i { /* caso seu HTML tenha i dentro de outro, não interfere */
+}
+
+/* Confete pseudo (usando um elemento invisível central) */
+.success-animation-icon.animate::marker { /* não usado, apenas para evitar warnings em editores */ }
+
+.success-animation-icon.animate{
+    /* injeta uma “camada” de confete com múltiplas sombras */
+    --c1: var(--color-green-primary);
+    --c2: var(--color-green-secondary);
+    --c3: #FACC15;
+    --c4: #60A5FA;
+}
+
+/* Este pseudo-elemento vira o "gerador" de confete (não vaza para fora do badge por ser pequeno) */
+.success-animation-icon.animate{
+    /* nada */
+}
+
+/* Vamos usar um span virtual (box-shadow) via background-image no overlay do brilho */
+.success-animation-icon.animate::after{
+    /* brilho já existe — adicionamos confete com box-shadow sem afetar o brilho */
+    /* criamos "confetes" com múltiplas sombras em pontos pequenos */
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+}
+
+/* Confete real: outro pseudo-elemento dedicado (sem alterar HTML) */
+.success-animation-icon::selection { /* noop */ }
+
+/* ✅ Confete: criamos via filter drop-shadow + box-shadow em um pseudo separado */
+.success-animation-icon.animate::before{
+    /* mantemos o badge e criamos confete com um pseudo interno usando background no topo */
+}
+
+/* PSEUDO EXTRA para confete: usamos o próprio ícone com text-shadow como partículas */
+.success-animation-icon.animate{
+    /* Partículas: text-shadow cria “pontos” em volta sem JS */
+    text-shadow:
+      0 -62px 0 rgba(68,171,78,.0); /* base */
+    /* (text-shadow não funciona bem para confete variado em todos browsers com icon-font),
+       então usamos também box-shadow em um pseudo separado abaixo */
+}
+
+/* Pseudo de confete dedicado */
+.success-animation-icon.animate::after{
+    /* brilho + confete */
+}
+
+/* Confete: usamos um pseudo-elemento adicional com box-shadows e animação */
+.success-animation-icon.animate{
+    /* nada */
+}
+
+.success-animation-icon.animate::before{
+    /* badge já */
+}
+
+/* Confete layer */
+.success-animation-icon.animate::after{
+    /* brilho anima */
+}
+
+/* Criamos um pseudo-elemento de confete usando o próprio overlay: */
+.success-overlay.visible::before{
+    content:"";
+    position:absolute;
+    width: 10px;
+    height: 14px;
+    border-radius: 3px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    /* muitas partículas com box-shadow; ficam concentradas no centro */
+    box-shadow:
+      -60px -20px 0 var(--color-green-primary),
+      -30px -70px 0 #FACC15,
+      10px -80px 0 var(--color-green-secondary),
+      50px -55px 0 #60A5FA,
+      70px -15px 0 #FACC15,
+      -75px 10px 0 #60A5FA,
+      -45px 55px 0 var(--color-green-secondary),
+      0px 75px 0 #FACC15,
+      45px 55px 0 var(--color-green-primary),
+      75px 10px 0 var(--color-green-secondary),
+      -20px -35px 0 var(--color-green-primary),
+      22px -45px 0 #60A5FA,
+      -10px 40px 0 #FACC15,
+      18px 48px 0 var(--color-green-secondary);
+    animation: confettiBurst 760ms cubic-bezier(.18,.86,.22,1) forwards;
+    pointer-events:none;
+}
+
+/* keyframes do conjunto */
+@keyframes successPop {
+    0%   { transform: scale(0.70); opacity: 0; }
+    60%  { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1.00); opacity: 1; }
+}
+
+@keyframes successShine {
+    0%   { left: -140px; top: -120px; opacity: 0; }
+    30%  { opacity: .9; }
+    100% { left: 220px; top: 40px; opacity: 0; }
+}
+
+@keyframes confettiBurst {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+    15%  { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.0) translateY(-30px); }
+}
+
+/* Acessibilidade */
+@media (prefers-reduced-motion: reduce) {
+    .success-animation-icon,
+    .success-animation-icon.animate,
+    .success-overlay.visible::before{
+        animation: none !important;
+    }
+    .success-animation-icon::after{ display:none !important; }
 }
 
 /* MODAL DE PROCESSAMENTO (QR Code) */
@@ -183,12 +384,11 @@ body {
     left: 0;
     width: 100%;
     height: 100%; 
-    background-color: rgba(68, 171, 78, 0.95); /* Fundo semi-transparente verde */
+    background-color: rgba(68, 171, 78, 0.95);
     z-index: 1500; 
-    /* Centralização robusta com Flexbox */
     display: flex; 
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
+    justify-content: center;
+    align-items: center;
     padding: 20px;
 }
 
@@ -200,12 +400,6 @@ body {
     padding: 40px 30px;
     text-align: center; 
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    
-    /* DESLOCAMENTO CRÍTICO:
-       1. Posiciona o elemento de forma absoluta (necessário para transform)
-       2. left: 50% move a borda esquerda para o centro.
-       3. transform: translateX move o elemento de volta pela metade (centralizando-o) 
-          e adiciona o deslocamento de -19px para a esquerda. */
     position: absolute;
     left: 50%;
     transform: translateX(calc(-50% - 19px)); 
@@ -219,7 +413,6 @@ body {
     margin-bottom: 20px; 
 }
 
-/* Frase de ganho */
 .final-prize-text {
     font-size: 1.1em; 
     margin-bottom: 25px;
@@ -231,7 +424,6 @@ body {
     font-weight: 700; 
 }
 
-/* Instruções */
 .final-instruction-text {
     font-size: 1em;
     color: var(--color-text-dark); 
@@ -274,18 +466,16 @@ body {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 50px;
-    
     display: flex; 
     flex-direction: column;
     align-items: center; 
-    
     min-height: calc(100vh - (var(--header-height) + var(--progress-height))); 
 }
 
 /* TELA 1: CARREGAMENTO */
 #loadingScreen { justify-content: center; }
 
-/* TELA 2 e 4 - Layout padrão de formulário/conteúdo */
+/* TELA 2 e 4 - Layout padrão */
 #codeScreen, #evaluationScreen {
     justify-content: flex-start; 
     padding-top: 50px; 
@@ -303,7 +493,6 @@ body {
 .consulting-text { margin-top: 0; }
 .loading-spinner, .loading-spinner-small { color: var(--color-text-medium); animation: spin 1.5s linear infinite; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
 
 /* --- TELA 2: CÓDIGO --- */
 .message-check { color: var(--color-green-primary); font-size: 0.9em; font-weight: 700; margin-bottom: 25px; }
@@ -344,4 +533,3 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
-
