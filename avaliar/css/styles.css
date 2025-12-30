@@ -15,7 +15,6 @@
 /*=====================================
   CONFIGURAÇÕES GLOBAIS
 =======================================*/
-/* CRÍTICO: Garante que o HTML e o BODY ocupem toda a viewport para centralização */
 html, body { height: 100%; }
 
 body {
@@ -123,15 +122,14 @@ body {
 =======================================*/
 
 /* ============================================================
-   ✅ OVERLAY DE SUCESSO (VERSÃO FINAL - PREMIUM)
+   ✅ OVERLAY DE SUCESSO (CORRIGIDO E LIMPO)
    - NÃO preenche a tela (sem fundo verde)
    - Badge central sofisticado
-   - Check VERDE com FontAwesome (atua no ::before)
+   - Ícone VERDE e perfeitamente centralizado
    - Confetes discretos só no centro (saindo de trás)
    - Compatível com JS: .visible no overlay e .animate no ícone
    ============================================================ */
 
-/* Overlay: não pinta a tela inteira */
 .success-overlay{
     position: fixed;
     inset: 0;
@@ -139,62 +137,69 @@ body {
     height: 100%;
     background: transparent !important;
     z-index: 1000;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
     opacity: 0;
     transition: opacity .22s ease-in-out;
-
-    /* não bloqueia interação */
     pointer-events: none;
 }
 
 .success-overlay.visible { opacity: 1; }
 
-/* ÍCONE vira o badge central */
+/* Badge */
 .success-animation-icon{
     position: relative;
-    width: 170px;
-    height: 170px;
+    width: 132px;               /* ✅ menor */
+    height: 132px;              /* ✅ menor */
     border-radius: 999px;
 
-    display: inline-flex;
+    display: flex;
     justify-content: center;
     align-items: center;
 
-    /* badge premium */
     background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.98), rgba(255,255,255,.86));
     border: 1px solid rgba(0,0,0,.06);
     box-shadow: 0 18px 40px rgba(0,0,0,.14);
 
-    /* animação */
     transform: scale(.78);
     opacity: 0;
 
-    /* garante renderização */
+    /* evita qualquer “corte”/bug */
+    box-sizing: border-box;
+    overflow: visible;
+    line-height: 1;
+
     filter: none !important;
     visibility: visible !important;
 }
 
-/* ✅ FONT AWESOME DESENHA NO ::before — então forçamos nele também */
-.success-animation-icon,
+/* ✅ FontAwesome desenha em ::before (glyph real) */
 .success-animation-icon::before{
+    display: block !important;
+
+    /* ✅ tamanho ideal */
+    font-size: 2.8em !important;
+
+    /* ✅ centralização consistente */
+    line-height: 1 !important;
+    margin: 0 !important;
+
+    /* ✅ cor verde forçada */
     color: var(--color-green-primary) !important;
-    opacity: 1 !important;
+    -webkit-text-fill-color: var(--color-green-primary) !important;
+
+    /* micro-ajuste óptico (deixa 100% no centro) */
+    transform: translateY(-1px) !important;
 }
 
-/* Tamanho do glyph do FontAwesome */
-.success-animation-icon::before{
-    font-size: 4.9em;
-    line-height: 1;
-}
-
-/* brilho suave passando (sofisticado) */
+/* brilho passando (sofisticado) */
 .success-animation-icon::after{
     content: "";
     position: absolute;
-    inset: -35px;
+    inset: -28px;
     border-radius: 999px;
     background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
     transform: rotate(18deg) translateX(-55%);
@@ -202,50 +207,44 @@ body {
     pointer-events: none;
 }
 
-/* Confete: criado no overlay (só no centro) */
+/* Confetes: no centro, atrás do sucesso */
 .success-overlay.visible::before{
     content:"";
     position:absolute;
-    width: 10px;
-    height: 14px;
+    width: 9px;
+    height: 12px;
     border-radius: 3px;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
 
-    /* partículas concentradas no centro */
     box-shadow:
-      -60px -20px 0 var(--color-green-primary),
-      -30px -70px 0 #FACC15,
-       10px -80px 0 var(--color-green-secondary),
-       50px -55px 0 #60A5FA,
-       70px -15px 0 #FACC15,
-      -75px  10px 0 #60A5FA,
-      -45px  55px 0 var(--color-green-secondary),
-        0px  75px 0 #FACC15,
-       45px  55px 0 var(--color-green-primary),
-       75px  10px 0 var(--color-green-secondary),
-      -20px -35px 0 var(--color-green-primary),
-       22px -45px 0 #60A5FA,
-      -10px  40px 0 #FACC15,
-       18px  48px 0 var(--color-green-secondary);
+      -52px -18px 0 var(--color-green-primary),
+      -26px -56px 0 #FACC15,
+       10px -64px 0 var(--color-green-secondary),
+       44px -46px 0 #60A5FA,
+       58px  -6px 0 #FACC15,
+      -58px   6px 0 #60A5FA,
+      -38px  44px 0 var(--color-green-secondary),
+        0px  58px 0 #FACC15,
+       38px  44px 0 var(--color-green-primary),
+       58px   6px 0 var(--color-green-secondary);
 
     animation: confettiBurst 760ms cubic-bezier(.18,.86,.22,1) forwards;
     pointer-events:none;
 }
 
-/* animação do badge (classe .animate vem do seu JS) */
+/* animação do badge */
 .success-animation-icon.animate{
     animation: successPop 520ms cubic-bezier(.2,.85,.2,1) forwards;
 }
 
 /* brilho junto do pop */
 .success-animation-icon.animate::after{
-    animation: successShine 1420ms ease-out forwards;
+    animation: successShine 1200ms ease-out forwards;
 }
 
-/* ✅ IMPORTANTE: aqui NÃO some no final */
 @keyframes successPop{
     0%   { transform: scale(.70); opacity: 0; }
     60%  { transform: scale(1.06); opacity: 1; }
@@ -261,17 +260,19 @@ body {
 @keyframes confettiBurst{
     0%   { opacity: 0; transform: translate(-50%, -50%) scale(.85); }
     15%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-32px) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-28px) scale(1); }
 }
 
-/* Acessibilidade */
 @media (prefers-reduced-motion: reduce){
     .success-animation-icon,
     .success-animation-icon.animate,
     .success-overlay.visible::before{
         animation: none !important;
     }
-    .success-animation-icon{ opacity: 1 !important; transform: none !important; }
+    .success-animation-icon{
+        opacity: 1 !important;
+        transform: none !important;
+    }
     .success-animation-icon::after{ display:none !important; }
 }
 
@@ -296,7 +297,7 @@ body {
     padding: 20px;
 }
 
-/* FINAL MODAL - POP-UP FLUTUANTE CENTRALIZADO E DESLOCADO */
+/* FINAL MODAL */
 .final-overlay-full {
     position: fixed;
     top: 0;
@@ -448,71 +449,3 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
-
-/* ================================
-   ✅ FIX DEFINITIVO: CHECK VERDE
-   (FontAwesome em qualquer modo)
-   ================================ */
-
-.success-overlay .success-animation-icon,
-.success-overlay .success-animation-icon::before,
-.success-overlay .success-animation-icon svg,
-.success-overlay .success-animation-icon svg *{
-  color: var(--color-green-primary) !important;
-  fill: var(--color-green-primary) !important;
-  stroke: var(--color-green-primary) !important;
-  -webkit-text-fill-color: var(--color-green-primary) !important;
-}
-
-/* Se estiver usando FA duotone/vars */
-.success-overlay .success-animation-icon{
-  --fa-primary-color: var(--color-green-primary) !important;
-  --fa-secondary-color: var(--color-green-primary) !important;
-  --fa-primary-opacity: 1 !important;
-  --fa-secondary-opacity: 1 !important;
-}
-
-/* Garante que o ícone não “apague” */
-.success-overlay .success-animation-icon{
-  opacity: 1 !important;
-  visibility: visible !important;
-  filter: none !important;
-}
-
-/* =====================================================
-   ✅ AJUSTE FINAL: TAMANHO CORRETO + CENTRALIZAÇÃO
-   ===================================================== */
-
-/* Badge */
-.success-overlay .success-animation-icon::before{
-  font-size: 2.1em !important;   /* 🔽 menor e proporcional */
-  line-height: 1 !important;
-  transform: translateY(-1px) !important; /* ajuste óptico */
-}
-
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-
-  padding: 8px !important;          /* respiro sem exagero */
-  box-sizing: border-box !important;
-
-  overflow: visible !important;
-  line-height: 1 !important;
-}
-
-/* Ícone real do FontAwesome */
-.success-overlay .success-animation-icon::before{
-  display: block !important;
-
-  font-size: 3.4em !important;      /* 🔽 reduzido */
-  line-height: 1 !important;
-
-  margin: 0 auto !important;
-
-  /* micro ajuste óptico (central perfeito) */
-  transform: translateY(-1px) !important;
-}
-
-
-
