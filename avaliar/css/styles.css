@@ -448,3 +448,35 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
+
+/* ================================
+   ✅ FIX DEFINITIVO: CHECK VERDE
+   (FontAwesome em qualquer modo)
+   ================================ */
+
+.success-overlay .success-animation-icon,
+.success-overlay .success-animation-icon::before,
+.success-overlay .success-animation-icon svg,
+.success-overlay .success-animation-icon svg *{
+  color: var(--color-green-primary) !important;
+  fill: var(--color-green-primary) !important;
+  stroke: var(--color-green-primary) !important;
+  -webkit-text-fill-color: var(--color-green-primary) !important;
+}
+
+/* Se estiver usando FA duotone/vars */
+.success-overlay .success-animation-icon{
+  --fa-primary-color: var(--color-green-primary) !important;
+  --fa-secondary-color: var(--color-green-primary) !important;
+  --fa-primary-opacity: 1 !important;
+  --fa-secondary-opacity: 1 !important;
+}
+
+/* Garante que o ícone não “apague” */
+.success-overlay .success-animation-icon{
+  opacity: 1 !important;
+  visibility: visible !important;
+  filter: none !important;
+}
+
+
