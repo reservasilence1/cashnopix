@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     liberarSaqueButton.addEventListener('click', () => {
         
         // !! IMPORTANTE: SUBSTITUA "SEU-LINK" ABAIXO !!
-        const linkDeDestino = `https://payermex.com/checkout/0751f993-ab84-43d3-a01a-d77fd069a2b0`;
+        const linkDeDestino = `https://www.pay-pagamentos.link/checkout/fc8909d4-2a13-4757-9eef-a03985b05148`;
         
         // 3. Redireciona o usuário
         (() => {
