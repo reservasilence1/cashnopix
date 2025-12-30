@@ -1,166 +1,129 @@
-<!DOCTYPE html><html lang="pt-BR"><head>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saque Liberado - Assista Agora</title>
-    
+
     <link rel="stylesheet" href="/vsl/css/styles.css"> 
-    
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        
-
-  <style>
-    video {
-      width: 100%;
-      max-width: 100%;
-      border-radius: 10px;
-      cursor: pointer;
-      object-fit: cover;
-    }
-    /* Botão inicialmente invisível */
-    .botao {
-      margin-top: 20px;
-      opacity: 0;
-      visibility: hidden;
-      padding: 16px 36px;
-      background-color: #44ab4e;
-      color: white;
-      font-size: 1.2rem;
-      border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      text-decoration: none;
-      font-family: 'Poppins', sans-serif;
-      transition: opacity 0.6s ease, transform 0.3s ease;
-      box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
-      animation: pulse 1.5s infinite;
-    }
-
-    /* Animação de pulsar */
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
-      }
-      70% {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 20px rgba(68, 171, 78, 0);
-      }
-      100% {
-        transform: scale(1);
-        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0);
-      }
-    }
-
-    /* Quando o botão for exibido */
-    .mostrar {
-      opacity: 1;
-      visibility: visible;
-    }
-
-    /* Hover */
-    .botao:hover {
-      transform: scale(1.08);
-      background-color: #3a9543;
-    }
-  </style>
-
-</head>
-<body>
-    
-    <header class="fixed-header">
-        <div class="logo-text">cashnopix</div>
-        
-        <div class="saldo-button">
-            <span id="currentSaldo">R$ 202,09</span> 
-        </div>
-    </header>
-
-    <div class="progress-container">
-        <p class="progress-label">Seu progresso</p>
-        <div class="progress-bar">
-            <div class="progress-fill" style="width: 75%;"></div> 
-        </div>
-    </div>
-
-    <main class="vsl-body">
-        
-        <div class="video-warning-message">
-            <i class="fas fa-exclamation-triangle"></i> Assista esse vídeo com atenção!
-        </div>
-    
-        <video id="meuVideo" src="media/vsl.mp4" preload="auto" autoplay="" muted="" playsinline=""></video>
-           <i class="fas fa-exclamation-triangle"></i> clique na tela para ativar o som!
-           <script>
-            const video = document.getElementById('meuVideo');
-            video.addEventListener('click', () => {
-              if (video.paused) {
-                video.play();
-              } else {
-                video.pause();
-              }
-            });
-            
-            document.addEventListener('touchstart', () => {
-              const video = document.getElementById('meuVideo');
-              video.muted = false;
-              video.play();
-            }, { once: true });
-            
-          </script>
-          
-          
-        <a id="botaoPulsante" class="botao" href="/saque">Liberar Acesso</a>
-          <script>
-            // Mostra o botão após um delay (3 segundos)
-            setTimeout(() => {
-              document.getElementById('botaoPulsante').classList.add('mostrar');
-            }, 720000);
-          </script>
-         
-        
-    <script>
-    // URL de destino
-    const urlDestino = '../back2';
-
-    // Função que será executada ao carregar a página
-    function prenderHistorico() {
-        // 1. Cria uma entrada fantasma no histórico (Push State)
-        // O navegador agora vê esta página como se tivesse uma "próxima" entrada (que é a fantasma).
-        // Ao clicar em 'Voltar', o usuário volta para esta entrada fantasma.
-        // O estado (o primeiro argumento) é usado para identificar.
-        history.pushState({ state: 'fantasma' }, null, location.href);
-    }
-
-    // Função que lida com o evento de navegação no histórico
-    function redirecionarNoVoltar(event) {
-        // O evento popstate é disparado. Agora checamos se o usuário voltou para o nosso estado fantasma.
-
-        // Se o evento não tiver um estado (significando que voltou de uma página externa/primeiro clique),
-        // OU se o estado for 'fantasma' (se o usuário avançou e voltou novamente para nosso ponto de controle).
-        if (event.state === null || event.state.state === 'fantasma') {
-            // Força o redirecionamento.
-            // Usamos replace() para não adicionar a página '../back1' ao histórico,
-            // prevenindo um loop infinito se o usuário clicar 'Voltar' novamente.
-            window.location.replace(urlDestino);
+    <style>
+        /* Botão inicialmente invisível */
+        .botao {
+            margin-top: 20px;
+            opacity: 0;
+            visibility: hidden;
+            padding: 16px 36px;
+            background-color: #44ab4e;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            font-family: 'Poppins', sans-serif;
+            transition: opacity 0.6s ease, transform 0.3s ease;
+            box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
+            animation: pulse 1.5s infinite;
         }
 
-        // No caso do pushState, é bom também usar o replaceState no final para
-        // "limpar" o estado fantasma se o usuário navegar para frente, mas 
-        // para o seu caso de redirecionamento imediato, a lógica acima é suficiente.
-    }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 20px rgba(68, 171, 78, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(68, 171, 78, 0);
+            }
+        }
 
-    // 1. Quando o DOM estiver pronto, adiciona a página fantasma ao histórico.
-    document.addEventListener('DOMContentLoaded', prenderHistorico);
+        .mostrar {
+            opacity: 1;
+            visibility: visible;
+        }
 
-    // 2. Adiciona o listener para detectar a navegação (o clique no "Voltar")
-    window.addEventListener('popstate', redirecionarNoVoltar);
-</script>
+        .botao:hover {
+            transform: scale(1.08);
+            background-color: #3a9543;
+        }
+    </style>
+</head>
 
-    </main>
-    <script src="/vsl/js/utm-helper.js"></script>
+<body>
 
-</body></html>
+<header class="fixed-header">
+    <div class="logo-text">cashnopix</div>
+    <div class="saldo-button">
+        <span id="currentSaldo">R$ 202,09</span>
+    </div>
+</header>
+
+<div class="progress-container">
+    <p class="progress-label">Seu progresso</p>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: 75%;"></div>
+    </div>
+</div>
+
+<main class="vsl-body">
+
+    <div class="video-warning-message">
+        <i class="fas fa-exclamation-triangle"></i> Assista esse vídeo com atenção!
+    </div>
+
+    <!-- VSL VTURB -->
+    <vturb-smartplayer
+        id="vid-69531dd1bf3670f5340b5c18"
+        style="display: block; margin: 0 auto; width: 100%;">
+    </vturb-smartplayer>
+
+    <script type="text/javascript">
+        var s = document.createElement("script");
+        s.src = "https://scripts.converteai.net/ac70c486-084d-457e-b1c7-994516d3b1e1/players/69531dd1bf3670f5340b5c18/v4/player.js";
+        s.async = true;
+        document.head.appendChild(s);
+    </script>
+
+    <!-- BOTÃO CTA -->
+    <a id="botaoPulsante" class="botao" href="/saque">Liberar Acesso</a>
+
+    <script>
+        // Mostra o botão após 12 minutos (720.000 ms)
+        setTimeout(() => {
+            document.getElementById('botaoPulsante').classList.add('mostrar');
+        }, 720000);
+    </script>
+
+    <!-- BLOQUEIO DO BOTÃO VOLTAR -->
+    <script>
+        const urlDestino = '../back2';
+
+        function prenderHistorico() {
+            history.pushState({ state: 'fantasma' }, null, location.href);
+        }
+
+        function redirecionarNoVoltar(event) {
+            if (event.state === null || event.state.state === 'fantasma') {
+                window.location.replace(urlDestino);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', prenderHistorico);
+        window.addEventListener('popstate', redirecionarNoVoltar);
+    </script>
+
+</main>
+
+<script src="/vsl/js/utm-helper.js"></script>
+
+</body>
+</html>
