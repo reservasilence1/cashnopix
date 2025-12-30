@@ -1,4 +1,4 @@
-Não aceitei essa solução de svg, quero que você altere somente no meu style.css : /*=====================================
+/*=====================================
   CORES E FONTES
 =======================================*/
 :root {
@@ -344,4 +344,5 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
+
 
