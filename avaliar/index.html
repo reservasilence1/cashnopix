@@ -7,9 +7,7 @@
 
   <link rel="stylesheet" href="/avaliar/css/styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
   <script>
     window.pixelId = "695370798f85d4219df79574";
@@ -27,138 +25,91 @@
     defer
   ></script>
 
-  <!-- ✅ OVERRIDES: animação de sucesso sofisticada + confetes só no centro (não preenche a tela) -->
+  <!-- ✅ OVERRIDES: SUCESSO BÁSICO + CONFETE DISCRETO NO CENTRO -->
   <style>
-    /* Mantém o overlay existente, mas sem “pintar”/preencher a tela */
+    /* overlay transparente */
     #successOverlay.success-overlay{
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background: transparent !important; /* não escurece a tela */
+      background: transparent !important;
       display: grid;
       place-items: center;
-      pointer-events: none; /* não bloqueia cliques */
+      pointer-events: none;
+      opacity: 1; /* quem controla aparecer é hidden-screen */
     }
 
-    /* “Badge” central sofisticado */
-    .success-badge{
-      width: 190px;
-      height: 190px;
+    /* círculo básico */
+    .success-simple{
+      width: 120px;
+      height: 120px;
       border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 14px 34px rgba(0,0,0,.14);
       display: grid;
       place-items: center;
       position: relative;
       overflow: visible;
-      transform: scale(.92);
-      animation: successBadgePop 520ms cubic-bezier(.2,.85,.2,1) forwards;
-      filter: drop-shadow(0 18px 38px rgba(0,0,0,.18));
     }
 
-    /* Anel externo sutil */
-    .success-badge::before{
-      content:"";
-      position:absolute;
-      inset:-10px;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.55), rgba(255,255,255,0) 55%);
-      border: 1px solid rgba(46, 204, 113, .18);
-      opacity: .95;
-    }
-
-    /* “Cartão” interno */
-    .success-badge-inner{
-      width: 150px;
-      height: 150px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.95), rgba(255,255,255,.75));
-      border: 1px solid rgba(0,0,0,.06);
-      display: grid;
-      place-items: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Brilho passando */
-    .success-badge-inner::after{
-      content:"";
-      position:absolute;
-      top:-60%;
-      left:-80%;
-      width: 140%;
-      height: 140%;
-      transform: rotate(18deg);
-      background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.45), rgba(255,255,255,0));
-      animation: successShine 820ms ease-out forwards;
-      opacity: .9;
-    }
-
-    /* Substitui a animação do ícone para ficar “premium” */
+    /* check básico (centralizado e menor) */
     #successOverlay .success-animation-icon{
-      font-size: 64px;
-      color: #20c35a; /* verde alinhado ao layout */
-      transform: translateZ(0);
-      animation: successCheck 520ms cubic-bezier(.15,.95,.25,1) forwards;
-      text-shadow: 0 10px 20px rgba(32,195,90,.22);
+      font-size: 46px;                /* ✅ básico */
+      line-height: 1;
+      color: #44AB4E !important;      /* ✅ verde do layout */
+      transform: translateY(-1px);
+      opacity: 0;
     }
 
-    /* Confetti confinado no badge (não espalha pela tela) */
-    .confetti-wrap{
+    /* animação simples */
+    #successOverlay.visible .success-simple{
+      animation: popIn .28s ease-out forwards;
+    }
+    #successOverlay.visible .success-animation-icon{
+      animation: checkIn .28s ease-out .06s forwards;
+    }
+
+    @keyframes popIn{
+      from { transform: scale(.88); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
+    @keyframes checkIn{
+      from { transform: scale(.85) translateY(-1px); opacity: 0; }
+      to   { transform: scale(1) translateY(-1px); opacity: 1; }
+    }
+
+    /* confete: confinado numa área pequena atrás do círculo */
+    .confetti-center{
       position:absolute;
-      inset:-14px; /* um pouquinho além do badge */
+      inset:-18px;
       border-radius: 999px;
-      overflow:hidden; /* <-- confete não vaza pro resto da tela */
+      overflow:hidden;  /* ✅ não vaza */
       pointer-events:none;
     }
 
     .confetti-piece{
       position:absolute;
-      width: 10px;
-      height: 14px;
+      width: 8px;
+      height: 12px;
       border-radius: 3px;
       opacity: 0;
-      transform: translate3d(0,0,0) rotate(0deg);
-      animation: confettiBurst 760ms cubic-bezier(.18,.86,.22,1) forwards;
+      animation: confettiMini .55s ease-out forwards;
       will-change: transform, opacity;
     }
 
-    /* Keyframes */
-    @keyframes successBadgePop{
-      0%   { transform: scale(.78); opacity: 0; }
-      60%  { transform: scale(1.02); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
+    @keyframes confettiMini{
+      0%   { opacity: 0; transform: translate(0,0) rotate(0deg); }
+      15%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x), var(--y)) rotate(var(--r)); }
     }
 
-    @keyframes successCheck{
-      0%   { transform: scale(.55); opacity: 0; }
-      70%  { transform: scale(1.08); opacity: 1; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    @keyframes successShine{
-      0%   { transform: translateX(-30%) rotate(18deg); opacity: 0; }
-      35%  { opacity: .85; }
-      100% { transform: translateX(160%) rotate(18deg); opacity: 0; }
-    }
-
-    @keyframes confettiBurst{
-      0%{
-        opacity: 0;
-        transform: translate3d(var(--x0), var(--y0), 0) rotate(var(--r0));
-      }
-      12%{ opacity: 1; }
-      100%{
-        opacity: 0;
-        transform: translate3d(var(--x1), var(--y1), 0) rotate(var(--r1));
-      }
-    }
-
-    /* Respeita acessibilidade */
     @media (prefers-reduced-motion: reduce){
-      .success-badge,
-      #successOverlay .success-animation-icon,
-      .confetti-piece,
-      .success-badge-inner::after{
+      #successOverlay.visible .success-simple,
+      #successOverlay.visible .success-animation-icon,
+      .confetti-piece{
         animation: none !important;
+        opacity: 1 !important;
       }
     }
   </style>
@@ -199,14 +150,11 @@
     </div>
   </div>
 
-  <!-- ✅ Mantém o ID original para não quebrar seu script.js; só trocamos o “miolo” para ficar premium -->
+  <!-- ✅ SUCCESS OVERLAY (BÁSICO) -->
   <div id="successOverlay" class="success-overlay hidden-screen" aria-hidden="true">
-    <div class="success-badge" role="status" aria-live="polite">
-      <div class="confetti-wrap" id="confettiWrap"></div>
-
-      <div class="success-badge-inner">
-        <i class="fas fa-check success-animation-icon"></i>
-      </div>
+    <div class="success-simple" role="status" aria-live="polite">
+      <div class="confetti-center" id="confettiCenter"></div>
+      <i class="fas fa-check success-animation-icon"></i>
     </div>
   </div>
 
@@ -339,73 +287,67 @@
     <div class="spacer-area"></div>
   </div>
 
-  <!-- ✅ Confetti “local” (só no centro) acionado automaticamente quando seu script.js mostrar o successOverlay -->
+  <!-- ✅ Confete simples: dispara quando #successOverlay fica visível -->
   <script>
     (function () {
       const overlay = document.getElementById("successOverlay");
-      const wrap = document.getElementById("confettiWrap");
-      if (!overlay || !wrap) return;
+      const holder = document.getElementById("confettiCenter");
+      if (!overlay || !holder) return;
 
-      // Paleta alinhada com o layout (verde + acentos suaves)
-      const colors = ["#20c35a", "#34d399", "#16a34a", "#a7f3d0", "#f59e0b", "#60a5fa"];
+      const colors = ["#44AB4E", "#5CBC59", "#FACC15", "#60A5FA"];
 
-      function burstConfetti() {
-        // limpa antes (evita acúmulo)
-        wrap.innerHTML = "";
+      function burst() {
+        holder.innerHTML = "";
 
-        const count = 34; // sofisticado, mas leve
+        const count = 12; // ✅ básico
         for (let i = 0; i < count; i++) {
           const p = document.createElement("span");
           p.className = "confetti-piece";
 
-          const w = 6 + Math.random() * 8;
-          const h = 8 + Math.random() * 14;
-          const left = 50 + (Math.random() * 40 - 20); // concentra no centro
-          const top = 58 + (Math.random() * 22 - 11);  // nasce atrás do check
+          // nasce atrás do círculo (perto do centro)
+          const left = 50 + (Math.random() * 26 - 13);
+          const top  = 60 + (Math.random() * 18 - 9);
 
-          const x1 = (Math.random() * 220 - 110) + "px";
-          const y1 = (-(90 + Math.random() * 120)) + "px";
-          const x0 = (Math.random() * 12 - 6) + "px";
-          const y0 = (Math.random() * 12 - 6) + "px";
+          const x = (Math.random() * 120 - 60) + "px";
+          const y = (-(60 + Math.random() * 70)) + "px";
+          const r = (180 + Math.random() * 240) + "deg";
 
-          const r0 = (Math.random() * 120 - 60) + "deg";
-          const r1 = (360 + Math.random() * 540) + "deg";
-
-          p.style.width = w + "px";
-          p.style.height = h + "px";
           p.style.left = left + "%";
-          p.style.top = top + "%";
+          p.style.top  = top + "%";
           p.style.background = colors[Math.floor(Math.random() * colors.length)];
-          p.style.setProperty("--x0", x0);
-          p.style.setProperty("--y0", y0);
-          p.style.setProperty("--x1", x1);
-          p.style.setProperty("--y1", y1);
-          p.style.setProperty("--r0", r0);
-          p.style.setProperty("--r1", r1);
-          p.style.animationDelay = (Math.random() * 90) + "ms";
+          p.style.setProperty("--x", x);
+          p.style.setProperty("--y", y);
+          p.style.setProperty("--r", r);
+          p.style.animationDelay = (Math.random() * 60) + "ms";
 
-          wrap.appendChild(p);
+          // variação de tamanho sutil
+          p.style.width  = (6 + Math.random() * 4) + "px";
+          p.style.height = (9 + Math.random() * 6) + "px";
+
+          holder.appendChild(p);
         }
       }
 
-      // Observa seu fluxo atual: quando o JS remover "hidden-screen" do successOverlay, dispara o confetti.
       const obs = new MutationObserver(() => {
-        const isVisible = !overlay.classList.contains("hidden-screen");
-        if (isVisible) {
-          burstConfetti();
+        const isHidden = overlay.classList.contains("hidden-screen");
+        if (!isHidden) {
+          overlay.classList.add("visible"); // só para animar com CSS
+          burst();
+        } else {
+          overlay.classList.remove("visible");
         }
       });
 
       obs.observe(overlay, { attributes: true, attributeFilter: ["class"] });
 
-      // (Opcional) se por algum motivo abrir já visível
+      // caso já esteja visível ao carregar
       if (!overlay.classList.contains("hidden-screen")) {
-        burstConfetti();
+        overlay.classList.add("visible");
+        burst();
       }
     })();
   </script>
 
-  <!-- Seus scripts originais (mantidos) -->
   <script src="/avaliar/js/script.js"></script>
   <script src="/avaliar/js/utm-helper.js"></script>
 
