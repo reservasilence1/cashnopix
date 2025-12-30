@@ -16,9 +16,7 @@
   CONFIGURAÇÕES GLOBAIS
 =======================================*/
 /* CRÍTICO: Garante que o HTML e o BODY ocupem toda a viewport para centralização */
-html, body {
-    height: 100%;
-}
+html, body { height: 100%; }
 
 body {
     font-family: 'Nunito', sans-serif;
@@ -29,9 +27,7 @@ body {
     min-height: 100vh;
 }
 
-.hidden-screen {
-    display: none !important; 
-}
+.hidden-screen { display: none !important; }
 
 /*=====================================
   CABEÇALHO E PROGRESSO
@@ -43,15 +39,14 @@ body {
     padding: 15px 20px;
     border-bottom: 1px solid #eee;
     background-color: var(--color-background-light);
-    position: sticky; 
+    position: sticky;
     top: 0;
     z-index: 10;
 }
 
-/* Contêiner para o botão de saldo (simples) */
 .saldo-button-container {
     position: relative;
-    height: 40px; 
+    height: 40px;
     display: flex;
     align-items: center;
 }
@@ -59,11 +54,11 @@ body {
 .logo-text {
     font-size: 1.2em;
     font-weight: 700;
-    color: var(--color-green-primary); 
+    color: var(--color-green-primary);
 }
 
 .saldo-button {
-    background-color: var(--color-green-secondary); 
+    background-color: var(--color-green-secondary);
     color: var(--color-background-light);
     padding: 8px 15px;
     border-radius: 5px;
@@ -78,14 +73,12 @@ body {
     font-size: 1em;
     font-weight: 700;
     white-space: nowrap;
-    opacity: 0; 
+    opacity: 0;
     transform: translateY(0) translateX(10px);
     z-index: 1;
 }
 
-.cashback-animation-value.animate {
-    animation: slideUpCashback 1s ease-out forwards;
-}
+.cashback-animation-value.animate { animation: slideUpCashback 1s ease-out forwards; }
 
 @keyframes slideUpCashback {
     0% { opacity: 0; transform: translateY(10px) translateX(10px); }
@@ -100,7 +93,7 @@ body {
     margin-top: 5px;
     background-color: var(--color-background-light);
     position: sticky;
-    top: var(--header-height); 
+    top: var(--header-height);
     z-index: 9;
 }
 
@@ -120,9 +113,9 @@ body {
 
 .progress-fill {
     height: 100%;
-    width: 0%; 
-    background-color: var(--color-green-primary); 
-    transition: width 3s ease-in-out; 
+    width: 0%;
+    background-color: var(--color-green-primary);
+    transition: width 3s ease-in-out;
 }
 
 /*=====================================
@@ -130,173 +123,86 @@ body {
 =======================================*/
 
 /* ============================================================
-   ✅ OVERLAY DE SUCESSO (MELHORADO)
-   - NÃO PREENCHE A TELA TODA (sem fundo verde)
-   - CHECK VERDE (FontAwesome)
-   - “badge” branco sofisticado
-   - confetes discretos saindo de trás do símbolo (central)
-   - Mantém as classes .visible e .animate do seu JS
+   ✅ OVERLAY DE SUCESSO (VERSÃO FINAL - PREMIUM)
+   - NÃO preenche a tela (sem fundo verde)
+   - Badge central sofisticado
+   - Check VERDE com FontAwesome (atua no ::before)
+   - Confetes discretos só no centro (saindo de trás)
+   - Compatível com JS: .visible no overlay e .animate no ícone
    ============================================================ */
-.success-overlay {
+
+/* Overlay: não pinta a tela inteira */
+.success-overlay{
     position: fixed;
-    top: 0;
-    left: 0;
+    inset: 0;
     width: 100%;
     height: 100%;
-    /* antes: background-color verde (cobria a tela inteira) */
-    background-color: transparent; /* ✅ não pinta a tela */
+    background: transparent !important;
     z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
 
     opacity: 0;
-    transition: opacity 0.25s ease-in-out;
+    transition: opacity .22s ease-in-out;
 
-    /* não bloquear cliques enquanto anima */
+    /* não bloqueia interação */
     pointer-events: none;
 }
 
 .success-overlay.visible { opacity: 1; }
 
-/* Ícone vira um “container” do badge */
-.success-animation-icon {
-    /* antes: white (sumia em base clara) */
-    color: var(--color-green-primary) !important; /* ✅ verde garantido */
-    font-size: 4.6em; /* sofisticado sem exagero */
-    line-height: 1;
+/* ÍCONE vira o badge central */
+.success-animation-icon{
     position: relative;
+    width: 170px;
+    height: 170px;
+    border-radius: 999px;
+
     display: inline-flex;
     justify-content: center;
     align-items: center;
-    width: 160px;
-    height: 160px;
-    transform: scale(0.85);
+
+    /* badge premium */
+    background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.98), rgba(255,255,255,.86));
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 18px 40px rgba(0,0,0,.14);
+
+    /* animação */
+    transform: scale(.78);
     opacity: 0;
-    filter: drop-shadow(0 18px 36px rgba(0,0,0,.18));
+
+    /* garante renderização */
+    filter: none !important;
+    visibility: visible !important;
 }
 
-/* Badge circular “premium” atrás do check */
-.success-animation-icon::before {
+/* ✅ FONT AWESOME DESENHA NO ::before — então forçamos nele também */
+.success-animation-icon,
+.success-animation-icon::before{
+    color: var(--color-green-primary) !important;
+    opacity: 1 !important;
+}
+
+/* Tamanho do glyph do FontAwesome */
+.success-animation-icon::before{
+    font-size: 4.9em;
+    line-height: 1;
+}
+
+/* brilho suave passando (sofisticado) */
+.success-animation-icon::after{
     content: "";
     position: absolute;
-    inset: 0;
+    inset: -35px;
     border-radius: 999px;
-    background:
-      radial-gradient(circle at 30% 25%, rgba(255,255,255,0.98), rgba(255,255,255,0.85));
-    border: 1px solid rgba(0,0,0,0.06);
-    box-shadow:
-      0 12px 30px rgba(0,0,0,0.12),
-      inset 0 1px 0 rgba(255,255,255,0.65);
-    z-index: -2;
-}
-
-/* Brilho passando (sofisticado) */
-.success-animation-icon::after {
-    content: "";
-    position: absolute;
-    width: 220px;
-    height: 220px;
-    left: -140px;
-    top: -120px;
-    transform: rotate(18deg);
     background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
+    transform: rotate(18deg) translateX(-55%);
     opacity: 0;
-    z-index: -1;
+    pointer-events: none;
 }
 
-/* Confetes: usamos um pseudo-elemento adicional via "box-shadow" em um elemento invisível
-   (sem JS e sem SVG, e sem preencher a tela) */
-.success-animation-icon.animate {
-    animation: successPop 520ms cubic-bezier(.2,.85,.2,1) forwards;
-}
-
-.success-animation-icon.animate::after {
-    animation: successShine 820ms ease-out forwards;
-}
-
-/* Confete (pontos/retângulos pequenos) — sai de trás do badge */
-.success-animation-icon.animate .fa-check,
-.success-animation-icon.animate.fa-check,
-.success-animation-icon.animate::before { /* noop para não quebrar */
-}
-
-/* Confetes criados com um “spray” de box-shadows. */
-.success-animation-icon.animate::before {
-    /* mantém o badge, mas adiciona uma camada de confete em cima usando sombras */
-    /* (camada separada é criada com outline + box-shadow em um "fake confetti" via background) */
-}
-
-/* Elemento de confete: usamos outro pseudo via background + box-shadow com animação */
-.success-animation-icon.animate::before {
-    /* nada aqui além do badge, confete vem do pseudo abaixo */
-}
-
-/* Criamos confete com um pseudo-elemento extra usando "outline" no próprio ícone */
-.success-animation-icon > i { /* caso seu HTML tenha i dentro de outro, não interfere */
-}
-
-/* Confete pseudo (usando um elemento invisível central) */
-.success-animation-icon.animate::marker { /* não usado, apenas para evitar warnings em editores */ }
-
-.success-animation-icon.animate{
-    /* injeta uma “camada” de confete com múltiplas sombras */
-    --c1: var(--color-green-primary);
-    --c2: var(--color-green-secondary);
-    --c3: #FACC15;
-    --c4: #60A5FA;
-}
-
-/* Este pseudo-elemento vira o "gerador" de confete (não vaza para fora do badge por ser pequeno) */
-.success-animation-icon.animate{
-    /* nada */
-}
-
-/* Vamos usar um span virtual (box-shadow) via background-image no overlay do brilho */
-.success-animation-icon.animate::after{
-    /* brilho já existe — adicionamos confete com box-shadow sem afetar o brilho */
-    /* criamos "confetes" com múltiplas sombras em pontos pequenos */
-    background:
-      linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.55), rgba(255,255,255,0));
-}
-
-/* Confete real: outro pseudo-elemento dedicado (sem alterar HTML) */
-.success-animation-icon::selection { /* noop */ }
-
-/* ✅ Confete: criamos via filter drop-shadow + box-shadow em um pseudo separado */
-.success-animation-icon.animate::before{
-    /* mantemos o badge e criamos confete com um pseudo interno usando background no topo */
-}
-
-/* PSEUDO EXTRA para confete: usamos o próprio ícone com text-shadow como partículas */
-.success-animation-icon.animate{
-    /* Partículas: text-shadow cria “pontos” em volta sem JS */
-    text-shadow:
-      0 -62px 0 rgba(68,171,78,.0); /* base */
-    /* (text-shadow não funciona bem para confete variado em todos browsers com icon-font),
-       então usamos também box-shadow em um pseudo separado abaixo */
-}
-
-/* Pseudo de confete dedicado */
-.success-animation-icon.animate::after{
-    /* brilho + confete */
-}
-
-/* Confete: usamos um pseudo-elemento adicional com box-shadows e animação */
-.success-animation-icon.animate{
-    /* nada */
-}
-
-.success-animation-icon.animate::before{
-    /* badge já */
-}
-
-/* Confete layer */
-.success-animation-icon.animate::after{
-    /* brilho anima */
-}
-
-/* Criamos um pseudo-elemento de confete usando o próprio overlay: */
+/* Confete: criado no overlay (só no centro) */
 .success-overlay.visible::before{
     content:"";
     position:absolute;
@@ -307,52 +213,65 @@ body {
     top: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
-    /* muitas partículas com box-shadow; ficam concentradas no centro */
+
+    /* partículas concentradas no centro */
     box-shadow:
       -60px -20px 0 var(--color-green-primary),
       -30px -70px 0 #FACC15,
-      10px -80px 0 var(--color-green-secondary),
-      50px -55px 0 #60A5FA,
-      70px -15px 0 #FACC15,
-      -75px 10px 0 #60A5FA,
-      -45px 55px 0 var(--color-green-secondary),
-      0px 75px 0 #FACC15,
-      45px 55px 0 var(--color-green-primary),
-      75px 10px 0 var(--color-green-secondary),
+       10px -80px 0 var(--color-green-secondary),
+       50px -55px 0 #60A5FA,
+       70px -15px 0 #FACC15,
+      -75px  10px 0 #60A5FA,
+      -45px  55px 0 var(--color-green-secondary),
+        0px  75px 0 #FACC15,
+       45px  55px 0 var(--color-green-primary),
+       75px  10px 0 var(--color-green-secondary),
       -20px -35px 0 var(--color-green-primary),
-      22px -45px 0 #60A5FA,
-      -10px 40px 0 #FACC15,
-      18px 48px 0 var(--color-green-secondary);
+       22px -45px 0 #60A5FA,
+      -10px  40px 0 #FACC15,
+       18px  48px 0 var(--color-green-secondary);
+
     animation: confettiBurst 760ms cubic-bezier(.18,.86,.22,1) forwards;
     pointer-events:none;
 }
 
-/* keyframes do conjunto */
-@keyframes successPop {
-    0%   { transform: scale(0.70); opacity: 0; }
-    60%  { transform: scale(1.05); opacity: 1; }
-    100% { transform: scale(1.00); opacity: 1; }
+/* animação do badge (classe .animate vem do seu JS) */
+.success-animation-icon.animate{
+    animation: successPop 520ms cubic-bezier(.2,.85,.2,1) forwards;
 }
 
-@keyframes successShine {
-    0%   { left: -140px; top: -120px; opacity: 0; }
-    30%  { opacity: .9; }
-    100% { left: 220px; top: 40px; opacity: 0; }
+/* brilho junto do pop */
+.success-animation-icon.animate::after{
+    animation: successShine 820ms ease-out forwards;
 }
 
-@keyframes confettiBurst {
-    0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+/* ✅ IMPORTANTE: aqui NÃO some no final */
+@keyframes successPop{
+    0%   { transform: scale(.70); opacity: 0; }
+    60%  { transform: scale(1.06); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes successShine{
+    0%   { transform: rotate(18deg) translateX(-55%); opacity: 0; }
+    35%  { opacity: .85; }
+    100% { transform: rotate(18deg) translateX(70%); opacity: 0; }
+}
+
+@keyframes confettiBurst{
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(.85); }
     15%  { opacity: 1; }
-    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.0) translateY(-30px); }
+    100% { opacity: 0; transform: translate(-50%, -50%) translateY(-32px) scale(1); }
 }
 
 /* Acessibilidade */
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce){
     .success-animation-icon,
     .success-animation-icon.animate,
     .success-overlay.visible::before{
         animation: none !important;
     }
+    .success-animation-icon{ opacity: 1 !important; transform: none !important; }
     .success-animation-icon::after{ display:none !important; }
 }
 
@@ -364,7 +283,7 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(255, 255, 255, 0.95);
-    z-index: 500; 
+    z-index: 500;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -383,10 +302,10 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%; 
+    height: 100%;
     background-color: rgba(68, 171, 78, 0.95);
-    z-index: 1500; 
-    display: flex; 
+    z-index: 1500;
+    display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -398,11 +317,11 @@ body {
     background-color: var(--color-background-light);
     border-radius: 10px;
     padding: 40px 30px;
-    text-align: center; 
+    text-align: center;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     position: absolute;
     left: 50%;
-    transform: translateX(calc(-50% - 19px)); 
+    transform: translateX(calc(-50% - 19px));
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -410,37 +329,35 @@ body {
 .final-modal-content h1 {
     font-size: 2.2em;
     font-weight: 800;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
 }
 
 .final-prize-text {
-    font-size: 1.1em; 
+    font-size: 1.1em;
     margin-bottom: 25px;
-    text-align: center; 
+    text-align: center;
 }
 
 .final-prize-text b {
-    color: var(--color-green-primary); 
-    font-weight: 700; 
+    color: var(--color-green-primary);
+    font-weight: 700;
 }
 
 .final-instruction-text {
     font-size: 1em;
-    color: var(--color-text-dark); 
+    color: var(--color-text-dark);
     margin-bottom: 30px;
     line-height: 1.4;
-    text-align: center; 
-    max-width: 300px; 
+    text-align: center;
+    max-width: 300px;
     margin-left: auto;
     margin-right: auto;
 }
 
-.final-instruction-text b {
-    font-weight: 900;
-}
+.final-instruction-text b { font-weight: 900; }
 
 .final-cta-button {
-    background-color: var(--color-green-secondary); 
+    background-color: var(--color-green-secondary);
     color: white;
     border: none;
     padding: 15px 30px;
@@ -448,14 +365,12 @@ body {
     font-weight: 700;
     border-radius: 8px;
     cursor: pointer;
-    width: 90%; 
+    width: 90%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: background-color 0.2s;
 }
 
-.final-cta-button:hover {
-    background-color: #4a9e48;
-}
+.final-cta-button:hover { background-color: #4a9e48; }
 
 /*=====================================
   CONTEÚDO PRINCIPAL (TELAS)
@@ -466,20 +381,20 @@ body {
     padding-left: 20px;
     padding-right: 20px;
     padding-bottom: 50px;
-    display: flex; 
+
+    display: flex;
     flex-direction: column;
-    align-items: center; 
-    min-height: calc(100vh - (var(--header-height) + var(--progress-height))); 
+    align-items: center;
+
+    min-height: calc(100vh - (var(--header-height) + var(--progress-height)));
 }
 
-/* TELA 1: CARREGAMENTO */
 #loadingScreen { justify-content: center; }
 
-/* TELA 2 e 4 - Layout padrão */
 #codeScreen, #evaluationScreen {
-    justify-content: flex-start; 
-    padding-top: 50px; 
-    min-height: auto; 
+    justify-content: flex-start;
+    padding-top: 50px;
+    min-height: auto;
 }
 
 /* --- TELA 1: ANIMAÇÃO DE PESQUISA --- */
@@ -533,47 +448,3 @@ body {
 @media (max-width: 400px) {
     .input-square { width: 40px; height: 40px; }
 }
-
-/* ✅ FORÇA o ícone de sucesso a ficar VERDE (mesmo se houver regras anteriores) */
-.success-overlay i.success-animation-icon,
-#successOverlay i.success-animation-icon,
-.success-overlay .success-animation-icon,
-#successOverlay .success-animation-icon{
-    color: var(--color-green-primary) !important;
-}
-
-/* ✅ Garante que o ícone não fique “apagado” por opacity/animation */
-.success-overlay .success-animation-icon{
-    opacity: 1 !important;
-    filter: none !important;
-}
-
-/* =====================================================
-   CORREÇÃO DEFINITIVA – ÍCONE DE SUCESSO (FontAwesome)
-   ===================================================== */
-
-/* força cor no ELEMENTO */
-.success-animation-icon{
-    color: var(--color-green-primary) !important;
-}
-
-/* força cor NO ÍCONE REAL (FontAwesome usa ::before) */
-.success-animation-icon::before{
-    color: var(--color-green-primary) !important;
-}
-
-/* garante que não fique apagado por animação */
-.success-animation-icon,
-.success-animation-icon::before{
-    opacity: 1 !important;
-    visibility: visible !important;
-}
-
-/* remove qualquer filtro herdado */
-.success-animation-icon{
-    filter: none !important;
-}
-
-
-
-
