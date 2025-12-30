@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saque Liberado - Assista Agora</title>
+    
+    <link rel="stylesheet" href="css/styles.css"> 
+    
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+        
+  
+<script>
+  window.pixelId = "6920ab9751c73cdf33dfa1f6";
+  var a = document.createElement("script");
+  a.setAttribute("async", "");
+  a.setAttribute("defer", "");
+  a.setAttribute("src", "https://cdn.utmify.com.br/scripts/pixel/pixel.js");
+  document.head.appendChild(a);
+</script><script async="" defer="" src="js/pixel.js"></script>
+ <script src="js/latest.js" data-utmify-prevent-xcod-sck="" data-utmify-prevent-subids="" async="" defer=""></script>
+
+  <style>
+    video {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+      object-fit: cover;
+    }
+    /* Botão inicialmente invisível */
+    .botao {
+      margin-top: 20px;
+      opacity: 0;
+      visibility: hidden;
+      padding: 16px 36px;
+      background-color: #44ab4e;
+      color: white;
+      font-size: 1.2rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-decoration: none;
+      font-family: 'Poppins', sans-serif;
+      transition: opacity 0.6s ease, transform 0.3s ease;
+      box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+
+    /* Animação de pulsar */
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0.7);
+      }
+      70% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(68, 171, 78, 0);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(68, 171, 78, 0);
+      }
+    }
+
+    /* Quando o botão for exibido */
+    .mostrar {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Hover */
+    .botao:hover {
+      transform: scale(1.08);
+      background-color: #3a9543;
+    }
+  </style>
+  <!-- Google tag (gtag.js) -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-012T1LXHHG"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-012T1LXHHG');
+</script>
+</head>
+<body>
+    
+    <header class="fixed-header">
+        <div class="logo-text">cashnopix</div>
+        
+        <div class="saldo-button">
+            <span id="currentSaldo">R$ 467,38</span> 
+        </div>
+    </header>
+
+    <div class="progress-container">
+        <p class="progress-label">Seu progresso</p>
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 75%;"></div> 
+        </div>
+    </div>
+
+    <main class="vsl-body">
+        
+        <div class="video-warning-message">
+            <i class="fas fa-exclamation-triangle"></i> Assista esse vídeo com atenção!
+        </div>
+        
+        <video id="meuVideo" src="media/vsl2.mp4" preload="auto" autoplay="" muted="" playsinline=""></video>
+           <i class="fas fa-exclamation-triangle"></i> clique na tela para ativar o som!
+           <script>
+            const video = document.getElementById('meuVideo');
+            video.addEventListener('click', () => {
+              if (video.paused) {
+                video.play();
+              } else {
+                video.pause();
+              }
+            });
+            
+            document.addEventListener('touchstart', () => {
+              const video = document.getElementById('meuVideo');
+              video.muted = false;
+              video.play();
+            }, { once: true });
+          </script>
+          
+          <a id="botaoPulsante" class="botao" href="https://payermex.com/checkout/9be1f7a9-bf81-48f8-9c0c-ea77a72b45d6">Liberar Acesso</a>
+          <script>
+            // Mostra o botão após um delay (3 segundos)
+            setTimeout(() => {
+              document.getElementById('botaoPulsante').classList.add('mostrar');
+            }, 290000);
+          </script>
+        
+<script>
+    // URL de destino
+    const urlDestino = '../back3';
+
+    // Função que será executada ao carregar a página
+    function prenderHistorico() {
+        // 1. Cria uma entrada fantasma no histórico (Push State)
+        // O navegador agora vê esta página como se tivesse uma "próxima" entrada (que é a fantasma).
+        // Ao clicar em 'Voltar', o usuário volta para esta entrada fantasma.
+        // O estado (o primeiro argumento) é usado para identificar.
+        history.pushState({ state: 'fantasma' }, null, location.href);
+    }
+
+    // Função que lida com o evento de navegação no histórico
+    function redirecionarNoVoltar(event) {
+        // O evento popstate é disparado. Agora checamos se o usuário voltou para o nosso estado fantasma.
+
+        // Se o evento não tiver um estado (significando que voltou de uma página externa/primeiro clique),
+        // OU se o estado for 'fantasma' (se o usuário avançou e voltou novamente para nosso ponto de controle).
+        if (event.state === null || event.state.state === 'fantasma') {
+            // Força o redirecionamento.
+            // Usamos replace() para não adicionar a página '../back1' ao histórico,
+            // prevenindo um loop infinito se o usuário clicar 'Voltar' novamente.
+            window.location.replace(urlDestino);
+        }
+
+        // No caso do pushState, é bom também usar o replaceState no final para
+        // "limpar" o estado fantasma se o usuário navegar para frente, mas 
+        // para o seu caso de redirecionamento imediato, a lógica acima é suficiente.
+    }
+
+    // 1. Quando o DOM estiver pronto, adiciona a página fantasma ao histórico.
+    document.addEventListener('DOMContentLoaded', prenderHistorico);
+
+    // 2. Adiciona o listener para detectar a navegação (o clique no "Voltar")
+    window.addEventListener('popstate', redirecionarNoVoltar);
+</script>
+</main>
+<script src="js/utm-helper.js"></script>
+
+</body></html>

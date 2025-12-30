@@ -1,0 +1,162 @@
+/*=====================================
+  CORES E FONTES
+=======================================*/
+:root {
+    --color-green-primary: #44AB4E;
+    --color-green-secondary: #5CBC59;
+    --color-text-dark: #333;
+    --color-text-medium: #555;
+    --color-background-light: white;
+    --header-height: 55px;
+    --progress-height: 40px;
+}
+
+/*=====================================
+  CONFIGURAÇÕES GLOBAIS
+=======================================*/
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background-light);
+    color: var(--color-text-dark);
+}
+
+.hidden-cta {
+    display: none !important; 
+}
+
+/*=====================================
+  CABEÇALHO E PROGRESSO
+=======================================*/
+.fixed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    background-color: var(--color-background-light);
+    position: sticky; 
+    top: 0;
+    z-index: 10;
+}
+
+.logo-text {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--color-green-primary); 
+}
+
+.saldo-button {
+    background-color: var(--color-green-primary); 
+    color: var(--color-background-light);
+    padding: 10px 18px; 
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 700;
+}
+
+.progress-container {
+    padding: 0 20px 10px 20px;
+    margin-top: 5px;
+    background-color: var(--color-background-light);
+    position: sticky;
+    top: var(--header-height); 
+    z-index: 9;
+}
+
+.progress-label {
+    font-size: 0.8em;
+    color: var(--color-text-medium);
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+.progress-bar {
+    height: 8px; 
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 100%; 
+    background-color: var(--color-green-primary); 
+}
+
+/*=====================================
+  ÁREA DO VÍDEO E CTA
+=======================================*/
+.vsl-body {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+    display: flex; 
+    flex-direction: column;
+    align-items: center; 
+}
+
+/* REGRA AJUSTADA PARA TEXTO PRETO E EM NEGRITO */
+.video-warning-message {
+    color: var(--color-text-dark); /* Texto em preto */
+    font-size: 1.1em;
+    font-weight: 900; /* Negrito */
+    margin-top: 15px;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* REGRA NOVA PARA ÍCONE VERMELHO */
+.video-warning-message .fas {
+    color: #FF0000; /* Vermelho */
+}
+
+.video-container-wrapper {
+    width: 100%;
+    max-width: 450px;
+    background-color: black;
+    aspect-ratio: 16 / 9; 
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.video-placeholder video, .video-container-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.final-cta-button {
+    background-color: var(--color-green-secondary); 
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1em;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 90%; 
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.final-cta-button:hover {
+    background-color: #4a9e48;
+}
+
+/* ... dentro de vsl/css/styles.css */
+
+.progress-fill {
+    height: 100%;
+    /* width: 100%; <--- REMOVA OU COMENTE ESSA LINHA */
+    background-color: var(--color-green-primary); 
+}
+
