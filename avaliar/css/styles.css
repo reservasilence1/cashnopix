@@ -242,7 +242,7 @@ body {
 
 /* brilho junto do pop */
 .success-animation-icon.animate::after{
-    animation: successShine 820ms ease-out forwards;
+    animation: successShine 1420ms ease-out forwards;
 }
 
 /* ✅ IMPORTANTE: aqui NÃO some no final */
@@ -513,5 +513,6 @@ body {
   /* micro ajuste óptico (central perfeito) */
   transform: translateY(-1px) !important;
 }
+
 
 
