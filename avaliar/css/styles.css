@@ -479,4 +479,49 @@ body {
   filter: none !important;
 }
 
+/* =====================================================
+   ✅ FIX: ÍCONE NÃO CORTAR + CENTRALIZAÇÃO PERFEITA
+   (para .success-animation-icon com FontAwesome)
+   ===================================================== */
+
+/* Badge */
+.success-overlay .success-animation-icon{
+  width: 176px !important;
+  height: 176px !important;
+  border-radius: 999px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  /* respiro interno para não cortar */
+  padding: 10px !important;
+  box-sizing: border-box !important;
+
+  /* evita corte do glyph */
+  overflow: visible !important;
+
+  /* melhora alinhamento visual */
+  line-height: 1 !important;
+}
+
+/* Glyph real do FontAwesome */
+.success-overlay .success-animation-icon::before{
+  display: block !important;
+
+  /* centralização real */
+  position: relative !important;
+  top: 0 !important;
+  left: 0 !important;
+
+  /* tamanho ajustado (não corta) */
+  font-size: 4.2em !important;
+  line-height: 1 !important;
+
+  /* garante que sempre fique central */
+  margin: 0 auto !important;
+  transform: translateY(-1px) !important; /* micro-ajuste óptico */
+}
+
+
 
