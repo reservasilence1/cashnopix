@@ -484,10 +484,11 @@ body {
    ===================================================== */
 
 /* Badge */
-.success-overlay .success-animation-icon{
-  width: 140px !important;
-  height: 140px !important;
-  border-radius: 999px !important;
+.success-overlay .success-animation-icon::before{
+  font-size: 2.6em !important;   /* 🔽 menor e proporcional */
+  line-height: 1 !important;
+  transform: translateY(-1px) !important; /* ajuste óptico */
+}
 
   display: flex !important;
   align-items: center !important;
@@ -512,3 +513,4 @@ body {
   /* micro ajuste óptico (central perfeito) */
   transform: translateY(-1px) !important;
 }
+
