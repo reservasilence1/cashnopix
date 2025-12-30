@@ -542,4 +542,11 @@ body {
     color: var(--color-green-primary) !important;
 }
 
+/* ✅ Garante que o ícone não fique “apagado” por opacity/animation */
+.success-overlay .success-animation-icon{
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+
 
