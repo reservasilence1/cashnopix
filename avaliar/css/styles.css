@@ -548,5 +548,32 @@ body {
     filter: none !important;
 }
 
+/* =====================================================
+   CORREÇÃO DEFINITIVA – ÍCONE DE SUCESSO (FontAwesome)
+   ===================================================== */
+
+/* força cor no ELEMENTO */
+.success-animation-icon{
+    color: var(--color-green-primary) !important;
+}
+
+/* força cor NO ÍCONE REAL (FontAwesome usa ::before) */
+.success-animation-icon::before{
+    color: var(--color-green-primary) !important;
+}
+
+/* garante que não fique apagado por animação */
+.success-animation-icon,
+.success-animation-icon::before{
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* remove qualquer filtro herdado */
+.success-animation-icon{
+    filter: none !important;
+}
+
+
 
 
